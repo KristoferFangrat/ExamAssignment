@@ -1,0 +1,15 @@
+Spökplatser databas
+Affärsidé: 
+Bokningssystem för övernattningar: 
+Utforska hemsökta platser: Användare kan söka efter hemsökta platser baserat på plats, typ av hemsökt plats eller andra kriterier. De kan också bläddra genom en karta eller lista över hemsökta platser.
+Detaljerad information om varje plats: För varje hemsökt, kan jag tillhandahålla detaljerad information, inklusive historien om platsen, beskrivningar av rapporterade hemsökningar, eventuella bilder eller videor.
+Användarrecensioner och betyg: Användare kan lämna recensioner och betyg för hemsökta platser de har besökt. De kan också dela sina egna upplevelser av hemsökningar.
+Community-funktioner: Användare kan diskutera hemsökningar, dela tips för att besöka hemsökta platser, eller ställa frågor till communityn.
+Resursbibiotek: Du kan tillhandahålla resurser för de so är intresserade av hemsökningar, inklusive artiklar, böcker, filmer och TV-program.
+Premiumfunktioner: För att generera intäkter, erbjuder jag premiumfunktioner, såsom tillgång till exklusivt innehåll, förbokning och förtur av bokning av hemsökta platser, övernattningar, evenemang, möjligheten att ladda ner information offline-användning eller en reklamfri upplevelse.
+Partnerskap och annonsering: Jag ska samarbeta med reseföretag, författare, filmskapare och andra som är intresserade av hemsökningar. Jag kan också erbjuda riktad annonsering baserat på användarnas intressen och beteende.
+
+Göra det enkelt för kunder att söka spökplats / evenamng (övernattning, zombieapokalyps, flykten från "chainsaw massacre"). Biljetter köps för ett specifikt evenemang eller övernattning på ett hemsökt slott tillexempel. När det är ett hemsöktslott eller en hemsökt plats kan man gå en rundvandring och då ska det tilldelas en guide. Evenemang kan bokas för barn och kategorier finns för barn eller för vuxna och för kunden ska det vara enkelt att få en överblick vilka åldrar evenemanget eller spökvandringen är lämplig för. 
+
+
+

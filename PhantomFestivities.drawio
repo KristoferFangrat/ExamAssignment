@@ -1,0 +1,195 @@
+<mxfile host="65bd71144e">
+    <diagram id="LjYTT8MM93OW5ynkLVgk" name="konceptuell">
+        <mxGraphModel dx="1782" dy="2398" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="980" pageHeight="690" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-100" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.51;exitY=0.998;exitDx=0;exitDy=0;entryX=0.493;entryY=0.001;entryDx=0;entryDy=0;fillColor=#d5e8d4;gradientColor=#97d077;strokeColor=#82b366;entryPerimeter=0;exitPerimeter=0;" parent="1" source="2" target="3" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="-244" y="-1059"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-103" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;fillColor=#d5e8d4;gradientColor=#97d077;strokeColor=#82b366;" parent="1" source="2" target="mvbQfr2z6FpW9r3CtrRC-111" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="40" y="-1091" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-107" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0;exitY=1;exitDx=0;exitDy=0;entryX=0.996;entryY=0.28;entryDx=0;entryDy=0;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;entryPerimeter=0;" parent="1" source="2" target="5" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-386" y="-1016" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="-327" y="-1076"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-108" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=-0.003;exitY=0.122;exitDx=0;exitDy=0;exitPerimeter=0;fillColor=#f8cecc;gradientColor=#ea6b66;strokeColor=#b85450;" parent="1" source="2" target="mvbQfr2z6FpW9r3CtrRC-113" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="-303" y="-1074" as="sourcePoint"/>
+                        <mxPoint x="-455" y="-1064" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="-660" y="-1129"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-117" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;fillColor=#d5e8d4;gradientColor=#97d077;strokeColor=#82b366;" parent="1" source="2" target="mvbQfr2z6FpW9r3CtrRC-82" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="-113" y="-1091"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="2" value="User" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-305" y="-1136" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="74" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.505;exitY=0.994;exitDx=0;exitDy=0;entryX=0.557;entryY=0.025;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#d79b00;fontColor=#000000;startArrow=none;startFill=0;endArrow=classic;endFill=1;fillColor=#ffcd28;gradientColor=#ffa500;exitPerimeter=0;" parent="1" source="3" target="71" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="76" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;strokeColor=#d79b00;fontColor=#000000;startArrow=none;startFill=0;endArrow=classic;endFill=1;fillColor=#ffcd28;gradientColor=#ffa500;" parent="1" source="3" target="mvbQfr2z6FpW9r3CtrRC-80" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="3" value="Booking" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcd28;strokeColor=#d79b00;gradientColor=#663300;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-303" y="-1043" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="4" value="Community" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="21" y="-994" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="59" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#b85450;fontColor=#000000;fillColor=#f8cecc;gradientColor=#ea6b66;" parent="1" source="5" target="58" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="Notification" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;gradientColor=#ea6b66;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-469" y="-1092" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-109" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.55;entryY=0.006;entryDx=0;entryDy=0;strokeColor=#B266FF;entryPerimeter=0;" parent="1" source="7" target="10" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="69" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0.005;entryY=0.316;entryDx=0;entryDy=0;entryPerimeter=0;strokeColor=#B266FF;fontColor=#000000;" parent="1" source="7" target="27" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="-174" y="-826"/>
+                            <mxPoint x="-174" y="-768"/>
+                            <mxPoint x="-173" y="-768"/>
+                            <mxPoint x="-173" y="-751"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="7" value="Haunted place" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcd28;strokeColor=#d79b00;gradientColor=#663300;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-303" y="-871" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-110" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.184;exitY=0.994;exitDx=0;exitDy=0;strokeColor=#B266FF;entryX=0.25;entryY=0;entryDx=0;entryDy=0;exitPerimeter=0;" parent="1" source="9" target="27" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="13" y="-875" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="-113" y="-861"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="68" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#d79b00;fontColor=#000000;fillColor=#ffcd28;gradientColor=#ffa500;" parent="1" source="9" target="66" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="9" value="Event" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcd28;strokeColor=#d79b00;gradientColor=#663300;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-143" y="-874" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="61" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#B266FF;fontColor=#000000;" parent="1" source="10" target="60" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="10" value="Resource" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e6d0de;strokeColor=#996185;gradientColor=#330033;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-309" y="-770" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="63" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#B266FF;fontColor=#000000;" parent="1" source="27" target="62" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="27" value="Partner relationship" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e6d0de;strokeColor=#996185;gradientColor=#370137;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-143" y="-770" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="53" value="&lt;h3 style=&quot;line-height: 0%;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Business rules:&lt;/font&gt;&lt;/h3&gt;&lt;h4 style=&quot;line-height: 0%;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;1. Bookingsystem: &lt;/font&gt;&lt;/h4&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Users can search for available dates, &lt;br&gt;book rooms and pay directly through the platform.&lt;br&gt;&lt;/font&gt;&lt;h4 style=&quot;line-height: 0%;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;2. Event calendar:&lt;/font&gt;&lt;/h4&gt;&lt;font face=&quot;Times New Roman&quot;&gt;&amp;nbsp;Users can view upcoming events such as ghost tours or themed events.&lt;br&gt;&lt;/font&gt;&lt;h4 style=&quot;line-height: 0%;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;3. Package tours: &lt;/font&gt;&lt;/h4&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Users can customize their packages based on interests and availability,&lt;br&gt;including overnight stays, events and attractions.&lt;br&gt;&lt;/font&gt;&lt;h4 style=&quot;line-height: 0%;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;4. Explore haunted places: &lt;/font&gt;&lt;/h4&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Users can search for haunted places based on location, type or other criteria.&lt;br&gt;&lt;/font&gt;&lt;h4 style=&quot;line-height: 0%;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;5. Detailed information for each place:&lt;/font&gt;&lt;/h4&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Detailed information is provided for each haunted place, &lt;br&gt;including it's history, reported hauntings and multimedia content.&lt;br&gt;&lt;/font&gt;&lt;h4 style=&quot;line-height: 0%;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;6. User reviews and ratings:&lt;/font&gt;&lt;/h4&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Users can leave reviews and ratings for places, overnight stays and events they have experienced.&lt;br&gt;&lt;/font&gt;&lt;h4 style=&quot;line-height: 0%;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;7. Push notifications: &lt;/font&gt;&lt;/h4&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Users recieve push notifications about upcoming events or special offers,&lt;br&gt;users can customize their notification preferences.&lt;br&gt;&lt;/font&gt;&lt;h4 style=&quot;line-height: 0%;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;8. Community features: &lt;/font&gt;&lt;/h4&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Users can engage in discussions, share tips and ask questions within the community.&lt;br&gt;&lt;/font&gt;&lt;h4 style=&quot;line-height: 0%;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;9. Resource library: &lt;/font&gt;&lt;/h4&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Resources such as articles, books, movies and TV-shows related to hauntings are provided.&lt;br&gt;&lt;/font&gt;&lt;h4 style=&quot;line-height: 0%;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;10. Premium features: &lt;/font&gt;&lt;/h4&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Premium features are offered for a fee, including access to exclusive content,&lt;br&gt;pre-booking, offline information download and ad-free experience.&lt;br&gt;&lt;/font&gt;&lt;h4 style=&quot;line-height: 0%;&quot;&gt;&lt;font face=&quot;Times New Roman&quot;&gt;11. Partnerships:&lt;/font&gt;&lt;/h4&gt;&lt;font face=&quot;Times New Roman&quot;&gt;Partnerships are formed with travel agencies, event organizers, authors, &lt;br&gt;filmmakers and advertisers interested in hauntings.&lt;br&gt;Targeted advertising is offered based on user interests and behavior.&lt;/font&gt;" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=#666666;fillColor=#f5f5f5;strokeWidth=1;spacing=5;gradientColor=#b3b3b3;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="153" y="-1173" width="492" height="642" as="geometry"/>
+                </mxCell>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-80" value="Package" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcd28;strokeColor=#d79b00;gradientColor=#663300;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-463" y="-874" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-118" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.25;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fillColor=#ffcd28;gradientColor=#ffa500;strokeColor=#d79b00;" parent="1" source="mvbQfr2z6FpW9r3CtrRC-82" target="7" edge="1">
+                    <mxGeometry relative="1" as="geometry">
+                        <Array as="points">
+                            <mxPoint x="-113" y="-934"/>
+                            <mxPoint x="-165" y="-934"/>
+                            <mxPoint x="-165" y="-841"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="67" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#d79b00;fontColor=#000000;fillColor=#ffcd28;gradientColor=#ffa500;" parent="1" source="mvbQfr2z6FpW9r3CtrRC-82" target="9" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-82" value="Review &amp;amp; rating" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-143" y="-1082" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="57" style="edgeStyle=none;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#b85450;fontColor=#000000;fillColor=#f8cecc;gradientColor=#ea6b66;" parent="1" source="mvbQfr2z6FpW9r3CtrRC-83" target="56" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="70" style="edgeStyle=orthogonalEdgeStyle;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeColor=#b85450;fontColor=#000000;endArrow=none;endFill=0;startArrow=classic;startFill=1;fillColor=#f8cecc;gradientColor=#ea6b66;" parent="1" source="mvbQfr2z6FpW9r3CtrRC-83" target="mvbQfr2z6FpW9r3CtrRC-113" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-83" value="Premium feature" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;gradientColor=#ea6b66;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-598" y="-1090" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-112" style="edgeStyle=orthogonalEdgeStyle;rounded=1;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fillColor=#d5e8d4;gradientColor=#97d077;strokeColor=#82b366;" parent="1" source="mvbQfr2z6FpW9r3CtrRC-111" target="4" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-111" value="UserCommunity" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;gradientColor=#97d077;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="21" y="-1082" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="mvbQfr2z6FpW9r3CtrRC-113" value="UserPremiumFeature" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;gradientColor=#ea6b66;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-737" y="-1090" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="56" value="PaymentPremium" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;gradientColor=#ea6b66;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-598" y="-1013" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="58" value="NotificationType" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;gradientColor=#ea6b66;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-469" y="-1013" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="60" value="ResourceCategory" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e6d0de;strokeColor=#996185;gradientColor=#330033;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-309" y="-685" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="62" value="PartnerType" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#e6d0de;strokeColor=#996185;gradientColor=#370137;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-143" y="-685" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="66" value="PaymentEvent" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcd28;strokeColor=#d79b00;gradientColor=#663300;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="7" y="-874" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="77" style="edgeStyle=none;html=1;exitX=0.545;exitY=0.989;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontFamily=Times New Roman;fontColor=#000000;fillColor=#ffcd28;gradientColor=#ffa500;strokeColor=#d79b00;exitPerimeter=0;" edge="1" parent="1" source="71" target="7">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="71" value="PaymentBooking" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffcd28;strokeColor=#d79b00;gradientColor=#663300;fontColor=#000000;" parent="1" vertex="1">
+                    <mxGeometry x="-309" y="-959" width="120" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+    <diagram id="SHiaQ6kDepowvgOasrwQ" name="Page-2">
+        <mxGraphModel dx="562" dy="599" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="980" pageHeight="690" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="djS7pzHb_mM-4CVegBep-1" value="Marketing" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="611" y="257" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="djS7pzHb_mM-4CVegBep-2" value="Accomodation" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="605" y="481" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="djS7pzHb_mM-4CVegBep-3" value="SEO strategy" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="539" y="577" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="djS7pzHb_mM-4CVegBep-4" value="Content" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="455" y="257" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="djS7pzHb_mM-4CVegBep-5" value="Website user premium feature" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="455" y="363" width="120" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="djS7pzHb_mM-4CVegBep-6" value="Bookingsystem" style="rounded=0;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                    <mxGeometry x="611" y="363" width="120" height="60" as="geometry"/>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

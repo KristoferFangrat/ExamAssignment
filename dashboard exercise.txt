@@ -1,0 +1,20 @@
+Samtliga frågor
+
+--------------
+Mest sålda produkt (Top3 Top10)
+Största kund
+Revenue
+Största Ordern
+Genomsnitt av antal Produkter i en Order
+Genomsnitt av Priset i en Order
+Best säljande månad
+Biggest Supplier
+Best Salesman (tex. per region)
+Hur många produkter finns på lagret?
+Produktkategorier mest såld - per kategori (Bar chart)
+Andel produkter per kategorier - per kategori (Bar/Pie chart)
+Vilken produkt trendar just nu?
+Vilken produkt säljar sämst?
+Vilka produkter returneras/reklameras?
+En interger med en siffra som visar AKTIVA kunder?
+Produktrecensioner? Bäst
