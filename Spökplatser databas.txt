@@ -1,15 +1,25 @@
 Spökplatser databas
 Affärsidé: 
-Bokningssystem för övernattningar: 
+Bokningssystem för övernattningar: Samarbeta med ägarna av hemsökta platser som erbjuder övernattningar. Användare kan söka efter tillgängliga datum, boka rum och betala direkt via min plattform. Om jag vill kan jag ta en procentuell avgift för varje bokning som görs.
+Evenemangskalender: Användare ska kunna använda en kalenderfunktion där användare kan se kommande evenemang, såsom spökvandringar eller skräcktema-evenemang. Användare kan boka biljetter och betala direkt genom min plattform.
+Paketresor: Erbjud paketresor som inkluderar övernattningar, evenemang och andra attraktioner. Användare kan anpassa sitt paket baserat på sina intressen och tillgänglighet.
 Utforska hemsökta platser: Användare kan söka efter hemsökta platser baserat på plats, typ av hemsökt plats eller andra kriterier. De kan också bläddra genom en karta eller lista över hemsökta platser.
 Detaljerad information om varje plats: För varje hemsökt, kan jag tillhandahålla detaljerad information, inklusive historien om platsen, beskrivningar av rapporterade hemsökningar, eventuella bilder eller videor.
-Användarrecensioner och betyg: Användare kan lämna recensioner och betyg för hemsökta platser de har besökt. De kan också dela sina egna upplevelser av hemsökningar.
+Användarrecensioner, betyg för övernattningar och evenemang: Användare kan lämna recensioner och betyg för hemsökta platser, övernattningar och evenemang de har besökt. De kan också dela sina egna upplevelser av hemsökningar., övernattningar och evenemang.
+Push-notifikationer: Skicka push-notifikationer till användare om kommande evenemang eller specialerbjudanden. Användare kan anpassa vilka typer av notifikationer som är relevanta för användare.
 Community-funktioner: Användare kan diskutera hemsökningar, dela tips för att besöka hemsökta platser, eller ställa frågor till communityn.
 Resursbibiotek: Du kan tillhandahålla resurser för de so är intresserade av hemsökningar, inklusive artiklar, böcker, filmer och TV-program.
 Premiumfunktioner: För att generera intäkter, erbjuder jag premiumfunktioner, såsom tillgång till exklusivt innehåll, förbokning och förtur av bokning av hemsökta platser, övernattningar, evenemang, möjligheten att ladda ner information offline-användning eller en reklamfri upplevelse.
-Partnerskap och annonsering: Jag ska samarbeta med reseföretag, författare, filmskapare och andra som är intresserade av hemsökningar. Jag kan också erbjuda riktad annonsering baserat på användarnas intressen och beteende.
-
-Göra det enkelt för kunder att söka spökplats / evenamng (övernattning, zombieapokalyps, flykten från "chainsaw massacre"). Biljetter köps för ett specifikt evenemang eller övernattning på ett hemsökt slott tillexempel. När det är ett hemsöktslott eller en hemsökt plats kan man gå en rundvandring och då ska det tilldelas en guide. Evenemang kan bokas för barn och kategorier finns för barn eller för vuxna och för kunden ska det vara enkelt att få en överblick vilka åldrar evenemanget eller spökvandringen är lämplig för. 
+Partnerskap med resebyråer, evenemangsarrangörer och annonsering: Jag ska samarbeta med reseföretag, författare, filmskapare och andra som är intresserade av hemsökningar. Jag kan också erbjuda riktad annonsering baserat på användarnas intressen och beteende.
 
 
 
+
+
+Marknadsföring:
+• Sökmotoroptimering (SEO): Optimering av din webbplats eller app för sökmotorer kan hjälpa mig att attrahera mer trafik.
+• Innehållsmarknadsföring: Skapa och dela högkvalitativt innehåll som är relevant för min målgrupp. Detta kan inkludera blogginlägg, videor, infographics etc.
+• Sociala medier: Använd sociala medier för att engagera din målgrupp, dela innehålla och marknadsföra mina tjänster.
+• E-postmarknadsföring: Skapa en e-postlista och skicka regelbundna uppdateringar, erbjudanden och innehåll till dina prenumeranter.
+
+Göra det enkelt för kunder att söka spökplats / evenamng (övernattning, zombieapokalyps, flykten från "chainsaw massacre"). Biljetter köps för ett specifikt evenemang eller övernattning på ett hemsökt slott tillexempel. När det är ett hemsöktslott eller en hemsökt plats kan man gå en rundvandring och då ska det tilldelas en guide. Evenemang kan bokas för barn och kategorier finns för barn eller för vuxna och för kunden ska det vara enkelt att få en överblick vilka åldrar evenemanget eller spökvandringen är lämplig för.
