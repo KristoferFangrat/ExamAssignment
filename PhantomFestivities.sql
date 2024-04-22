@@ -77,7 +77,7 @@ CREATE TABLE UserAdvertisement (
 	AdvertisementID INT,
 	PRIMARY KEY(UserID, AdvertisementID),
 	CONSTRAINT FK_UserAdvertisement FOREIGN KEY (UserID) REFERENCES [User](UserID),
-	CONSTRAINT FK_UserAdvertisement_Advertisement FOREIGN KEY (AdvertisementID) 
+	CONSTRAINT FK_UserAdvertisement_Advertisement FOREIGN KEY (AdvertisementID)
 	REFERENCES Advertisement(AdvertisementID)
 	);
 
@@ -97,4 +97,28 @@ CREATE TABLE Advertisement (
 	UserID INT NOT NULL,
 	Active BIT NOT NULL
 	CHECK (Active IN (0,1))
+	);
+
+CREATE TABLE Booking (
+	BookingID INT PRIMARY KEY IDENTITY(1,1),
+	BookingDate DATE NOT NULL,
+	NumberOfTickets INT NOT NULL
+	CHECK (NumberOfTickets > 0),
+	TotalPrice DECIMAL(10,2) NOT NULL
+	CHECK (TotalPrice >= 0),
+	UserID INT NOT NULL,
+	EventID INT NOT NULL,
+	HauntedPlaceID INT NOT NULL,
+	Active BIT NOT NULL
+	CHECK (Active IN (0,1))
+);
+
+CREATE TABLE Payment (
+	PaymentID INT PRIMARY KEY IDENTITY(1,1),
+	PaymentDate DATETIME NOT NULL,
+	Amount DECIMAL(10,2) NOT NULL,
+	PaymentMethod VARCHAR(20) NOT NULL,
+	UserID INT NOT NULL,
+	BookingID INT NOT NULL,
+	Active BIT NOT NULL
 );
