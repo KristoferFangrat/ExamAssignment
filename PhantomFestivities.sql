@@ -75,10 +75,7 @@ CREATE TABLE Community (
 CREATE TABLE UserAdvertisement (
 	UserID INT,
 	AdvertisementID INT,
-	PRIMARY KEY(UserID, AdvertisementID),
-	CONSTRAINT FK_UserAdvertisement FOREIGN KEY (UserID) REFERENCES [User](UserID),
-	CONSTRAINT FK_UserAdvertisement_Advertisement FOREIGN KEY (AdvertisementID)
-	REFERENCES Advertisement(AdvertisementID)
+	PRIMARY KEY(UserID, AdvertisementID)
 	);
 
 CREATE TABLE Advertisement (
@@ -98,6 +95,16 @@ CREATE TABLE Advertisement (
 	Active BIT NOT NULL
 	CHECK (Active IN (0,1))
 	);
+
+CREATE TABLE Review (
+	ReviewID INT PRIMARY KEY IDENTITY(1,1),
+	Rating VARCHAR(1) NOT NULL,
+	Text NVARCHAR(300) NOT NULL,
+	ReviewDate DATE NOT NULL,
+	UserID INT NOT NULL,
+	EventID INT NOT NULL
+	);
+
 
 CREATE TABLE Booking (
 	BookingID INT PRIMARY KEY IDENTITY(1,1),
@@ -122,3 +129,66 @@ CREATE TABLE Payment (
 	BookingID INT NOT NULL,
 	Active BIT NOT NULL
 );
+
+CREATE TABLE HauntedPlace (
+	HauntedPlaceID INT PRIMARY KEY IDENTITY(1,1),
+	Name NVARCHAR(300) NOT NULL,
+	Description NVARCHAR(500) NOT NULL,
+	MultiMediaContent NVARCHAR(20) NOT NULL,
+	BookingID INT NOT NULL,
+	ResourceID INT NOT NULL,
+	Partnership INT NOT NULL,
+	Active BIT NOT NULL
+);
+
+CREATE TABLE HauntedPlaceReview (
+	HauntedPlaceID INT,
+	ReviewID INT
+	PRIMARY KEY (HauntedPlaceID, ReviewID)
+);
+
+CREATE TABLE HauntedPlaceLocation (
+	LocationID INT PRIMARY KEY IDENTITY(1,1),
+	Address NVARCHAR(50) NOT NULL,
+	City NVARCHAR(50) NOT NULL,
+	Region NVARCHAR(50) NOT NULL,
+	Country NVARCHAR(50) NOT NULL,
+	Zipcode NVARCHAR(20) NOT NULL,
+	Latitude DECIMAL(7,5) NOT NULL,
+	Longitude DECIMAL (8,5) NOT NULL,
+	Active BIT NOT NULL
+);
+
+CREATE TABLE AdType (
+	AdTypeID INT PRIMARY KEY IDENTITY(1,1),
+	TypeName NVARCHAR(100) NOT NULL,
+	HauntePlaceID INT NOT NULL,
+	AdvertisementID INT NOT NULL
+);
+
+CREATE TABLE HauntedPlaceAdvertisement (
+	AdvertisementID INT PRIMARY KEY IDENTITY(1,1),
+	Title NVARCHAR(100) NOT NULL,
+	Description NVARCHAR(500) NOT NULL,
+	StartDate DATE NOT NULL,
+	EndDate DATE NOT NULL,
+	Price DECIMAL(10,2) NOT NULL,
+	Category NVARCHAR(100) NOT NULL,
+	AdTypeID INT NOT NULL,
+	Active BIT NOT NULL
+);
+
+CREATE TABLE Resource (
+	ResourceID INT PRIMARY KEY IDENTITY(1,1),
+	Name NVARCHAR(100) NOT NULL,
+	Description NVARCHAR(500) NOT NULL,
+	ResourceTypeID INT NOT NULL,
+	HauntedPlaceID INT NOT NULL
+);
+
+CREATE TABLE ResourceType (
+	ResourceID INT PRIMARY KEY IDENTITY(1,1),
+	Name NVARCHAR(100) NOT NULL,
+	Description NVARCHAR(500) NOT NULL
+);
+
