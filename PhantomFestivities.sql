@@ -1,4 +1,7 @@
-﻿CREATE DATABASE PhantomFestivities;
+﻿IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'PhantomFestivities')
+BEGIN
+    CREATE DATABASE PhantomFestivities;
+END
 GO
 USE PhantomFestivities;
 GO
@@ -53,8 +56,7 @@ CREATE TABLE Address (
 
 CREATE TABLE UserCommunity (
     UserCommunityID INT PRIMARY KEY IDENTITY(1,1),
-    JoinDate DATE NOT NULL
-    CHECK (JoinDate <= GETDATE()),
+    JoinDate DATE NOT NULL,
     Role VARCHAR(20) NOT NULL
     CHECK (LEN(Role) <= 20),
     UserID INT NOT NULL,
@@ -87,8 +89,7 @@ CREATE TABLE Advertisement (
     AdvertisementID INT PRIMARY KEY IDENTITY(1,1),
     Title NVARCHAR(100) NOT NULL,
     Description NVARCHAR(500) NOT NULL,
-    StartDate DATE NOT NULL
-    CHECK (StartDate <= EndDate),
+    StartDate DATE NOT NULL,
     EndDate DATE NOT NULL,
     Price DECIMAL(10,2) NOT NULL
     CHECK (Price >= 0),
@@ -119,8 +120,6 @@ CREATE TABLE Booking (
     TotalPrice DECIMAL(10,2) NOT NULL
     CHECK (TotalPrice >= 0),
     UserID INT NOT NULL,
-    EventID INT NOT NULL,
-    HauntedPlaceID INT NOT NULL,
     Active BIT NOT NULL
     CHECK (Active IN (0,1))
 );
@@ -130,7 +129,6 @@ CREATE TABLE Payment (
     PaymentDate DATETIME NOT NULL,
     Amount DECIMAL(10,2) NOT NULL,
     PaymentMethod VARCHAR(20) NOT NULL,
-    UserID INT NOT NULL,
     BookingID INT NOT NULL,
     Active BIT NOT NULL
 );
@@ -146,10 +144,10 @@ CREATE TABLE HauntedPlace (
     Active BIT NOT NULL
 );
 
-	CREATE TABLE HauntedPlaceReview (
-		HauntedPlaceID INT,
-		ReviewID INT,
-		PRIMARY KEY (HauntedPlaceID, ReviewID)
+CREATE TABLE HauntedPlaceReview (
+	HauntedPlaceID INT,
+	ReviewID INT,
+	PRIMARY KEY (HauntedPlaceID, ReviewID)
 	);
 
 CREATE TABLE HauntedPlaceLocation (
@@ -183,6 +181,12 @@ CREATE TABLE HauntedPlaceAdvertisement (
     Active BIT NOT NULL
 );
 
+CREATE TABLE ResourceType (
+    ResourceID INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(500) NOT NULL
+);
+
 CREATE TABLE Resource (
     ResourceID INT PRIMARY KEY IDENTITY(1,1),
     Name NVARCHAR(100) NOT NULL,
@@ -191,11 +195,6 @@ CREATE TABLE Resource (
     HauntedPlaceID INT NOT NULL
 );
 
-CREATE TABLE ResourceType (
-    ResourceID INT PRIMARY KEY IDENTITY(1,1),
-    Name NVARCHAR(100) NOT NULL,
-    Description NVARCHAR(500) NOT NULL
-);
 
 CREATE TABLE NotificationType (
     NotificationTypeID INT PRIMARY KEY IDENTITY(1,1),
@@ -208,18 +207,6 @@ CREATE TABLE Notification (
     Description NVARCHAR(500) NOT NULL,
     NotificationTypeID INT NOT NULL,
     UserID INT NOT NULL,
-    Active BIT NOT NULL,
-    FOREIGN KEY (NotificationTypeID) REFERENCES NotificationType(NotificationTypeID),
-    FOREIGN KEY (UserID) REFERENCES [User](UserID)
-);
-
-CREATE TABLE PremiumPayment (
-    PaymentID INT PRIMARY KEY IDENTITY(1,1),
-    PaymentDate DATETIME NOT NULL,
-    Amount DECIMAL(10,2) NOT NULL,
-    PaymentMethod VARCHAR(20) NOT NULL,
-    UserID INT NOT NULL,
-    BookingID INT NOT NULL,
     Active BIT NOT NULL
 );
 
@@ -229,6 +216,16 @@ CREATE TABLE UserPremium (
     PremiumID INT NOT NULL,
     StartDate DATE NOT NULL,
     EndDate DATE NOT NULL,
+    Active BIT NOT NULL
+);
+
+CREATE TABLE PremiumPayment (
+    PaymentID INT PRIMARY KEY IDENTITY(1,1),
+    PaymentDate DATETIME NOT NULL,
+    Amount DECIMAL(10,2) NOT NULL,
+    PaymentMethod VARCHAR(20) NOT NULL,
+    UserID INT NOT NULL,
+    BookingID INT NOT NULL,
     Active BIT NOT NULL
 );
 
@@ -383,55 +380,55 @@ VALUES ('italianuser1', 'Giuseppe', 'Rossi', '1986-03-18', '3351234567', 'giusep
        ('italianuser6', 'Giovanni', 'Ricci', '1985-12-30', '3398765432', 'giovanni@example.com', 'User', 1);
 
 -- Skapa bokningar för de 50 användarna
-INSERT INTO Booking (BookingDate, NumberOfTickets, TotalPrice, UserID, EventID, HauntedPlaceID, Active)
+INSERT INTO Booking (BookingDate, NumberOfTickets, TotalPrice, UserID, Active)
 VALUES 
     -- Bokningar för användare från Sverige
-    ('2024-04-22', 2, 100.00, 1, 1, 1, 1),  -- Användare: swedishuser1
-    ('2024-04-23', 1, 50.00, 2, 2, 2, 1),    -- Användare: swedishuser2
-    ('2024-04-24', 3, 150.00, 3, 3, 3, 1),   -- Användare: swedishuser3
-    ('2024-04-25', 2, 100.00, 4, 4, 4, 1),   -- Användare: swedishuser4
-    ('2024-04-26', 1, 50.00, 5, 5, 5, 1),    -- Användare: swedishuser5
-    ('2024-04-27', 3, 150.00, 6, 6, 6, 1),   -- Användare: swedishuser6
+    ('2024-04-22', 2, 100.00, 1, 1),  -- Användare: swedishuser1
+    ('2024-04-23', 1, 50.00, 2, 1),    -- Användare: swedishuser2
+    ('2024-04-24', 3, 150.00, 3, 1),   -- Användare: swedishuser3
+    ('2024-04-25', 2, 100.00, 4, 1),   -- Användare: swedishuser4
+    ('2024-04-26', 1, 50.00, 5, 1),    -- Användare: swedishuser5
+    ('2024-04-27', 3, 150.00, 6, 1),   -- Användare: swedishuser6
 
     -- Bokningar för användare från Tyskland
-    ('2024-04-22', 2, 100.00, 7, 7, 7, 1),   -- Användare: germanuser1
-    ('2024-04-23', 1, 50.00, 8, 8, 8, 1),    -- Användare: germanuser2
-    ('2024-04-24', 3, 150.00, 9, 9, 9, 1),   -- Användare: germanuser3
-    ('2024-04-25', 2, 100.00, 10, 10, 10, 1),-- Användare: germanuser4
-    ('2024-04-26', 1, 50.00, 11, 11, 11, 1), -- Användare: germanuser5
-    ('2024-04-27', 3, 150.00, 12, 12, 12, 1),-- Användare: germanuser6
+    ('2024-04-22', 2, 100.00, 7, 1),   -- Användare: germanuser1
+    ('2024-04-23', 1, 50.00, 8, 1),    -- Användare: germanuser2
+    ('2024-04-24', 3, 150.00, 9, 1),   -- Användare: germanuser3
+    ('2024-04-25', 2, 100.00, 10, 1),-- Användare: germanuser4
+    ('2024-04-26', 1, 50.00, 11, 1), -- Användare: germanuser5
+    ('2024-04-27', 3, 150.00, 12, 1),-- Användare: germanuser6
 
     -- Bokningar för användare från Polen
-    ('2024-04-22', 2, 100.00, 13, 13, 13, 1),-- Användare: polishuser1
-    ('2024-04-23', 1, 50.00, 14, 14, 14, 1), -- Användare: polishuser2
-    ('2024-04-24', 3, 150.00, 15, 15, 15, 1),-- Användare: polishuser3
-    ('2024-04-25', 2, 100.00, 16, 16, 16, 1),-- Användare: polishuser4
-    ('2024-04-26', 1, 50.00, 17, 17, 17, 1), -- Användare: polishuser5
-    ('2024-04-27', 3, 150.00, 18, 18, 18, 1),-- Användare: polishuser6
+    ('2024-04-22', 2, 100.00, 13, 1),-- Användare: polishuser1
+    ('2024-04-23', 1, 50.00, 14, 1), -- Användare: polishuser2
+    ('2024-04-24', 3, 150.00, 15, 1),-- Användare: polishuser3
+    ('2024-04-25', 2, 100.00, 16, 1),-- Användare: polishuser4
+    ('2024-04-26', 1, 50.00, 17, 1), -- Användare: polishuser5
+    ('2024-04-27', 3, 150.00, 18, 1),-- Användare: polishuser6
 
     -- Bokningar för användare från Frankrike
-    ('2024-04-22', 2, 100.00, 19, 19, 19, 1),-- Användare: frenchuser1
-    ('2024-04-23', 1, 50.00, 20, 20, 20, 1), -- Användare: frenchuser2
-    ('2024-04-24', 3, 150.00, 21, 21, 21, 1),-- Användare: frenchuser3
-    ('2024-04-25', 2, 100.00, 22, 22, 22, 1),-- Användare: frenchuser4
-    ('2024-04-26', 1, 50.00, 23, 23, 23, 1), -- Användare: frenchuser5
-    ('2024-04-27', 3, 150.00, 24, 24, 24, 1),-- Användare: frenchuser6
+    ('2024-04-22', 2, 100.00, 19, 1),-- Användare: frenchuser1
+    ('2024-04-23', 1, 50.00, 20, 1), -- Användare: frenchuser2
+    ('2024-04-24', 3, 150.00, 21, 1),-- Användare: frenchuser3
+    ('2024-04-25', 2, 100.00, 22, 1),-- Användare: frenchuser4
+    ('2024-04-26', 1, 50.00, 23, 1), -- Användare: frenchuser5
+    ('2024-04-27', 3, 150.00, 24, 1),-- Användare: frenchuser6
 
     -- Bokningar för användare från Spanien
-    ('2024-04-22', 2, 100.00, 25, 25, 25, 1),-- Användare: spanishuser1
-    ('2024-04-23', 1, 50.00, 26, 26, 26, 1), -- Användare: spanishuser2
-    ('2024-04-24', 3, 150.00, 27, 27, 27, 1),-- Användare: spanishuser3
-    ('2024-04-25', 2, 100.00, 28, 28, 28, 1),-- Användare: spanishuser4
-    ('2024-04-26', 1, 50.00, 29, 29, 29, 1), -- Användare: spanishuser5
-    ('2024-04-27', 3, 150.00, 30, 30, 30, 1),-- Användare: spanishuser6
+    ('2024-04-22', 2, 100.00, 25, 1),-- Användare: spanishuser1
+    ('2024-04-23', 1, 50.00, 26, 1), -- Användare: spanishuser2
+    ('2024-04-24', 3, 150.00, 27, 1),-- Användare: spanishuser3
+    ('2024-04-25', 2, 100.00, 28, 1),-- Användare: spanishuser4
+    ('2024-04-26', 1, 50.00, 29, 1), -- Användare: spanishuser5
+    ('2024-04-27', 3, 150.00, 30, 1),-- Användare: spanishuser6
 
     -- Bokningar för användare från Italien
-    ('2024-04-22', 2, 100.00, 31, 31, 31, 1),-- Användare: italianuser1
-    ('2024-04-23', 1, 50.00, 32, 32, 32, 1), -- Användare: italianuser2
-    ('2024-04-24', 3, 150.00, 33, 33, 33, 1),-- Användare: italianuser3
-    ('2024-04-25', 2, 100.00, 34, 34, 34, 1),-- Användare: italianuser4
-    ('2024-04-26', 1, 50.00, 35, 35, 35, 1), -- Användare: italianuser5
-    ('2024-04-27', 3, 150.00, 36, 36, 36, 1);-- Användare: italianuser6
+    ('2024-04-22', 2, 100.00, 31, 1),-- Användare: italianuser1
+    ('2024-04-23', 1, 50.00, 32, 1), -- Användare: italianuser2
+    ('2024-04-24', 3, 150.00, 33, 1),-- Användare: italianuser3
+    ('2024-04-25', 2, 100.00, 34, 1),-- Användare: italianuser4
+    ('2024-04-26', 1, 50.00, 35, 1), -- Användare: italianuser5
+    ('2024-04-27', 3, 150.00, 36, 1);-- Användare: italianuser6
 
 -- Skapa 10 inloggningsposter med lyckade och misslyckade försök för olika användare
 INSERT INTO Login (HashedPassword, Salt, LastLogin, FailedAttempt, UserID, Active)
@@ -627,28 +624,28 @@ VALUES
     ('2', 'Not scary at all, very disappointed', '2024-05-21', 6, 30); -- Användare: swedishuser6, Event: 30
 
 -- Skapa 20 dataposter för betalningar
-INSERT INTO Payment (PaymentDate, Amount, PaymentMethod, UserID, BookingID, Active)
+INSERT INTO Payment (PaymentDate, Amount, PaymentMethod, BookingID, Active)
 VALUES 
-    ('2024-04-22 12:30:00', 50.00, 'Credit Card', 1, 1, 1), -- Användare: swedishuser1, Bokning: 1
-    ('2024-04-23 13:45:00', 100.00, 'PayPal', 2, 2, 1), -- Användare: swedishuser2, Bokning: 2
-    ('2024-04-24 14:20:00', 75.00, 'Credit Card', 3, 3, 1), -- Användare: swedishuser3, Bokning: 3
-    ('2024-04-25 15:10:00', 120.00, 'PayPal', 4, 4, 1), -- Användare: swedishuser4, Bokning: 4
-    ('2024-04-26 16:00:00', 30.00, 'Credit Card', 5, 5, 1), -- Användare: swedishuser5, Bokning: 5
-    ('2024-04-27 17:30:00', 80.00, 'PayPal', 6, 6, 1), -- Användare: swedishuser6, Bokning: 6
-    ('2024-04-28 18:45:00', 60.00, 'Credit Card', 7, 7, 1), -- Användare: germanuser1, Bokning: 7
-    ('2024-04-29 19:20:00', 90.00, 'PayPal', 8, 8, 1), -- Användare: germanuser2, Bokning: 8
-    ('2024-04-30 20:15:00', 110.00, 'Credit Card', 9, 9, 1), -- Användare: germanuser3, Bokning: 9
-    ('2024-05-01 21:00:00', 40.00, 'PayPal', 10, 10, 1), -- Användare: germanuser4, Bokning: 10
-    ('2024-05-02 22:30:00', 70.00, 'Credit Card', 11, 11, 1), -- Användare: germanuser5, Bokning: 11
-    ('2024-05-03 23:55:00', 85.00, 'PayPal', 12, 12, 1), -- Användare: germanuser6, Bokning: 12
-    ('2024-05-04 11:20:00', 55.00, 'Credit Card', 1, 13, 1), -- Användare: swedishuser1, Bokning: 13
-    ('2024-05-05 12:45:00', 95.00, 'PayPal', 2, 14, 1), -- Användare: swedishuser2, Bokning: 14
-    ('2024-05-06 13:30:00', 65.00, 'Credit Card', 3, 15, 1), -- Användare: swedishuser3, Bokning: 15
-    ('2024-05-07 14:20:00', 130.00, 'PayPal', 4, 16, 1), -- Användare: swedishuser4, Bokning: 16
-    ('2024-05-08 15:10:00', 45.00, 'Credit Card', 5, 17, 1), -- Användare: swedishuser5, Bokning: 17
-    ('2024-05-09 16:30:00', 75.00, 'PayPal', 6, 18, 1), -- Användare: swedishuser6, Bokning: 18
-    ('2024-05-10 17:45:00', 70.00, 'Credit Card', 7, 19, 1), -- Användare: germanuser1, Bokning: 19
-    ('2024-05-11 18:20:00', 100.00, 'PayPal', 8, 20, 1); -- Användare: germanuser2, Bokning: 20
+    ('2024-04-22 12:30:00', 50.00, 'Credit Card', 1, 1), -- Användare: swedishuser1, Bokning: 1
+    ('2024-04-23 13:45:00', 100.00, 'PayPal', 2, 1), -- Användare: swedishuser2, Bokning: 2
+    ('2024-04-24 14:20:00', 75.00, 'Credit Card', 3, 1), -- Användare: swedishuser3, Bokning: 3
+    ('2024-04-25 15:10:00', 120.00, 'PayPal', 4, 1), -- Användare: swedishuser4, Bokning: 4
+    ('2024-04-26 16:00:00', 30.00, 'Credit Card', 5, 1), -- Användare: swedishuser5, Bokning: 5
+    ('2024-04-27 17:30:00', 80.00, 'PayPal', 6, 1), -- Användare: swedishuser6, Bokning: 6
+    ('2024-04-28 18:45:00', 60.00, 'Credit Card', 7, 1), -- Användare: germanuser1, Bokning: 7
+    ('2024-04-29 19:20:00', 90.00, 'PayPal', 8, 1), -- Användare: germanuser2, Bokning: 8
+    ('2024-04-30 20:15:00', 110.00, 'Credit Card', 9, 1), -- Användare: germanuser3, Bokning: 9
+    ('2024-05-01 21:00:00', 40.00, 'PayPal', 10, 1), -- Användare: germanuser4, Bokning: 10
+    ('2024-05-02 22:30:00', 70.00, 'Credit Card', 11, 1), -- Användare: germanuser5, Bokning: 11
+    ('2024-05-03 23:55:00', 85.00, 'PayPal', 12, 1), -- Användare: germanuser6, Bokning: 12
+    ('2024-05-04 11:20:00', 55.00, 'Credit Card', 13, 1), -- Användare: swedishuser1, Bokning: 13
+    ('2024-05-05 12:45:00', 95.00, 'PayPal', 14, 1), -- Användare: swedishuser2, Bokning: 14
+    ('2024-05-06 13:30:00', 65.00, 'Credit Card', 15, 1), -- Användare: swedishuser3, Bokning: 15
+    ('2024-05-07 14:20:00', 130.00, 'PayPal', 16, 1), -- Användare: swedishuser4, Bokning: 16
+    ('2024-05-08 15:10:00', 45.00, 'Credit Card', 17, 1), -- Användare: swedishuser5, Bokning: 17
+    ('2024-05-09 16:30:00', 75.00, 'PayPal', 18, 1), -- Användare: swedishuser6, Bokning: 18
+    ('2024-05-10 17:45:00', 70.00, 'Credit Card', 19, 1), -- Användare: germanuser1, Bokning: 19
+    ('2024-05-11 18:20:00', 100.00, 'PayPal', 20, 1); -- Användare: germanuser2, Bokning: 20
 
 -- Skapa 30 dataposter för hemsökta platser
 INSERT INTO HauntedPlace (Name, Description, MultiMediaContent, BookingID, ResourceID, Partnership, Active)
@@ -776,6 +773,8 @@ VALUES
     ('Premium', 29, 29),
     ('Featured', 30, 30);
 
+
+
 -- Skapa 30 dataposter i HauntedPlaceAdvertisement tabellen
 INSERT INTO HauntedPlaceAdvertisement (Title, Description, StartDate, EndDate, Price, Category, AdTypeID, Active)
 VALUES 
@@ -809,3 +808,543 @@ VALUES
     ('Horror Movie Marathon', 'Watch a marathon of horror movies in a haunted setting', '2024-05-19', '2024-06-18', 35.00, 'Events', 28, 1),
     ('Sinister Escape Room Challenge', 'Attempt to escape from our sinister escape room', '2024-05-20', '2024-06-19', 55.00, 'Activities', 29, 1),
     ('Paranormal Investigation Seminar', 'Learn about the latest advancements in paranormal investigation', '2024-05-21', '2024-06-20', 60.00, 'Workshops', 30, 1);
+
+-- Skapa 30 dataposter i ResourceType tabellen
+INSERT INTO ResourceType (Name, Description)
+VALUES 
+    ('Ghost Hunting Equipment', 'Essential equipment for paranormal investigations'),
+    ('Brochure', 'Informational brochure about the haunted place'),
+    ('Entertainment', 'Entertainment options for visitors'),
+    ('Puzzle Clues', 'Clues and hints for solving puzzles'),
+    ('Tools', 'Tools used by experts for paranormal investigations'),
+    ('Guidebook', 'Guidebook with information about the haunted location'),
+    ('Map', 'Map showing the layout of the haunted area'),
+    ('Menu', 'Menu featuring spooky dishes for themed events'),
+    ('Schedule', 'Schedule of activities and events'),
+    ('Props', 'Props used to create a spooky atmosphere'),
+    ('Handbook', 'Handbook with tips for visitors'),
+    ('Program', 'Program listing events and activities'),
+    ('Devices', 'Devices for detecting paranormal activity'),
+    ('Book', 'Book containing spooky stories'),
+    ('Props', 'Props for interactive experiences'),
+    ('Brochure', 'Brochure with information about the haunted attraction'),
+    ('Guidebook', 'Guidebook with information about the haunted location'),
+    ('Map', 'Map of the haunted area for visitors'),
+    ('Program', 'Program listing events and activities'),
+    ('Props', 'Props for interactive experiences'),
+    ('Equipment', 'Equipment used for investigations'),
+    ('Brochure', 'Brochure with information about the haunted location'),
+    ('Guidebook', 'Guidebook with information about the haunted area'),
+    ('Map', 'Map of the haunted location for visitors'),
+    ('Program', 'Program listing events and activities'),
+    ('Clues', 'Clues and hints for solving puzzles'),
+    ('Devices', 'Devices for detecting paranormal activity'),
+    ('Book', 'Book containing spooky stories'),
+    ('Map', 'Map of the haunted area for visitors');
+
+
+-- Skapa 30 dataposter i Resource tabellen
+INSERT INTO Resource (Name, Description, ResourceTypeID, HauntedPlaceID)
+VALUES 
+    ('Ghost Hunting Equipment', 'Essential equipment for paranormal investigations', 1, 1), -- HauntedPlaceID: 1
+    ('Haunted Mansion Brochure', 'Informational brochure about the haunted mansion', 2, 2), -- HauntedPlaceID: 2
+    ('Horror Movie Collection', 'Collection of classic horror movies for guests to watch', 3, 3), -- HauntedPlaceID: 3
+    ('Escape Room Clues', 'Clues and hints for solving the escape room puzzles', 4, 4), -- HauntedPlaceID: 4
+    ('Paranormal Investigation Tools', 'Tools used by experts for paranormal investigations', 5, 5), -- HauntedPlaceID: 5
+    ('Haunted History Guidebook', 'Guidebook detailing the haunted history of the city', 6, 6), -- HauntedPlaceID: 6
+    ('Maze Map', 'Map showing the layout of the haunted maze', 7, 7), -- HauntedPlaceID: 7
+    ('Dinner Party Menu', 'Menu featuring spooky dishes for the dinner party', 8, 8), -- HauntedPlaceID: 8
+    ('Theater Schedule', 'Schedule of horror movie screenings in the haunted theater', 9, 9), -- HauntedPlaceID: 9
+    ('Haunted House Brochure', 'Brochure with information about the haunted house', 10, 10), -- HauntedPlaceID: 10
+    ('Ghost Hunting Cameras', 'Cameras used to capture paranormal activity', 11, 11), -- HauntedPlaceID: 11
+    ('Escape Room Challenges', 'Challenges and puzzles for the escape room experience', 12, 12), -- HauntedPlaceID: 12
+    ('Paranormal Investigation Handbook', 'Handbook with tips for conducting paranormal investigations', 13, 13), -- HauntedPlaceID: 13
+    ('Cemetery Map', 'Map of the haunted cemetery for guided tours', 14, 14), -- HauntedPlaceID: 14
+    ('Ghost Stories Book', 'Book containing spooky ghost stories for storytelling events', 15, 15), -- HauntedPlaceID: 15
+    ('Trail Map', 'Map of the haunted trail for visitors to navigate', 16, 16), -- HauntedPlaceID: 16
+    ('Theater Program', 'Program listing the horror movies being screened in the theater', 17, 17), -- HauntedPlaceID: 17
+    ('Escape Room Props', 'Props used to create a creepy atmosphere in the escape room', 18, 18), -- HauntedPlaceID: 18
+    ('Paranormal Investigation Devices', 'Devices for detecting and measuring paranormal activity', 19, 19), -- HauntedPlaceID: 19
+    ('Ghost Ship Brochure', 'Brochure with information about the haunted ghost ship', 20, 20), -- HauntedPlaceID: 20
+    ('Hotel Brochure', 'Brochure with information about the haunted hotel', 21, 21), -- HauntedPlaceID: 21
+    ('Haunted House Movie Schedule', 'Schedule of horror movie screenings in the haunted house', 22, 22), -- HauntedPlaceID: 22
+    ('Escape Room Props', 'Props used to create a spooky atmosphere in the escape room', 23, 23), -- HauntedPlaceID: 23
+    ('Ghost Town Guidebook', 'Guidebook detailing the history of the haunted ghost town', 24, 24), -- HauntedPlaceID: 24
+    ('Ghost Stories Book', 'Book containing spine-chilling ghost stories for storytelling events', 25, 25), -- HauntedPlaceID: 25
+    ('Forest Map', 'Map of the haunted forest for visitors to explore', 26, 26), -- HauntedPlaceID: 26
+    ('Theater Program', 'Program listing the horror movies being screened in the haunted setting', 27, 27), -- HauntedPlaceID: 27
+    ('Escape Room Clues', 'Clues and hints for solving the puzzles in the escape room', 28, 28), -- HauntedPlaceID: 28
+    ('Paranormal Investigation Equipment', 'Equipment used by experts for paranormal investigations', 29, 29), -- HauntedPlaceID: 29
+    ('Paranormal Investigation Seminar Brochure', 'Brochure with information about the paranormal investigation seminar', 30, 30); -- HauntedPlaceID: 30
+
+-- Skapa 50 dataposter i NotificationType tabellen
+INSERT INTO NotificationType (TypeName)
+VALUES 
+    ('General'),
+    ('Promotion'),
+    ('Event'),
+    ('Reminder'),
+    ('Feedback'),
+    ('Update'),
+    ('Alert'),
+    ('Announcement'),
+    ('Invitation'),
+    ('Newsletter'),
+    ('Special Offer'),
+    ('Survey'),
+    ('Reminder'),
+    ('Feedback'),
+    ('Announcement'),
+    ('Event'),
+    ('Update'),
+    ('Promotion'),
+    ('Alert'),
+    ('Invitation'),
+    ('Newsletter'),
+    ('General'),
+    ('Special Offer'),
+    ('Survey'),
+    ('Reminder'),
+    ('Feedback'),
+    ('Announcement'),
+    ('Event'),
+    ('Update'),
+    ('Promotion'),
+    ('Alert'),
+    ('Invitation'),
+    ('Newsletter'),
+    ('General'),
+    ('Special Offer'),
+    ('Survey'),
+    ('Reminder'),
+    ('Feedback'),
+    ('Announcement'),
+    ('Event'),
+    ('Update'),
+    ('Promotion'),
+    ('Alert'),
+    ('Invitation'),
+    ('Newsletter'),
+    ('General'),
+    ('Special Offer'),
+    ('Survey');
+
+-- Skapa 50 dataposter i Notification tabellen
+INSERT INTO Notification (Title, Description, NotificationTypeID, UserID, Active)
+SELECT 
+    'Notification ' + CAST(nt.NotificationTypeID AS NVARCHAR(10)),
+    'This is a notification description for user ' + CAST(u.UserID AS NVARCHAR(10)),
+    nt.NotificationTypeID,
+    u.UserID,
+    1
+FROM 
+    (
+        SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS NotificationTypeID
+        FROM sys.columns
+    ) nt
+CROSS JOIN 
+    [User] u
+WHERE 
+    u.UserID <= 50;
+
+-- Skapa 50 dataposter i UserPremium tabellen
+INSERT INTO UserPremium (UserID, PremiumID, StartDate, EndDate, Active)
+SELECT 
+    u.UserID,
+    ROW_NUMBER() OVER (ORDER BY (SELECT NULL)),
+    DATEADD(DAY, -ROW_NUMBER() OVER (ORDER BY (SELECT NULL)), GETDATE()),
+    DATEADD(DAY, ROW_NUMBER() OVER (ORDER BY (SELECT NULL)), GETDATE()),
+    1
+FROM 
+    [User] u
+WHERE 
+    u.UserID <= 50;
+
+-- Skapa Premium tabell dataposter
+INSERT INTO Premium (Name, Description, Price, Active)
+VALUES 
+    ('Premium Package 1', 'Description for Premium Package 1', 29.99, 1),
+    ('Premium Package 2', 'Description for Premium Package 2', 39.99, 1),
+    ('Premium Package 3', 'Description for Premium Package 3', 49.99, 1),
+    ('Premium Package 4', 'Description for Premium Package 4', 59.99, 1),
+    ('Premium Package 5', 'Description for Premium Package 5', 69.99, 1);
+
+-- Skapa PremiumPayment tabell dataposter
+INSERT INTO PremiumPayment (PaymentDate, Amount, PaymentMethod, UserID, BookingID, Active)
+SELECT 
+    DATEADD(DAY, -ROW_NUMBER() OVER (ORDER BY (SELECT NULL)), GETDATE()),
+    50.00,
+    'Credit Card',
+    u.UserID,
+    b.BookingID,
+    1
+FROM 
+    [User] u
+JOIN 
+    Booking b ON u.UserID = b.UserID
+WHERE 
+    u.UserID <= 50;
+
+-- Event tabellen
+INSERT INTO Event (Name, Description, StartDate, EndDate, Location, UserID)
+VALUES 
+    ('Halloween Night', 'An exciting Halloween event with spooky attractions', '2024-10-31 19:00', '2024-11-01 02:00', 'Haunted Mansion, 123 Haunted Street, Spooksville', 1),
+    ('Ghost Tour', 'A guided tour through haunted locations in the city', '2024-11-15 20:00', '2024-11-15 22:00', 'Meeting Point: Town Square', 2),
+    ('Horror Movie Marathon', 'A marathon of classic horror films', '2024-10-25 18:00', '2024-10-26 03:00', 'Cinema City, 456 Scary Avenue, Creepyville', 3),
+    ('Pumpkin Carving Contest', 'Bring your creativity and carve the spookiest pumpkin!', '2024-10-28 15:00', '2024-10-28 18:00', 'Community Center, 789 Fright Road, Ghost Town', 4),
+    ('Witchcraft Workshop', 'Learn the art of witchcraft from experienced practitioners', '2024-11-05 13:00', '2024-11-05 16:00', 'Witches Cove, 101 Broomstick Lane, Witchingham', 5);
+
+-- EventLocation tabellen
+INSERT INTO EventLocation (EventID, Address, City, Region, Country, Zipcode, Latitude, Longitude, Active)
+VALUES
+    (1, '123 Haunted Street', 'Spooksville', 'Ghost County', 'Transylvania', '12345', 47.12345, -122.12345, 1),
+    (2, 'Town Square', 'Creepyville', 'Ghost County', 'Transylvania', '54321', 47.54321, -122.54321, 1),
+    (3, '456 Scary Avenue', 'Creepyville', 'Ghost County', 'Transylvania', '67890', 47.67890, -122.67890, 1),
+    (4, '789 Fright Road', 'Ghost Town', 'Ghost County', 'Transylvania', '98765', 47.98765, -122.98765, 1),
+    (5, '101 Broomstick Lane', 'Witchingham', 'Witch County', 'Transylvania', '13579', 47.13579, -122.13579, 1);
+
+-- EventAdvertisement tabellen
+INSERT INTO EventAdvertisement (Title, Description, StartDate, EndDate, Price, Category, EventID, Active)
+VALUES
+    ('Haunted House Special Access Pass', 'Get VIP access to all attractions in the haunted house', '2024-10-31', '2024-11-01', 29.99, 'Tickets', 1, 1),
+    ('Ghost Tour Group Discount', 'Book now for a special discount for groups of 4 or more', '2024-11-01', '2024-11-15', 49.99, 'Tickets', 2, 1),
+    ('Horror Movie Marathon Early Bird Tickets', 'Limited early bird tickets available at a discounted price', '2024-10-01', '2024-10-24', 19.99, 'Tickets', 3, 1),
+    ('Pumpkin Carving Contest Entry Fee', 'Register now to participate in the pumpkin carving contest', '2024-10-10', '2024-10-27', 9.99, 'Tickets', 4, 1),
+    ('Witchcraft Workshop Premium Package', 'Upgrade to the premium package for exclusive materials and instruction', '2024-10-15', '2024-11-05', 39.99, 'Tickets', 5, 1);
+
+-- EventAdType tabellen
+INSERT INTO EventAdType (Name, Description)
+VALUES
+    ('Featured', 'Prominent placement for maximum visibility and exposure'),
+    ('Discount', 'Special offer or reduced price for a limited time');
+
+-- Partnership tabellen
+INSERT INTO Partnership (Name, Description, HauntedPlaceID, PartnershipTypeID, Active)
+VALUES
+    ('Haunted House', 'Collaboration with a local haunted house attraction', 1, 1, 1),
+    ('Ghost Tour Company', 'Partnership with a company offering guided ghost tours', 2, 1, 1),
+    ('Horror Movie Theater', 'Joint promotion with a cinema specializing in horror films', 3, 1, 1),
+    ('Community Center', 'Partnership with a community center hosting Halloween events', 4, 1, 1),
+    ('Witchcraft School', 'Collaboration with a school teaching witchcraft and magic', 5, 1, 1);
+
+-- PartnershipType tabellen
+INSERT INTO PartnershipType (Name, Description)
+VALUES
+    ('Sponsorship', 'Financial support in exchange for promotional opportunities'),
+    ('Collaboration', 'Mutual cooperation for shared benefits');
+
+-- PartnershipContact tabellen
+INSERT INTO PartnershipContact (ContactName, ContactEmail, ContactPhone, PartnershipID, Active)
+VALUES
+    ('John Doe', 'john.doe@example.com', '+1234567890', 1, 1),
+    ('Jane Smith', 'jane.smith@example.com', '+9876543210', 2, 1),
+    ('Michael Johnson', 'michael.johnson@example.com', '+1122334455', 3, 1),
+    ('Emily Brown', 'emily.brown@example.com', '+9988776655', 4, 1),
+    ('David Wilson', 'david.wilson@example.com', '+6677889900', 5, 1);
+
+-- PartnershipAdvertisement tabellen
+INSERT INTO PartnershipAdvertisement (Title, Description, StartDate, EndDate, Price, Category, AdTypeID, PartnershipTypeID, Active)
+VALUES
+    ('Haunted House Sponsorship', 'Become a sponsor and have your brand prominently featured at the haunted house', '2024-10-01', '2024-10-31', 499.99, 'Sponsorship', 1, 1, 1),
+    ('Ghost Tour Package Deal', 'Offer a special package deal for customers booking the ghost tour', '2024-11-01', '2024-11-15', 399.99, 'Package Deal', 2, 1, 1),
+    ('Horror Movie Theater Advertising', 'Advertise your product or service on the big screen before each movie screening', '2024-10-01', '2024-10-31', 299.99, 'Advertising', 1, 1, 1),
+    ('Community Center Event Sponsorship', 'Support community events and gain exposure with event sponsorship', '2024-10-10', '2024-10-27', 199.99, 'Sponsorship', 2, 1, 1),
+    ('Witchcraft School Workshop Partnership', 'Collaborate on workshops and classes for aspiring witches', '2024-10-15', '2024-11-05', 599.99, 'Partnership', 1, 1, 1);
+
+-- PartnershipAdType tabellen
+INSERT INTO PartnershipAdType (Name, Description)
+VALUES
+    ('Sponsorship', 'Financial support in exchange for promotional opportunities'),
+    ('Package Deal', 'Special offer or bundle for customers'),
+    ('Advertising', 'Promotion of products or services through advertisements'),
+    ('Partnership', 'Mutual collaboration for shared benefits');
+
+-- Skapa relation mellan User och Login tabellerna
+ALTER TABLE Login
+ADD CONSTRAINT FK_Login_User
+FOREIGN KEY (UserID) REFERENCES [User](UserID);
+GO
+------------
+ALTER TABLE Login
+CHECK CONSTRAINT FK_Login_User;
+GO
+
+-- Skapa relation mellan User och Address tabellerna
+ALTER TABLE Address
+ADD CONSTRAINT FK_Address_User
+FOREIGN KEY (UserID) REFERENCES [User](UserID);
+GO
+------------
+ALTER TABLE Address
+CHECK CONSTRAINT FK_Address_User;
+GO
+
+-- Skapa relation mellan User och UserCommunity tabellerna
+ALTER TABLE UserCommunity
+ADD CONSTRAINT FK_UserCommunity_User
+FOREIGN KEY (UserID) REFERENCES [User](UserID);
+GO
+------------
+ALTER TABLE UserCommunity
+CHECK CONSTRAINT FK_UserCommunity_User;
+GO
+
+-- Skapa relation mellan Community och UserCommunity tabellerna
+ALTER TABLE UserCommunity
+ADD CONSTRAINT FK_UserCommunity_Community
+FOREIGN KEY (CommunityID) REFERENCES Community(CommunityID);
+GO
+------------
+ALTER TABLE UserCommunity
+CHECK CONSTRAINT FK_UserCommunity_Community;
+GO
+
+-- Skapa relation mellan User och Booking tabellerna
+ALTER TABLE Booking
+ADD CONSTRAINT FK_Booking_User
+FOREIGN KEY (UserID) REFERENCES [User](UserID);
+GO
+------------
+ALTER TABLE Booking
+CHECK CONSTRAINT FK_Booking_User;
+GO
+
+
+-- Skapa relation mellan Booking och HauntedPlace tabellerna
+ALTER TABLE HauntedPlace
+ADD CONSTRAINT FK_HauntedPlace_Booking
+FOREIGN KEY (BookingID) REFERENCES Booking(BookingID);
+GO
+--------
+ALTER TABLE HauntedPlace
+CHECK CONSTRAINT FK_HauntedPlace_Booking;
+GO
+
+-- Skapa relation mellan Payment och Booking tabellerna
+ALTER TABLE Payment
+ADD CONSTRAINT FK_Payment_Booking
+FOREIGN KEY (BookingID) REFERENCES Booking(BookingID);
+GO
+---------
+ALTER TABLE Payment
+CHECK CONSTRAINT FK_Payment_Booking;
+GO
+
+-- Skapa relation mellan UserAdvertisement och User tabellerna
+ALTER TABLE UserAdvertisement
+ADD CONSTRAINT FK_UserAdvertisement_User
+FOREIGN KEY (UserID) REFERENCES [User](UserID);
+GO
+---------
+ALTER TABLE UserAdvertisement
+CHECK CONSTRAINT FK_UserAdvertisement_User;
+GO
+
+-- Lägg till CHECK CONSTRAINT för Advertisement tabellen
+ALTER TABLE UserAdvertisement
+ADD CONSTRAINT FK_UserAdvertisement_Advertisement
+FOREIGN KEY (AdvertisementID) REFERENCES Advertisement(AdvertisementID);
+GO
+---------
+ALTER TABLE UserAdvertisement
+CHECK CONSTRAINT FK_UserAdvertisement_Advertisement;
+GO
+
+
+-- Lägg till CHECK CONSTRAINT för UserAdvertisement tabellen
+--ALTER TABLE UserAdvertisement
+--ADD CONSTRAINT CHK_UserAdvertisement_Exists
+--CHECK (EXISTS (
+    --SELECT 1 FROM [User] WHERE [User].UserID = UserAdvertisement.UserID
+--) AND EXISTS (
+--    SELECT 1 FROM Advertisement WHERE Advertisement.AdvertisementID = UserAdvertisement.AdvertisementID
+--));
+
+-- Skapa relation mellan Review och User tabellerna
+ALTER TABLE Review
+ADD CONSTRAINT FK_Review_User
+FOREIGN KEY (UserID) REFERENCES [User](UserID);
+GO
+---------
+ALTER TABLE Review
+CHECK CONSTRAINT FK_Review_User;
+GO
+-- Skapa relation mellan Review och Event tabellerna
+ALTER TABLE Review
+ADD CONSTRAINT FK_Review_Event
+FOREIGN KEY (EventID) REFERENCES Event(EventID);
+GO
+---------
+ALTER TABLE Review
+CHECK CONSTRAINT FK_Review_Event;
+GO
+
+-- Skapa relation mellan EventLocation och Event tabellerna
+ALTER TABLE EventLocation
+ADD CONSTRAINT FK_EventLocation_Event
+FOREIGN KEY (EventID) REFERENCES Event(EventID);
+GO
+---------
+ALTER TABLE EventLocation
+CHECK CONSTRAINT FK_EventLocation_Event;
+GO
+
+-- Skapa relation mellan EventAdvertisement och Event tabellerna
+ALTER TABLE EventAdvertisement
+ADD CONSTRAINT FK_EventAdvertisement_Event
+FOREIGN KEY (EventID) REFERENCES Event(EventID);
+GO
+---------
+ALTER TABLE EventLocation
+CHECK CONSTRAINT FK_EventAdvertisement_Event;
+GO
+
+-- Skapa relation mellan Partnership och HauntedPlace tabellerna
+ALTER TABLE Partnership
+ADD CONSTRAINT FK_Partnership_HauntedPlace
+FOREIGN KEY (HauntedPlaceID) REFERENCES HauntedPlace(HauntedPlaceID);
+GO
+---------
+ALTER TABLE Partnership
+CHECK CONSTRAINT FK_Partnership_HauntedPlace;
+GO
+
+-- Skapa relation mellan Partnership och PartnershipType tabellerna
+ALTER TABLE Partnership
+ADD CONSTRAINT FK_Partnership_PartnershipType
+FOREIGN KEY (PartnershipTypeID) REFERENCES PartnershipType(PartnershipTypeID);
+GO
+---------
+ALTER TABLE Partnership
+CHECK CONSTRAINT FK_Partnership_PartnershipType;
+GO
+
+-- Skapa relation mellan PartnershipContact och Partnership tabellerna
+ALTER TABLE PartnershipContact
+ADD CONSTRAINT FK_PartnershipContact_Partnership
+FOREIGN KEY (PartnershipID) REFERENCES Partnership(PartnershipID);
+GO
+---------
+ALTER TABLE PartnerShipContact
+CHECK CONSTRAINT FK_PartnershipContact_Partnership;
+GO
+
+-- Skapa relation mellan PartnershipAdvertisement och Partnership tabellerna
+ALTER TABLE PartnershipAdvertisement
+ADD CONSTRAINT FK_PartnershipAdvertisement_Partnership
+FOREIGN KEY (PartnershipID) REFERENCES Partnership(PartnershipID);
+GO
+---------
+ALTER TABLE PartnershipAdvertisement
+CHECK CONSTRAINT FK_PartnershipAdvertisement_Partnership;
+GO
+
+-- Skapa relation mellan PartnershipAdvertisement och PartnershipAdType tabellerna
+ALTER TABLE PartnershipAdvertisement
+ADD CONSTRAINT FK_PartnershipAdvertisement_PartnershipAdType
+FOREIGN KEY (AdTypeID) REFERENCES PartnershipAdType(PartnershipAdTypeID);
+GO
+---------
+ALTER TABLE PartnershipAdvertisement
+CHECK CONSTRAINT FK_PartnershipAdvertisement_PartnershipADType;
+GO
+
+-- Skapa relation mellan HauntedPlace och HauntedPlaceLocation tabellerna
+ALTER TABLE HauntedPlace
+ADD CONSTRAINT FK_HauntedPlace_HauntedPlaceLocation
+FOREIGN KEY (HauntedPlaceID) REFERENCES HauntedPlaceLocation(HauntedPlaceID);
+GO
+---------
+ALTER TABLE HauntedPlace
+CHECK CONSTRAINT FK_HauntedPlace_HauntedPlaceLocation;
+GO
+
+-- Skapa relation mellan AdType och HauntedPlace tabellerna
+ALTER TABLE AdType
+ADD CONSTRAINT FK_AdType_HauntedPlace
+FOREIGN KEY (HauntePlaceID) REFERENCES HauntedPlace(HauntedPlaceID);
+GO
+---------
+ALTER TABLE AdType
+CHECK CONSTRAINT FK_AdType_HauntedPlace;
+GO
+
+-- Skapa relation mellan HauntedPlaceAdvertisement och HauntedPlace tabellerna
+ALTER TABLE HauntedPlaceAdvertisement
+ADD CONSTRAINT FK_HauntedPlaceAdvertisement_HauntedPlace
+FOREIGN KEY (HauntedPlaceID) REFERENCES HauntedPlace(HauntedPlaceID);
+GO
+---------
+ALTER TABLE HauntedPlaceAdvertisement
+CHECK CONSTRAINT FK_HauntedPlaceAdvertisement_HauntedPlace;
+GO
+
+-- Skapa relation mellan ResourceType och Resource tabellerna
+ALTER TABLE Resource
+ADD CONSTRAINT FK_Resource_ResourceType
+FOREIGN KEY (ResourceTypeID) REFERENCES ResourceType(ResourceID);
+GO
+---------
+ALTER TABLE Resource
+CHECK CONSTRAINT FK_Resource_ResourceType;
+GO
+
+-- Skapa relation mellan Resource och HauntedPlace tabellerna
+ALTER TABLE Resource
+ADD CONSTRAINT FK_Resource_HauntedPlace
+FOREIGN KEY (HauntedPlaceID) REFERENCES HauntedPlace(HauntedPlaceID);
+GO
+---------
+ALTER TABLE Resource
+CHECK CONSTRAINT FK_Resource_HauntedPlace;
+GO
+
+-- Skapa relation mellan Notification och User tabellerna
+ALTER TABLE Notification
+ADD CONSTRAINT FK_Notification_User
+FOREIGN KEY (UserID) REFERENCES [User](UserID);
+GO
+---------
+ALTER TABLE Notification
+CHECK CONSTRAINT FK_Notification_User;
+GO
+
+-- Skapa relation mellan Notification och NotificationType tabellerna
+ALTER TABLE Notification
+ADD CONSTRAINT FK_Notification_NotificationType
+FOREIGN KEY (NotificationTypeID) REFERENCES NotificationType(NotificationTypeID);
+GO
+---------
+ALTER TABLE Notification
+CHECK CONSTRAINT FK_Notification_NotificationType;
+GO
+
+-- Skapa relation mellan UserPremium och User tabellerna
+ALTER TABLE UserPremium
+ADD CONSTRAINT FK_UserPremium_User
+FOREIGN KEY (UserID) REFERENCES [User](UserID);
+GO
+---------
+ALTER TABLE UserPremium
+CHECK CONSTRAINT FK_UserPremium_User;
+GO
+
+-- Skapa relation mellan UserPremium och Premium tabellerna
+ALTER TABLE UserPremium
+ADD CONSTRAINT FK_UserPremium_Premium
+FOREIGN KEY (PremiumID) REFERENCES Premium(PremiumID);
+GO
+---------
+ALTER TABLE UserPremium
+CHECK CONSTRAINT FK_UserPremium_Premium;
+GO
+
+-- Skapa relation mellan PremiumPayment och User tabellerna
+ALTER TABLE PremiumPayment
+ADD CONSTRAINT FK_PremiumPayment_User
+FOREIGN KEY (UserID) REFERENCES [User](UserID);
+GO
+---------
+ALTER TABLE PremiumPayment
+CHECK CONSTRAINT FK_UserPremium_User;
+GO
