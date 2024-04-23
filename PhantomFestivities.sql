@@ -741,3 +741,71 @@ VALUES
     ('Sainte-Chapelle', 'Paris', 'Île-de-France', 'France', '75001', 48.8556, 2.3459, 1),
     ('Gran Vía', 'Madrid', 'Community of Madrid', 'Spain', '28013', 40.4201, -3.7058, 1),
     ('Pantheon', 'Rome', 'Lazio', 'Italy', '00186', 41.8986, 12.4768, 1);
+
+-- Skapa 30 dataposter i AdType tabellen
+INSERT INTO AdType (TypeName, HauntePlaceID, AdvertisementID)
+VALUES 
+    ('Standard', 1, 1),  -- Använd HauntedPlaceID och AdvertisementID från tidigare skapade dataposter
+    ('Featured', 2, 2),
+    ('Standard', 3, 3),
+    ('Premium', 4, 4),
+    ('Featured', 5, 5),
+    ('Standard', 6, 6),
+    ('Premium', 7, 7),
+    ('Standard', 8, 8),
+    ('Featured', 9, 9),
+    ('Standard', 10, 10),
+    ('Premium', 11, 11),
+    ('Featured', 12, 12),
+    ('Standard', 13, 13),
+    ('Premium', 14, 14),
+    ('Featured', 15, 15),
+    ('Standard', 16, 16),
+    ('Premium', 17, 17),
+    ('Featured', 18, 18),
+    ('Standard', 19, 19),
+    ('Premium', 20, 20),
+    ('Featured', 21, 21),
+    ('Standard', 22, 22),
+    ('Premium', 23, 23),
+    ('Featured', 24, 24),
+    ('Standard', 25, 25),
+    ('Premium', 26, 26),
+    ('Featured', 27, 27),
+    ('Standard', 28, 28),
+    ('Premium', 29, 29),
+    ('Featured', 30, 30);
+
+-- Skapa 30 dataposter i HauntedPlaceAdvertisement tabellen
+INSERT INTO HauntedPlaceAdvertisement (Title, Description, StartDate, EndDate, Price, Category, AdTypeID, Active)
+VALUES 
+    ('Haunted Mansion Tour', 'Explore the haunted history of this mysterious mansion', '2024-04-22', '2024-05-22', 50.00, 'Tours', 1, 1),  -- Använd AdTypeID från tidigare skapade dataposter
+    ('Ghostly Encounter Experience', 'Join us for a spine-chilling ghostly encounter', '2024-04-23', '2024-05-23', 75.00, 'Experiences', 2, 1),
+    ('Horror Movie Marathon', 'Watch your favorite horror movies in a haunted setting', '2024-04-24', '2024-05-24', 25.00, 'Events', 3, 1),
+    ('Creepy Escape Room Challenge', 'Test your bravery in our terrifying escape room', '2024-04-25', '2024-05-25', 40.00, 'Activities', 4, 1),
+    ('Paranormal Investigation Workshop', 'Learn the secrets of paranormal investigation from experts', '2024-04-26', '2024-05-26', 60.00, 'Workshops', 5, 1),
+    ('Haunted History Walking Tour', 'Discover the haunted history of our city on foot', '2024-04-27', '2024-05-27', 35.00, 'Tours', 6, 1),
+    ('Nightmare-inducing Maze Experience', 'Navigate through a terrifying maze filled with nightmares', '2024-04-28', '2024-05-28', 45.00, 'Experiences', 7, 1),
+    ('Spooky Dinner Party', 'Dine with ghosts in this eerie dinner party experience', '2024-04-29', '2024-05-29', 55.00, 'Events', 8, 1),
+    ('Horror Film Screening', 'Watch classic horror films in a haunted theater', '2024-04-30', '2024-05-30', 20.00, 'Events', 9, 1),
+    ('Frightening Haunted House Tour', 'Brave the horrors of our haunted house if you dare', '2024-05-01', '2024-05-31', 65.00, 'Tours', 10, 1),
+    ('Ghost Hunt Adventure', 'Join us on a ghost hunt in the most haunted locations', '2024-05-02', '2024-06-01', 70.00, 'Experiences', 11, 1),
+    ('Scary Movie Night', 'Enjoy a night of spine-chilling horror films', '2024-05-03', '2024-06-02', 30.00, 'Events', 12, 1),
+    ('Eerie Escape Room Challenge', 'Attempt to escape from our terrifying escape room', '2024-05-04', '2024-06-03', 40.00, 'Activities', 13, 1),
+    ('Paranormal Investigation Seminar', 'Learn about paranormal investigation techniques', '2024-05-05', '2024-06-04', 50.00, 'Workshops', 14, 1),
+    ('Haunted Cemetery Tour', 'Explore the spookiest cemetery in town', '2024-05-06', '2024-06-05', 30.00, 'Tours', 15, 1),
+    ('Creepy Ghost Stories Night', 'Listen to bone-chilling ghost stories by candlelight', '2024-05-07', '2024-06-06', 25.00, 'Events', 16, 1),
+    ('Terrifying Haunted Trail Experience', 'Survive a journey through our haunted trail', '2024-05-08', '2024-06-07', 40.00, 'Experiences', 17, 1),
+    ('Horror Movie Marathon', 'Watch a marathon of horror movies in our haunted theater', '2024-05-09', '2024-06-08', 35.00, 'Events', 18, 1),
+    ('Spooky Escape Room Challenge', 'Attempt to escape from our spooky escape room', '2024-05-10', '2024-06-09', 45.00, 'Activities', 19, 1),
+    ('Paranormal Investigation Workshop', 'Learn about the tools and techniques used in paranormal investigations', '2024-05-11', '2024-06-10', 55.00, 'Workshops', 20, 1),
+    ('Ghoulish Ghost Ship Tour', 'Embark on a tour of the haunted ghost ship', '2024-05-12', '2024-06-11', 60.00, 'Tours', 21, 1),
+    ('Terrifying Night in a Haunted Hotel', 'Spend a night in our haunted hotel if you dare', '2024-05-13', '2024-06-12', 70.00, 'Experiences', 22, 1),
+    ('Haunted House Movie Night', 'Watch classic horror films in a haunted house', '2024-05-14', '2024-06-13', 30.00, 'Events', 23, 1),
+    ('Cursed Escape Room Challenge', 'Attempt to escape from our cursed escape room', '2024-05-15', '2024-06-14', 45.00, 'Activities', 24, 1),
+    ('Eerie Ghost Town Tour', 'Explore the ghostly remnants of a deserted town', '2024-05-16', '2024-06-15', 40.00, 'Tours', 25, 1),
+    ('Spine-chilling Ghost Stories Night', 'Listen to spine-chilling ghost stories around a campfire', '2024-05-17', '2024-06-16', 25.00, 'Events', 26, 1),
+    ('Terrifying Haunted Forest Experience', 'Survive a journey through our haunted forest', '2024-05-18', '2024-06-17', 50.00, 'Experiences', 27, 1),
+    ('Horror Movie Marathon', 'Watch a marathon of horror movies in a haunted setting', '2024-05-19', '2024-06-18', 35.00, 'Events', 28, 1),
+    ('Sinister Escape Room Challenge', 'Attempt to escape from our sinister escape room', '2024-05-20', '2024-06-19', 55.00, 'Activities', 29, 1),
+    ('Paranormal Investigation Seminar', 'Learn about the latest advancements in paranormal investigation', '2024-05-21', '2024-06-20', 60.00, 'Workshops', 30, 1);
