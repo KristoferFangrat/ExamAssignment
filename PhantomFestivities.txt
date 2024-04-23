@@ -269,11 +269,12 @@ CREATE TABLE EventAdvertisement (
     Price DECIMAL(10,2) NOT NULL,
     Category NVARCHAR(100) NOT NULL,
     EventID INT NOT NULL,
+	EventAdTypeID INT NOT NULL,
     Active BIT NOT NULL
 );
 
 CREATE TABLE EventAdType (
-    EventAdType INT PRIMARY KEY IDENTITY(1,1),
+    EventAdTypeID INT PRIMARY KEY IDENTITY(1,1),
     Name NVARCHAR(100) NOT NULL,
     Description NVARCHAR(500) NOT NULL,    
 );
@@ -1049,13 +1050,13 @@ VALUES
     (5, '101 Broomstick Lane', 'Witchingham', 'Witch County', 'Transylvania', '13579', 47.13579, -122.13579, 1);
 
 -- EventAdvertisement tabellen
-INSERT INTO EventAdvertisement (Title, Description, StartDate, EndDate, Price, Category, EventID, Active)
+INSERT INTO EventAdvertisement (Title, Description, StartDate, EndDate, Price, Category, EventID, EventAdTypeID, Active)
 VALUES
-    ('Haunted House Special Access Pass', 'Get VIP access to all attractions in the haunted house', '2024-10-31', '2024-11-01', 29.99, 'Tickets', 1, 1),
-    ('Ghost Tour Group Discount', 'Book now for a special discount for groups of 4 or more', '2024-11-01', '2024-11-15', 49.99, 'Tickets', 2, 1),
-    ('Horror Movie Marathon Early Bird Tickets', 'Limited early bird tickets available at a discounted price', '2024-10-01', '2024-10-24', 19.99, 'Tickets', 3, 1),
-    ('Pumpkin Carving Contest Entry Fee', 'Register now to participate in the pumpkin carving contest', '2024-10-10', '2024-10-27', 9.99, 'Tickets', 4, 1),
-    ('Witchcraft Workshop Premium Package', 'Upgrade to the premium package for exclusive materials and instruction', '2024-10-15', '2024-11-05', 39.99, 'Tickets', 5, 1);
+    ('Haunted House Special Access Pass', 'Get VIP access to all attractions in the haunted house', '2024-10-31', '2024-11-01', 29.99, 'Tickets', 1, 1, 1),
+    ('Ghost Tour Group Discount', 'Book now for a special discount for groups of 4 or more', '2024-11-01', '2024-11-15', 49.99, 'Tickets', 2, 2, 1),
+    ('Horror Movie Marathon Early Bird Tickets', 'Limited early bird tickets available at a discounted price', '2024-10-01', '2024-10-24', 19.99, 'Tickets', 3, 1, 1),
+    ('Pumpkin Carving Contest Entry Fee', 'Register now to participate in the pumpkin carving contest', '2024-10-10', '2024-10-27', 9.99, 'Tickets', 4,2, 1),
+    ('Witchcraft Workshop Premium Package', 'Upgrade to the premium package for exclusive materials and instruction', '2024-10-15', '2024-11-05', 39.99, 'Tickets', 5, 1, 1);
 
 -- EventAdType tabellen
 INSERT INTO EventAdType (Name, Description)
@@ -1194,6 +1195,24 @@ ALTER TABLE Review
 CHECK CONSTRAINT FK_Review_User;
 GO
 
+-- Skapa relation mellan Review och HauntedReview
+ALTER TABLE HauntedPlaceReview
+ADD CONSTRAINT FK_HauntedReview_HauntedPlace
+FOREIGN KEY (HauntedPlaceID) REFERENCES HauntedPlace(HauntedPlaceID);
+GO
+ALTER TABLE HauntedPlaceReview
+CHECK CONSTRAINT FK_HauntedReview_HauntedPlace;
+GO
+
+-- Skapa relation mellan HauntedPlace och HauntedReview
+ALTER TABLE HauntedPlaceReview
+ADD CONSTRAINT FK_HauntedReview_Review
+FOREIGN KEY (ReviewID) REFERENCES Review(ReviewID);
+GO
+ALTER TABLE HauntedPlaceReview
+CHECK CONSTRAINT FK_HauntedReview_Review;
+GO
+
 -- Skapa relation mellan Review och Event tabellerna
 ALTER TABLE Review
 ADD CONSTRAINT FK_Review_Event
@@ -1210,6 +1229,14 @@ FOREIGN KEY (EventID) REFERENCES Event(EventID);
 GO
 ALTER TABLE EventLocation
 CHECK CONSTRAINT FK_EventLocation_Event;
+GO
+
+ALTER TABLE EventAdvertisement
+ADD CONSTRAINT FK_EventAdvertisement_EventAdType
+FOREIGN KEY (EventAdvertisementID) REFERENCES EventAdType(EventAdTypeID);
+GO
+ALTER TABLE EventAdvertisement
+CHECK CONSTRAINT FK_EventAdvertisement_EventAdType;
 GO
 
 -- Skapa relation mellan EventAdvertisement och Event tabellerna
@@ -1250,9 +1277,7 @@ ALTER TABLE PartnershipContact
 CHECK CONSTRAINT FK_PartnershipContact_Partnership;
 GO
 
-ALTER TABLE PartnershipAdvertisement
-DROP CONSTRAINT IF EXISTS FK_PartnershipAdvertisement_PartnershipType;
-GO
+
 -- Skapa relation mellan PartnershipAdvertisement och Partnership tabellerna
 ALTER TABLE PartnershipAdvertisement
 ADD CONSTRAINT FK_PartnershipAdvertisement_PartnershipType
@@ -1292,6 +1317,13 @@ ALTER TABLE AdType
 CHECK CONSTRAINT FK_AdType_HauntedPlace;
 GO
 
+ALTER TABLE HauntedPlaceAdvertisement
+ADD CONSTRAINT FK_HauntedPlaceAdvertisement_AdType
+FOREIGN KEY (ADTypeID) REFERENCES AdType(AdTypeID);
+GO
+ALTER TABLE HauntedPlaceAdvertisement
+CHECK CONSTRAINT FK_HauntedPlaceAdvertisement_AdType;
+GO
 -- Skapa relation mellan HauntedPlaceAdvertisement och HauntedPlace tabellerna
 --ALTER TABLE HauntedPlaceAdvertisement
 --ADD CONSTRAINT FK_HauntedPlaceAdvertisement_HauntedPlace

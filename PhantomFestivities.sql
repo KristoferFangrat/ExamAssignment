@@ -244,7 +244,7 @@ CREATE TABLE Event (
     StartDate DATETIME NOT NULL,
     EndDate DATETIME NOT NULL,
     Location NVARCHAR(200) NOT NULL,
-    UserID INT NOT NULL
+    BookingID INT NOT NULL
 );
 
 CREATE TABLE EventLocation (
@@ -269,11 +269,12 @@ CREATE TABLE EventAdvertisement (
     Price DECIMAL(10,2) NOT NULL,
     Category NVARCHAR(100) NOT NULL,
     EventID INT NOT NULL,
+	EventAdTypeID INT NOT NULL,
     Active BIT NOT NULL
 );
 
 CREATE TABLE EventAdType (
-    EventAdType INT PRIMARY KEY IDENTITY(1,1),
+    EventAdTypeID INT PRIMARY KEY IDENTITY(1,1),
     Name NVARCHAR(100) NOT NULL,
     Description NVARCHAR(500) NOT NULL,    
 );
@@ -1027,16 +1028,60 @@ WHERE
     u.UserID <= 50;
 
 -- Skapa 50 slumpmässiga data poster för Event tabellen som matchar användarposter
-INSERT INTO Event (Name, Description, StartDate, EndDate, Location, UserID)
-SELECT TOP 50
-    CONCAT('Event ', ROW_NUMBER() OVER (ORDER BY NEWID())),
-    'Description for Event ' + CAST(ROW_NUMBER() OVER (ORDER BY NEWID()) AS NVARCHAR(10)),
-    DATEADD(day, ABS(CHECKSUM(NEWID())) % 100, GETDATE()), -- Slumpmässig startdatum inom de senaste 100 dagarna
-    DATEADD(day, ABS(CHECKSUM(NEWID())) % 100 + 1, GETDATE()), -- Slumpmässig slutdatum inom 1-100 dagar från startdatumet
-    CONCAT('Location ', ABS(CHECKSUM(NEWID())) % 20 + 1), -- Slumpmässig plats från 1 till 20
-    UserID
-FROM [User]
-ORDER BY NEWID(); -- Slumpmässig ordning av användareposter
+INSERT INTO Event (Name, Description, StartDate, EndDate, Location, BookingID)
+VALUES
+    ('Event 1', 'Description for Event 1', '2024-04-01 09:00:00', '2024-04-01 17:00:00', 'Location 1', 1),
+    ('Event 2', 'Description for Event 2', '2024-04-02 10:00:00', '2024-04-02 18:00:00', 'Location 2', 2),
+    ('Event 3', 'Description for Event 3', '2024-04-03 11:00:00', '2024-04-03 19:00:00', 'Location 3', 3),
+    ('Event 4', 'Description for Event 4', '2024-04-04 12:00:00', '2024-04-04 20:00:00', 'Location 4', 4),
+    ('Event 5', 'Description for Event 5', '2024-04-05 13:00:00', '2024-04-05 21:00:00', 'Location 5', 5),
+    ('Event 6', 'Description for Event 6', '2024-04-06 14:00:00', '2024-04-06 22:00:00', 'Location 6', 6),
+    ('Event 7', 'Description for Event 7', '2024-04-07 15:00:00', '2024-04-07 23:00:00', 'Location 7', 7),
+    ('Event 8', 'Description for Event 8', '2024-04-08 16:00:00', '2024-04-08 23:59:59', 'Location 8', 8),
+    ('Event 9', 'Description for Event 9', '2024-04-09 09:00:00', '2024-04-09 17:00:00', 'Location 9', 9),
+    ('Event 10', 'Description for Event 10', '2024-04-10 10:00:00', '2024-04-10 18:00:00', 'Location 10', 10),
+    ('Event 11', 'Description for Event 11', '2024-04-11 11:00:00', '2024-04-11 19:00:00', 'Location 11', 11),
+    ('Event 12', 'Description for Event 12', '2024-04-12 12:00:00', '2024-04-12 20:00:00', 'Location 12', 12),
+    ('Event 13', 'Description for Event 13', '2024-04-13 13:00:00', '2024-04-13 21:00:00', 'Location 13', 13),
+    ('Event 14', 'Description for Event 14', '2024-04-14 14:00:00', '2024-04-14 22:00:00', 'Location 14', 14),
+    ('Event 15', 'Description for Event 15', '2024-04-15 15:00:00', '2024-04-15 23:00:00', 'Location 15', 15),
+    ('Event 16', 'Description for Event 16', '2024-04-16 16:00:00', '2024-04-16 23:59:59', 'Location 16', 16),
+    ('Event 17', 'Description for Event 17', '2024-04-17 09:00:00', '2024-04-17 17:00:00', 'Location 17', 17),
+    ('Event 18', 'Description for Event 18', '2024-04-18 10:00:00', '2024-04-18 18:00:00', 'Location 18', 18),
+    ('Event 19', 'Description for Event 19', '2024-04-19 11:00:00', '2024-04-19 19:00:00', 'Location 19', 19),
+    ('Event 20', 'Description for Event 20', '2024-04-20 12:00:00', '2024-04-20 20:00:00', 'Location 20', 20),
+    ('Event 21', 'Description for Event 21', '2024-04-21 13:00:00', '2024-04-21 21:00:00', 'Location 21', 21),
+    ('Event 22', 'Description for Event 22', '2024-04-22 14:00:00', '2024-04-22 22:00:00', 'Location 22', 22),
+    ('Event 23', 'Description for Event 23', '2024-04-23 15:00:00', '2024-04-23 23:00:00', 'Location 23', 23),
+    ('Event 24', 'Description for Event 24', '2024-04-24 16:00:00', '2024-04-24 23:59:59', 'Location 24', 24),
+    ('Event 25', 'Description for Event 25', '2024-04-25 09:00:00', '2024-04-25 17:00:00', 'Location 25', 25),
+    ('Event 26', 'Description for Event 26', '2024-04-26 10:00:00', '2024-04-26 18:00:00', 'Location 26', 26),
+    ('Event 27', 'Description for Event 27', '2024-04-27 11:00:00', '2024-04-27 19:00:00', 'Location 27', 27),
+    ('Event 28', 'Description for Event 28', '2024-04-28 12:00:00', '2024-04-28 20:00:00', 'Location 28', 28),
+    ('Event 29', 'Description for Event 29', '2024-04-29 13:00:00', '2024-04-29 21:00:00', 'Location 29', 29),
+    ('Event 30', 'Description for Event 30', '2024-04-30 14:00:00', '2024-04-30 22:00:00', 'Location 30', 30),
+    ('Event 31', 'Description for Event 31', '2024-05-01 15:00:00', '2024-05-01 23:00:00', 'Location 31', 31),
+    ('Event 32', 'Description for Event 32', '2024-05-02 16:00:00', '2024-05-02 23:59:59', 'Location 32', 32),
+    ('Event 33', 'Description for Event 33', '2024-05-03 09:00:00', '2024-05-03 17:00:00', 'Location 33', 33),
+    ('Event 34', 'Description for Event 34', '2024-05-04 10:00:00', '2024-05-04 18:00:00', 'Location 34', 34),
+    ('Event 35', 'Description for Event 35', '2024-05-05 11:00:00', '2024-05-05 19:00:00', 'Location 35', 35),
+    ('Event 36', 'Description for Event 36', '2024-05-06 12:00:00', '2024-05-06 20:00:00', 'Location 36', 36),
+    ('Event 37', 'Description for Event 37', '2024-05-07 13:00:00', '2024-05-07 21:00:00', 'Location 37', 37),
+    ('Event 38', 'Description for Event 38', '2024-05-08 14:00:00', '2024-05-08 22:00:00', 'Location 38', 38),
+    ('Event 39', 'Description for Event 39', '2024-05-09 15:00:00', '2024-05-09 23:00:00', 'Location 39', 39),
+    ('Event 40', 'Description for Event 40', '2024-05-10 16:00:00', '2024-05-10 23:59:59', 'Location 40', 40),
+    ('Event 41', 'Description for Event 41', '2024-05-11 09:00:00', '2024-05-11 17:00:00', 'Location 41', 41),
+    ('Event 42', 'Description for Event 42', '2024-05-12 10:00:00', '2024-05-12 18:00:00', 'Location 42', 42),
+    ('Event 43', 'Description for Event 43', '2024-05-13 11:00:00', '2024-05-13 19:00:00', 'Location 43', 43),
+    ('Event 44', 'Description for Event 44', '2024-05-14 12:00:00', '2024-05-14 20:00:00', 'Location 44', 44),
+    ('Event 45', 'Description for Event 45', '2024-05-15 13:00:00', '2024-05-15 21:00:00', 'Location 45', 45),
+    ('Event 46', 'Description for Event 46', '2024-05-16 14:00:00', '2024-05-16 22:00:00', 'Location 46', 46),
+    ('Event 47', 'Description for Event 47', '2024-05-17 15:00:00', '2024-05-17 23:00:00', 'Location 47', 47),
+    ('Event 48', 'Description for Event 48', '2024-05-18 16:00:00', '2024-05-18 23:59:59', 'Location 48', 48),
+    ('Event 49', 'Description for Event 49', '2024-05-19 09:00:00', '2024-05-19 17:00:00', 'Location 49', 49),
+    ('Event 50', 'Description for Event 50', '2024-05-20 10:00:00', '2024-05-20 18:00:00', 'Location 50', 50);
+
+
 
 
 -- EventLocation tabellen
@@ -1049,13 +1094,10 @@ VALUES
     (5, '101 Broomstick Lane', 'Witchingham', 'Witch County', 'Transylvania', '13579', 47.13579, -122.13579, 1);
 
 -- EventAdvertisement tabellen
-INSERT INTO EventAdvertisement (Title, Description, StartDate, EndDate, Price, Category, EventID, Active)
+INSERT INTO EventAdvertisement (Title, Description, StartDate, EndDate, Price, Category, EventID, EventAdTypeID, Active)
 VALUES
-    ('Haunted House Special Access Pass', 'Get VIP access to all attractions in the haunted house', '2024-10-31', '2024-11-01', 29.99, 'Tickets', 1, 1),
-    ('Ghost Tour Group Discount', 'Book now for a special discount for groups of 4 or more', '2024-11-01', '2024-11-15', 49.99, 'Tickets', 2, 1),
-    ('Horror Movie Marathon Early Bird Tickets', 'Limited early bird tickets available at a discounted price', '2024-10-01', '2024-10-24', 19.99, 'Tickets', 3, 1),
-    ('Pumpkin Carving Contest Entry Fee', 'Register now to participate in the pumpkin carving contest', '2024-10-10', '2024-10-27', 9.99, 'Tickets', 4, 1),
-    ('Witchcraft Workshop Premium Package', 'Upgrade to the premium package for exclusive materials and instruction', '2024-10-15', '2024-11-05', 39.99, 'Tickets', 5, 1);
+    ('Haunted House Special Access Pass', 'Get VIP access to all attractions in the haunted house', '2024-10-31', '2024-11-01', 29.99, 'Tickets', 1,1, 1),
+    ('Ghost Tour Group Discount', 'Book now for a special discount for groups of 4 or more', '2024-11-01', '2024-11-15', 49.99, 'Tickets', 2,1, 1);
 
 -- EventAdType tabellen
 INSERT INTO EventAdType (Name, Description)
@@ -1194,6 +1236,24 @@ ALTER TABLE Review
 CHECK CONSTRAINT FK_Review_User;
 GO
 
+-- Skapa relation mellan Review och HauntedReview tabellerna
+ALTER TABLE HauntedPlaceReview
+ADD CONSTRAINT FK_HauntedReview_Review
+FOREIGN KEY (ReviewID) REFERENCES Review(ReviewID);
+GO
+ALTER TABLE HauntedPlaceReview
+CHECK CONSTRAINT FK_HauntedReview_Review;
+GO
+
+-- Skapa relation mellan Review och User tabellerna
+ALTER TABLE HauntedPlaceAdvertisement
+ADD CONSTRAINT FK_HauntedPlaceAdvertisement_AdType
+FOREIGN KEY (AdTypeID) REFERENCES AdType(AdTypeID);
+GO
+ALTER TABLE HauntedPlaceAdvertisement
+CHECK CONSTRAINT FK_HauntedPlaceAdvertisement_AdType;
+GO
+
 -- Skapa relation mellan Review och Event tabellerna
 ALTER TABLE Review
 ADD CONSTRAINT FK_Review_Event
@@ -1216,6 +1276,14 @@ GO
 ALTER TABLE EventAdvertisement
 ADD CONSTRAINT FK_EventAdvertisement_Event
 FOREIGN KEY (EventID) REFERENCES Event(EventID);
+GO
+ALTER TABLE EventAdvertisement
+CHECK CONSTRAINT FK_EventAdvertisement_Event;
+GO
+
+ALTER TABLE EventAdvertisement
+ADD CONSTRAINT FK_EventAdvertisement_EventAdType
+FOREIGN KEY (EventAdvertisementID) REFERENCES EventAdType(EventAdTypeID);
 GO
 ALTER TABLE EventAdvertisement
 CHECK CONSTRAINT FK_EventAdvertisement_Event;

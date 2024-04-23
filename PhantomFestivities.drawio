@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e" pages="3">
     <diagram id="LjYTT8MM93OW5ynkLVgk" name="konceptuell">
-        <mxGraphModel dx="2981" dy="1979" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="980" pageHeight="690" math="0" shadow="0">
+        <mxGraphModel dx="2261" dy="1799" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="980" pageHeight="690" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -294,7 +294,7 @@
         </mxGraphModel>
     </diagram>
     <diagram id="hEOuHBpHHQKXz8Uets47" name="fysisk">
-        <mxGraphModel dx="2542" dy="916" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="980" pageHeight="690" math="0" shadow="0">
+        <mxGraphModel dx="1861" dy="599" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="980" pageHeight="690" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -2268,7 +2268,7 @@
                         <mxRectangle width="230.86956521739114" height="30" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="v21nql2Z8lF4ZoLUkuqa-63" value="AdType" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;sketch=0;hachureGap=4;jiggle=2;curveFitting=1;fontFamily=Helvetica;fontSize=20;swimlaneLine=1;rounded=0;fillColor=#001DBC;fontColor=#ffffff;strokeColor=#005700;bottom=1;top=1;" parent="1" vertex="1">
+                <mxCell id="v21nql2Z8lF4ZoLUkuqa-63" value="EventAdType" style="shape=table;startSize=30;container=1;collapsible=0;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;sketch=0;hachureGap=4;jiggle=2;curveFitting=1;fontFamily=Helvetica;fontSize=20;swimlaneLine=1;rounded=0;fillColor=#001DBC;fontColor=#ffffff;strokeColor=#005700;bottom=1;top=1;" parent="1" vertex="1">
                     <mxGeometry x="1455" y="1201" width="262" height="120" as="geometry"/>
                 </mxCell>
                 <mxCell id="v21nql2Z8lF4ZoLUkuqa-64" value="" style="shape=tableRow;horizontal=0;startSize=0;swimlaneHead=0;swimlaneBody=0;fillColor=none;collapsible=0;dropTarget=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;top=0;left=0;right=0;bottom=1;sketch=0;hachureGap=4;jiggle=2;curveFitting=1;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=20;" parent="v21nql2Z8lF4ZoLUkuqa-63" vertex="1">
@@ -3011,7 +3011,7 @@
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="VOueiGgFXq9ElSL-u6dj-2" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;sketch=0;hachureGap=4;jiggle=2;curveFitting=1;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=default;strokeColor=#FFFFFF;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=16;fontColor=default;startArrow=ERone;startFill=0;endArrow=ERoneToMany;endFill=0;" edge="1" parent="1" source="v21nql2Z8lF4ZoLUkuqa-2" target="N6RTR1vkv1dl7u3bzgeI-1">
+                <mxCell id="VOueiGgFXq9ElSL-u6dj-2" style="edgeStyle=orthogonalEdgeStyle;shape=connector;rounded=0;sketch=0;hachureGap=4;jiggle=2;curveFitting=1;html=1;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=default;strokeColor=#FFFFFF;fontFamily=Architects Daughter;fontSource=https%3A%2F%2Ffonts.googleapis.com%2Fcss%3Ffamily%3DArchitects%2BDaughter;fontSize=16;fontColor=default;startArrow=ERone;startFill=0;endArrow=ERoneToMany;endFill=0;" parent="1" source="v21nql2Z8lF4ZoLUkuqa-2" target="N6RTR1vkv1dl7u3bzgeI-1" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
                             <mxPoint x="678" y="1250"/>
