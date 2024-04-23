@@ -15,12 +15,12 @@ CREATE TABLE [User] (
     CHECK (Username LIKE '[a-zA-Z0-9]%'),
     FirstName NVARCHAR(50) NOT NULL,
     LastName NVARCHAR(50) NOT NULL,
-    DateOfBirth DATE NOT NULL
+    DateOfBirth DATE NOT NULL,
     CHECK (DateOfBirth < GETDATE()),
     Phonenumber VARCHAR(50) NOT NULL,
-    Email NVARCHAR(50) NOT NULL
+    Email NVARCHAR(50) NOT NULL,
     CHECK (Email LIKE '%_@_%._%'),
-    Role VARCHAR(10) NOT NULL
+    Role VARCHAR(10) NOT NULL,
     CHECK (Role IN ('Admin', 'User', 'Guest')),
     Active BIT NOT NULL
 );
@@ -30,18 +30,18 @@ CREATE TABLE Login (
     HashedPassword VARCHAR(64) NOT NULL,
     Salt VARCHAR(64) NOT NULL,
     LastLogin DATETIME NOT NULL,
-    FailedAttempt INT NOT NULL
+    FailedAttempt INT NOT NULL,
     CHECK (FailedAttempt >= 0),
     UserID INT NOT NULL,
-    Active BIT NOT NULL
+    Active BIT NOT NULL,
     CHECK (Active IN (0,1))
 );
 
 CREATE TABLE Address (
     AddressID INT PRIMARY KEY IDENTITY(1,1),
-    Street NVARCHAR(50) NOT NULL
+    Street NVARCHAR(50) NOT NULL,
     CHECK (LEN(Street) <= 50),
-    City NVARCHAR(50) NOT NULL
+    City NVARCHAR(50) NOT NULL,
     CHECK (LEN(City) <= 50),
     Region NVARCHAR(50) NOT NULL
     CHECK (LEN(Region) <= 50),
@@ -50,7 +50,7 @@ CREATE TABLE Address (
     Zipcode NVARCHAR(11) NOT NULL
     CHECK (LEN(Zipcode) <= 10),
     UserID INT NOT NULL,
-    Active BIT NOT NULL
+    Active BIT NOT NULL,
     CHECK (Active IN (0,1))
 );
 
@@ -61,21 +61,21 @@ CREATE TABLE UserCommunity (
     CHECK (LEN(Role) <= 20),
     UserID INT NOT NULL,
     CommunityID INT NOT NULL,
-    Active BIT NOT NULL
+    Active BIT NOT NULL,
     CHECK (Active IN (0,1))
 );
 
 CREATE TABLE Community (
     CommunityID INT PRIMARY KEY IDENTITY(1,1),
-    Name NVARCHAR(300) NOT NULL
+    Name NVARCHAR(300) NOT NULL,
     CHECK (LEN(Name) <= 300),
-    Description NVARCHAR(500) NOT NULL
+    Description NVARCHAR(500) NOT NULL,
     CHECK (LEN(Description) <= 500),
-    CreatedDate DATE NOT NULL
+    CreatedDate DATE NOT NULL,
     CHECK (CreatedDate <= GETDATE()),
     CreatedBy NVARCHAR(50) NOT NULL
     CHECK (LEN(CreatedBy) <= 50),
-    Active BIT NOT NULL
+    Active BIT NOT NULL,
     CHECK (Active IN (0,1))
 );
 
@@ -159,13 +159,14 @@ CREATE TABLE HauntedPlaceLocation (
     Zipcode NVARCHAR(20) NOT NULL,
     Latitude DECIMAL(7,5) NOT NULL,
     Longitude DECIMAL (8,5) NOT NULL,
+	HauntedPlaceID INT NOT NULL,
     Active BIT NOT NULL
 );
 
 CREATE TABLE AdType (
     AdTypeID INT PRIMARY KEY IDENTITY(1,1),
     TypeName NVARCHAR(100) NOT NULL,
-    HauntePlaceID INT NOT NULL,
+    HauntedPlaceID INT NOT NULL,
     AdvertisementID INT NOT NULL
 );
 
@@ -212,10 +213,10 @@ CREATE TABLE Notification (
 
 CREATE TABLE UserPremium (
     UserPremiumID INT PRIMARY KEY IDENTITY(1,1),
-    UserID INT NOT NULL,
-    PremiumID INT NOT NULL,
-    StartDate DATE NOT NULL,
-    EndDate DATE NOT NULL,
+    StartDate DATE NOT NULL,    
+	EndDate DATE NOT NULL,
+	UserID INT NOT NULL,
+	PremiumID INT NOT NULL,
     Active BIT NOT NULL
 );
 
@@ -225,7 +226,6 @@ CREATE TABLE PremiumPayment (
     Amount DECIMAL(10,2) NOT NULL,
     PaymentMethod VARCHAR(20) NOT NULL,
     UserID INT NOT NULL,
-    BookingID INT NOT NULL,
     Active BIT NOT NULL
 );
 
@@ -302,6 +302,12 @@ CREATE TABLE PartnershipContact (
 	Active BIT NOT NULL
 );
 
+CREATE TABLE PartnershipAdType (
+    PartnershipAdTypeID INT PRIMARY KEY IDENTITY(1,1),
+    Name NVARCHAR(100) NOT NULL,
+    Description NVARCHAR(500) NOT NULL,    
+);
+
 CREATE TABLE PartnershipAdvertisement (
     PartnershipAdID INT PRIMARY KEY IDENTITY(1,1),
     Title NVARCHAR(100) NOT NULL,
@@ -315,14 +321,6 @@ CREATE TABLE PartnershipAdvertisement (
     Active BIT NOT NULL
 );
 
-CREATE TABLE PartnershipAdType (
-    PartnershipAdTypeID INT PRIMARY KEY IDENTITY(1,1),
-    Name NVARCHAR(100) NOT NULL,
-    Description NVARCHAR(500) NOT NULL,    
-);
-
-USE PhantomFestivities;
-GO
 
 -- insert data
 -- Skapa användare från Sverige
@@ -332,7 +330,9 @@ VALUES ('swedishuser1', 'Erik', 'Andersson', '1985-05-10', '0701234567', 'erik@e
        ('swedishuser3', 'Lisa', 'Nilsson', '1982-12-20', '0705554444', 'lisa@example.com', 'User', 1),
        ('swedishuser4', 'Johan', 'Lindgren', '1993-08-07', '0708889999', 'johan@example.com', 'User', 1),
        ('swedishuser5', 'Emma', 'Svensson', '1986-12-12', '0701112222', 'emma@example.com', 'User', 1),
-       ('swedishuser6', 'David', 'Eriksson', '1979-05-25', '0703334444', 'david@example.com', 'User', 1);
+       ('swedishuser6', 'David', 'Eriksson', '1979-05-25', '0703334444', 'david@example.com', 'User', 1),
+	   ('swedishuser7', 'Lars', 'Jansson', '1984-07-15', '0704445555', 'lars@example.com', 'User', 1),
+	   ('swedishuser8', 'Maria', 'Andersson', '1991-03-20', '0706667777', 'maria.a@example.com', 'User', 1);
 
 -- Skapa användare från Tyskland
 INSERT INTO [User] (Username, FirstName, LastName, DateOfBirth, Phonenumber, Email, Role, Active)
@@ -341,7 +341,9 @@ VALUES ('germanuser1', 'Michael', 'Müller', '1978-04-25', '01761234567', 'micha
        ('germanuser3', 'Stefan', 'Wagner', '1983-06-08', '01765554444', 'stefan@example.com', 'User', 1),
        ('germanuser4', 'Andreas', 'Schneider', '1982-10-30', '01768888888', 'andreas@example.com', 'User', 1),
        ('germanuser5', 'Julia', 'Becker', '1990-06-15', '01769999999', 'julia@example.com', 'User', 1),
-       ('germanuser6', 'Sabine', 'Schulz', '1985-04-18', '01767777777', 'sabine@example.com', 'User', 1);
+       ('germanuser6', 'Sabine', 'Schulz', '1985-04-18', '01767777777', 'sabine@example.com', 'User', 1),
+	   ('germanuser7', 'Andrea', 'Becker', '1983-05-12', '01761234567', 'andrea@example.com', 'User', 1),
+		('germanuser8', 'Matthias', 'Schneider', '1990-09-18', '01767654321', 'matthias@example.com', 'User', 1);
 
 -- Skapa användare från Polen
 INSERT INTO [User] (Username, FirstName, LastName, DateOfBirth, Phonenumber, Email, Role, Active)
@@ -350,7 +352,9 @@ VALUES ('polishuser1', 'Katarzyna', 'Nowak', '1980-07-15', '123456789', 'katarzy
        ('polishuser3', 'Magdalena', 'Wiśniewska', '1987-11-03', '543216789', 'magdalena@example.com', 'User', 1),
        ('polishuser4', 'Tomasz', 'Wojcik', '1976-03-05', '123987456', 'tomasz@example.com', 'User', 1),
        ('polishuser5', 'Agnieszka', 'Kowalczyk', '1989-09-20', '789654123', 'agnieszka@example.com', 'User', 1),
-       ('polishuser6', 'Marek', 'Jankowski', '1983-07-10', '456123789', 'marek@example.com', 'User', 1);
+       ('polishuser6', 'Marek', 'Jankowski', '1983-07-10', '456123789', 'marek@example.com', 'User', 1),
+	   ('polishuser7', 'Łukasz', 'Kowalczyk', '1978-12-28', '123456789', 'lukasz@example.com', 'User', 1),
+    ('polishuser8', 'Monika', 'Nowak', '1993-05-10', '987654321', 'monika@example.com', 'User', 1);
 
 -- Skapa användare från Frankrike
 INSERT INTO [User] (Username, FirstName, LastName, DateOfBirth, Phonenumber, Email, Role, Active)
@@ -359,7 +363,9 @@ VALUES ('frenchuser1', 'Jean', 'Dubois', '1975-09-30', '0601020304', 'jean@examp
        ('frenchuser3', 'Pierre', 'Leroy', '1992-11-22', '0607080910', 'pierre@example.com', 'User', 1),
        ('frenchuser4', 'Sophie', 'Martin', '1984-11-15', '0609998888', 'sophie@example.com', 'User', 1),
        ('frenchuser5', 'Nicolas', 'Lefebvre', '1995-02-28', '0608889999', 'nicolas@example.com', 'User', 1),
-       ('frenchuser6', 'Isabelle', 'Roux', '1980-06-25', '0607778888', 'isabelle@example.com', 'User', 1);
+       ('frenchuser6', 'Isabelle', 'Roux', '1980-06-25', '0607778888', 'isabelle@example.com', 'User', 1),
+	   ('frenchuser7', 'Étienne', 'Dupont', '1982-10-15', '0601020304', 'etienne@example.com', 'User', 1),
+    ('frenchuser8', 'Camille', 'Leclerc', '1990-04-22', '0604050607', 'camille@example.com', 'User', 1);
 
 -- Skapa användare från Spanien
 INSERT INTO [User] (Username, FirstName, LastName, DateOfBirth, Phonenumber, Email, Role, Active)
@@ -368,7 +374,10 @@ VALUES ('spanishuser1', 'Manuel', 'García', '1984-01-20', '612345678', 'manuel@
        ('spanishuser3', 'Alejandro', 'López', '1979-08-12', '698745632', 'alejandro@example.com', 'User', 1),
        ('spanishuser4', 'Carlos', 'Hernández', '1977-04-10', '612345678', 'carlos@example.com', 'User', 1),
        ('spanishuser5', 'Laura', 'Gómez', '1989-08-22', '654321987', 'laura@example.com', 'User', 1),
-       ('spanishuser6', 'Javier', 'Díaz', '1982-01-18', '698745632', 'javier@example.com', 'User', 1);
+       ('spanishuser6', 'Javier', 'Díaz', '1982-01-18', '698745632', 'javier@example.com', 'User', 1),
+	   ('spanishuser7', 'Pablo', 'Rodríguez', '1979-11-25', '612345678', 'pablo@example.com', 'User', 1),
+    ('spanishuser8', 'Elena', 'González', '1991-06-30', '654321987', 'elena@example.com', 'User', 1),
+	('spanishuser17', 'Laura', 'Díaz', '1982-06-10', '654321987', 'laura@example.com', 'User', 1);
 
 -- Skapa användare från Italien
 INSERT INTO [User] (Username, FirstName, LastName, DateOfBirth, Phonenumber, Email, Role, Active)
@@ -377,7 +386,10 @@ VALUES ('italianuser1', 'Giuseppe', 'Rossi', '1986-03-18', '3351234567', 'giusep
        ('italianuser3', 'Antonio', 'Ferrari', '1980-12-10', '3398765432', 'antonio@example.com', 'User', 1),
        ('italianuser4', 'Paolo', 'Conti', '1978-09-20', '3351234567', 'paolo@example.com', 'User', 1),
        ('italianuser5', 'Laura', 'Galli', '1990-07-15', '3387654321', 'laura@example.com', 'User', 1),
-       ('italianuser6', 'Giovanni', 'Ricci', '1985-12-30', '3398765432', 'giovanni@example.com', 'User', 1);
+       ('italianuser6', 'Giovanni', 'Ricci', '1985-12-30', '3398765432', 'giovanni@example.com', 'User', 1),
+	   ('italianuser7', 'Francesco', 'Moretti', '1983-04-18', '3351234567', 'francesco@example.com', 'User', 1),
+    ('italianuser8', 'Giulia', 'Ferrari', '1992-09-22', '3387654321', 'giulia@example.com', 'User', 1),
+	('italianuser9', 'Luca', 'Ricci', '1985-12-10', '3398765432', 'luca@example.com', 'User', 1);
 
 -- Skapa bokningar för de 50 användarna
 INSERT INTO Booking (BookingDate, NumberOfTickets, TotalPrice, UserID, Active)
@@ -592,17 +604,17 @@ VALUES
 -- Skapa 20 dataposter för recensioner
 INSERT INTO Review (Rating, Text, ReviewDate, UserID, EventID)
 VALUES 
-    ('5', 'Great experience, highly recommended!', '2024-04-22', 1, 1), -- Användare: swedishuser1, Event: 1
-    ('4', 'Enjoyed the event, but could be improved', '2024-04-23', 2, 2), -- Användare: swedishuser2, Event: 2
-    ('3', 'Average experience, nothing special', '2024-04-24', 3, 3), -- Användare: swedishuser3, Event: 3
-    ('5', 'Absolutely terrifying, loved it!', '2024-04-25', 4, 4), -- Användare: swedishuser4, Event: 4
-    ('2', 'Disappointing, not worth the money', '2024-04-26', 5, 5), -- Användare: swedishuser5, Event: 5
-    ('5', 'Best haunted house I have ever been to!', '2024-04-27', 6, 6), -- Användare: swedishuser6, Event: 6
+    ('5', 'Great experience, highly recommended!', '2024-04-22', 1, 6), -- Användare: swedishuser1, Event: 1
+    ('4', 'Enjoyed the event, but could be improved', '2024-04-23', 2, 7), -- Användare: swedishuser2, Event: 2
+    ('3', 'Average experience, nothing special', '2024-04-24', 3, 8), -- Användare: swedishuser3, Event: 3
+    ('5', 'Absolutely terrifying, loved it!', '2024-04-25', 4, 9), -- Användare: swedishuser4, Event: 4
+    ('2', 'Disappointing, not worth the money', '2024-04-26', 5, 25), -- Användare: swedishuser5, Event: 5
+    ('5', 'Best haunted house I have ever been to!', '2024-04-27', 6, 16), -- Användare: swedishuser6, Event: 6
     ('4', 'Spooky atmosphere, but too crowded', '2024-04-28', 7, 7), -- Användare: germanuser1, Event: 7
     ('3', 'Expected more scares, was a bit disappointed', '2024-04-29', 8, 8), -- Användare: germanuser2, Event: 8
-    ('5', 'Fantastic event, exceeded my expectations', '2024-04-30', 9, 9), -- Användare: germanuser3, Event: 9
+    ('5', 'Fantastic event, exceeded my expectations', '2024-04-30', 9, 19), -- Användare: germanuser3, Event: 9
     ('2', 'Not scary at all, waste of time', '2024-05-01', 10, 10), -- Användare: germanuser4, Event: 10
-    ('5', 'Incredible experience, will definitely come back', '2024-05-02', 11, 11), -- Användare: germanuser5, Event: 11
+    ('5', 'Incredible experience, will definitely come back', '2024-05-02', 11, 21), -- Användare: germanuser5, Event: 11
     ('4', 'Good scares, but too short', '2024-05-03', 12, 12), -- Användare: germanuser6, Event: 12
     ('5', 'Absolutely terrifying, worth every penny', '2024-05-04', 1, 13), -- Användare: swedishuser1, Event: 13
     ('3', 'Expected more from the event, was a bit disappointed', '2024-05-05', 2, 14), -- Användare: swedishuser2, Event: 14
@@ -706,41 +718,31 @@ VALUES
     (5, 30);  
 
 -- Skapa 30 dataposter i HauntedPlaceLocation med riktiga platser
-INSERT INTO HauntedPlaceLocation (Address, City, Region, Country, Zipcode, Latitude, Longitude, Active)
+INSERT INTO HauntedPlaceLocation (Address, City, Region, Country, Zipcode, Latitude, Longitude, HauntedPlaceID, Active)
 VALUES 
-    ('Skeppsholmen 1', 'Stockholm', 'Stockholm', 'Sweden', '11149', 59.3252, 18.0860, 1),
-    ('Brandenburger Tor', 'Berlin', 'Berlin', 'Germany', '10117', 52.5163, 13.3777, 1),
-    ('ul. Podwale', 'Warsaw', 'Masovian Voivodeship', 'Poland', '00-260', 52.2481, 21.0138, 1),
-    ('Musée du Louvre', 'Paris', 'Île-de-France', 'France', '75001', 48.8606, 2.3376, 1),
-    ('Plaza Mayor', 'Madrid', 'Community of Madrid', 'Spain', '28012', 40.4155, -3.7075, 1),
-    ('Colosseum', 'Rome', 'Lazio', 'Italy', '00184', 41.8902, 12.4922, 1),
-    ('Vasamuseet', 'Stockholm', 'Stockholm', 'Sweden', '11521', 59.3289, 18.0913, 1),
-    ('Berliner Dom', 'Berlin', 'Berlin', 'Germany', '10178', 52.5186, 13.4009, 1),
-    ('Zamek Królewski', 'Warsaw', 'Masovian Voivodeship', 'Poland', '00-277', 52.2472, 21.0139, 1),
-    ('Palais Garnier', 'Paris', 'Île-de-France', 'France', '75009', 48.8718, 2.3311, 1),
-    ('Parque del Retiro', 'Madrid', 'Community of Madrid', 'Spain', '28009', 40.4144, -3.6823, 1),
-    ('Roman Forum', 'Rome', 'Lazio', 'Italy', '00186', 41.8925, 12.4862, 1),
-    ('Gamla stan', 'Stockholm', 'Stockholm', 'Sweden', '11129', 59.3257, 18.0719, 1),
-    ('Pergamonmuseum', 'Berlin', 'Berlin', 'Germany', '10117', 52.5195, 13.3986, 1),
-    ('Pałac Kultury i Nauki', 'Warsaw', 'Masovian Voivodeship', 'Poland', '00-001', 52.2315, 21.0067, 1),
-    ('Centre Pompidou', 'Paris', 'Île-de-France', 'France', '75004', 48.8606, 2.3522, 1),
-    ('Templo de Debod', 'Madrid', 'Community of Madrid', 'Spain', '28008', 40.4240, -3.7170, 1),
-    ('Piazza di Spagna', 'Rome', 'Lazio', 'Italy', '00187', 41.9058, 12.4828, 1),
-    ('Drottningholms slott', 'Stockholm', 'Stockholm', 'Sweden', '17802', 59.3257, 17.8967, 1),
-    ('Gedenkstätte Berliner Mauer', 'Berlin', 'Berlin', 'Germany', '10117', 52.5056, 13.4393, 1),
-    ('Pałac Wilanowski', 'Warsaw', 'Masovian Voivodeship', 'Poland', '02-097', 52.1656, 21.0813, 1),
-    ('Musée d''Orsay', 'Paris', 'Île-de-France', 'France', '75007', 48.8599, 2.3266, 1),
-    ('Parque de El Capricho', 'Madrid', 'Community of Madrid', 'Spain', '28043', 40.4945, -3.6052, 1),
-    ('Catacombe di San Callisto', 'Rome', 'Lazio', 'Italy', '00147', 41.8584, 12.5181, 1),
-    ('Stockholms stadshus', 'Stockholm', 'Stockholm', 'Sweden', '111 86', 59.3274, 18.0517, 1),
-    ('DDR Museum', 'Berlin', 'Berlin', 'Germany', '10178', 52.5196, 13.4025, 1),
-    ('Muzeum Powstania Warszawskiego', 'Warsaw', 'Masovian Voivodeship', 'Poland', '00-968', 52.2323, 21.0160, 1),
-    ('Sainte-Chapelle', 'Paris', 'Île-de-France', 'France', '75001', 48.8556, 2.3459, 1),
-    ('Gran Vía', 'Madrid', 'Community of Madrid', 'Spain', '28013', 40.4201, -3.7058, 1),
-    ('Pantheon', 'Rome', 'Lazio', 'Italy', '00186', 41.8986, 12.4768, 1);
+    ('Skeppsholmen 1', 'Stockholm', 'Stockholm', 'Sweden', '11149', 59.3252, 18.0860,1, 1),
+    ('Brandenburger Tor', 'Berlin', 'Berlin', 'Germany', '10117', 52.5163, 13.3777,2, 1),
+    ('ul. Podwale', 'Warsaw', 'Masovian Voivodeship', 'Poland', '00-260', 52.2481, 21.0138,3, 1),
+    ('Musée du Louvre', 'Paris', 'Île-de-France', 'France', '75001', 48.8606, 2.3376,4, 1),
+    ('Plaza Mayor', 'Madrid', 'Community of Madrid', 'Spain', '28012', 40.4155, -3.7075,5, 1),
+    ('Colosseum', 'Rome', 'Lazio', 'Italy', '00184', 41.8902, 12.4922,6, 1),
+    ('Vasamuseet', 'Stockholm', 'Stockholm', 'Sweden', '11521', 59.3289, 18.0913,7, 1),
+    ('Berliner Dom', 'Berlin', 'Berlin', 'Germany', '10178', 52.5186, 13.4009,8, 1),
+    ('Zamek Królewski', 'Warsaw', 'Masovian Voivodeship', 'Poland', '00-277', 52.2472, 21.0139,9, 1),
+    ('Palais Garnier', 'Paris', 'Île-de-France', 'France', '75009', 48.8718, 2.3311,10, 1),
+    ('Parque del Retiro', 'Madrid', 'Community of Madrid', 'Spain', '28009', 40.4144, -3.6823,11, 1),
+    ('Roman Forum', 'Rome', 'Lazio', 'Italy', '00186', 41.8925, 12.4862,12, 1),
+    ('Gamla stan', 'Stockholm', 'Stockholm', 'Sweden', '11129', 59.3257, 18.0719,13, 1),
+    ('Pergamonmuseum', 'Berlin', 'Berlin', 'Germany', '10117', 52.5195, 13.3986,14, 1),
+    ('Pałac Kultury i Nauki', 'Warsaw', 'Masovian Voivodeship', 'Poland', '00-001', 52.2315, 21.0067,15, 1),
+    ('Centre Pompidou', 'Paris', 'Île-de-France', 'France', '75004', 48.8606, 2.3522,16, 1),
+    ('Templo de Debod', 'Madrid', 'Community of Madrid', 'Spain', '28008', 40.4240, -3.7170,17, 1),
+    ('Piazza di Spagna', 'Rome', 'Lazio', 'Italy', '00187', 41.9058, 12.4828,18, 1),
+    ('Drottningholms slott', 'Stockholm', 'Stockholm', 'Sweden', '17802', 59.3257, 17.8967,19, 1),
+    ('Gedenkstätte Berliner Mauer', 'Berlin', 'Berlin', 'Germany', '10117', 52.5056, 13.4393,20, 1)    
 
 -- Skapa 30 dataposter i AdType tabellen
-INSERT INTO AdType (TypeName, HauntePlaceID, AdvertisementID)
+INSERT INTO AdType (TypeName, HauntedPlaceID, AdvertisementID)
 VALUES 
     ('Standard', 1, 1),  -- Använd HauntedPlaceID och AdvertisementID från tidigare skapade dataposter
     ('Featured', 2, 2),
@@ -761,19 +763,7 @@ VALUES
     ('Premium', 17, 17),
     ('Featured', 18, 18),
     ('Standard', 19, 19),
-    ('Premium', 20, 20),
-    ('Featured', 21, 21),
-    ('Standard', 22, 22),
-    ('Premium', 23, 23),
-    ('Featured', 24, 24),
-    ('Standard', 25, 25),
-    ('Premium', 26, 26),
-    ('Featured', 27, 27),
-    ('Standard', 28, 28),
-    ('Premium', 29, 29),
-    ('Featured', 30, 30);
-
-
+    ('Premium', 20, 20)
 
 -- Skapa 30 dataposter i HauntedPlaceAdvertisement tabellen
 INSERT INTO HauntedPlaceAdvertisement (Title, Description, StartDate, EndDate, Price, Category, AdTypeID, Active)
@@ -797,17 +787,7 @@ VALUES
     ('Terrifying Haunted Trail Experience', 'Survive a journey through our haunted trail', '2024-05-08', '2024-06-07', 40.00, 'Experiences', 17, 1),
     ('Horror Movie Marathon', 'Watch a marathon of horror movies in our haunted theater', '2024-05-09', '2024-06-08', 35.00, 'Events', 18, 1),
     ('Spooky Escape Room Challenge', 'Attempt to escape from our spooky escape room', '2024-05-10', '2024-06-09', 45.00, 'Activities', 19, 1),
-    ('Paranormal Investigation Workshop', 'Learn about the tools and techniques used in paranormal investigations', '2024-05-11', '2024-06-10', 55.00, 'Workshops', 20, 1),
-    ('Ghoulish Ghost Ship Tour', 'Embark on a tour of the haunted ghost ship', '2024-05-12', '2024-06-11', 60.00, 'Tours', 21, 1),
-    ('Terrifying Night in a Haunted Hotel', 'Spend a night in our haunted hotel if you dare', '2024-05-13', '2024-06-12', 70.00, 'Experiences', 22, 1),
-    ('Haunted House Movie Night', 'Watch classic horror films in a haunted house', '2024-05-14', '2024-06-13', 30.00, 'Events', 23, 1),
-    ('Cursed Escape Room Challenge', 'Attempt to escape from our cursed escape room', '2024-05-15', '2024-06-14', 45.00, 'Activities', 24, 1),
-    ('Eerie Ghost Town Tour', 'Explore the ghostly remnants of a deserted town', '2024-05-16', '2024-06-15', 40.00, 'Tours', 25, 1),
-    ('Spine-chilling Ghost Stories Night', 'Listen to spine-chilling ghost stories around a campfire', '2024-05-17', '2024-06-16', 25.00, 'Events', 26, 1),
-    ('Terrifying Haunted Forest Experience', 'Survive a journey through our haunted forest', '2024-05-18', '2024-06-17', 50.00, 'Experiences', 27, 1),
-    ('Horror Movie Marathon', 'Watch a marathon of horror movies in a haunted setting', '2024-05-19', '2024-06-18', 35.00, 'Events', 28, 1),
-    ('Sinister Escape Room Challenge', 'Attempt to escape from our sinister escape room', '2024-05-20', '2024-06-19', 55.00, 'Activities', 29, 1),
-    ('Paranormal Investigation Seminar', 'Learn about the latest advancements in paranormal investigation', '2024-05-21', '2024-06-20', 60.00, 'Workshops', 30, 1);
+    ('Paranormal Investigation Workshop', 'Learn about the tools and techniques used in paranormal investigations', '2024-05-11', '2024-06-10', 55.00, 'Workshops', 20, 1)    
 
 -- Skapa 30 dataposter i ResourceType tabellen
 INSERT INTO ResourceType (Name, Description)
@@ -831,17 +811,7 @@ VALUES
     ('Guidebook', 'Guidebook with information about the haunted location'),
     ('Map', 'Map of the haunted area for visitors'),
     ('Program', 'Program listing events and activities'),
-    ('Props', 'Props for interactive experiences'),
-    ('Equipment', 'Equipment used for investigations'),
-    ('Brochure', 'Brochure with information about the haunted location'),
-    ('Guidebook', 'Guidebook with information about the haunted area'),
-    ('Map', 'Map of the haunted location for visitors'),
-    ('Program', 'Program listing events and activities'),
-    ('Clues', 'Clues and hints for solving puzzles'),
-    ('Devices', 'Devices for detecting paranormal activity'),
-    ('Book', 'Book containing spooky stories'),
-    ('Map', 'Map of the haunted area for visitors');
-
+    ('Props', 'Props for interactive experiences')
 
 -- Skapa 30 dataposter i Resource tabellen
 INSERT INTO Resource (Name, Description, ResourceTypeID, HauntedPlaceID)
@@ -865,17 +835,7 @@ VALUES
     ('Theater Program', 'Program listing the horror movies being screened in the theater', 17, 17), -- HauntedPlaceID: 17
     ('Escape Room Props', 'Props used to create a creepy atmosphere in the escape room', 18, 18), -- HauntedPlaceID: 18
     ('Paranormal Investigation Devices', 'Devices for detecting and measuring paranormal activity', 19, 19), -- HauntedPlaceID: 19
-    ('Ghost Ship Brochure', 'Brochure with information about the haunted ghost ship', 20, 20), -- HauntedPlaceID: 20
-    ('Hotel Brochure', 'Brochure with information about the haunted hotel', 21, 21), -- HauntedPlaceID: 21
-    ('Haunted House Movie Schedule', 'Schedule of horror movie screenings in the haunted house', 22, 22), -- HauntedPlaceID: 22
-    ('Escape Room Props', 'Props used to create a spooky atmosphere in the escape room', 23, 23), -- HauntedPlaceID: 23
-    ('Ghost Town Guidebook', 'Guidebook detailing the history of the haunted ghost town', 24, 24), -- HauntedPlaceID: 24
-    ('Ghost Stories Book', 'Book containing spine-chilling ghost stories for storytelling events', 25, 25), -- HauntedPlaceID: 25
-    ('Forest Map', 'Map of the haunted forest for visitors to explore', 26, 26), -- HauntedPlaceID: 26
-    ('Theater Program', 'Program listing the horror movies being screened in the haunted setting', 27, 27), -- HauntedPlaceID: 27
-    ('Escape Room Clues', 'Clues and hints for solving the puzzles in the escape room', 28, 28), -- HauntedPlaceID: 28
-    ('Paranormal Investigation Equipment', 'Equipment used by experts for paranormal investigations', 29, 29), -- HauntedPlaceID: 29
-    ('Paranormal Investigation Seminar Brochure', 'Brochure with information about the paranormal investigation seminar', 30, 30); -- HauntedPlaceID: 30
+    ('Ghost Ship Brochure', 'Brochure with information about the haunted ghost ship', 20, 20) -- HauntedPlaceID: 20   
 
 -- Skapa 50 dataposter i NotificationType tabellen
 INSERT INTO NotificationType (TypeName)
@@ -931,21 +891,60 @@ VALUES
 
 -- Skapa 50 dataposter i Notification tabellen
 INSERT INTO Notification (Title, Description, NotificationTypeID, UserID, Active)
-SELECT 
-    'Notification ' + CAST(nt.NotificationTypeID AS NVARCHAR(10)),
-    'This is a notification description for user ' + CAST(u.UserID AS NVARCHAR(10)),
-    nt.NotificationTypeID,
-    u.UserID,
-    1
-FROM 
-    (
-        SELECT ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS NotificationTypeID
-        FROM sys.columns
-    ) nt
-CROSS JOIN 
-    [User] u
-WHERE 
-    u.UserID <= 50;
+VALUES
+    ('New Message', 'You have received a new message.', 1, 1, 1),
+    ('New Friend Request', 'You have received a friend request.', 2, 2, 1),
+    ('Event Reminder', 'Reminder: Event starts in one hour.', 3, 3, 1),
+    ('Payment Confirmation', 'Your payment has been confirmed.', 1, 4, 1),
+    ('Account Update', 'Your account information has been updated.', 2, 5, 1),
+    ('Password Reset', 'A request to reset your password has been received.', 3, 6, 1),
+    ('New Comment', 'You have a new comment on your post.', 1, 7, 1),
+    ('Post Liked', 'Your post has been liked by another user.', 2, 8, 1),
+    ('New Follower', 'You have a new follower.', 3, 9, 1),
+    ('Appointment Reminder', 'Reminder: You have an appointment tomorrow.', 1, 10, 1),
+    ('Task Assigned', 'A new task has been assigned to you.', 2, 11, 1),
+    ('Document Approval', 'Your document has been approved.', 3, 12, 1),
+    ('New Order', 'You have a new order.', 1, 13, 1),
+    ('Subscription Renewal', 'Your subscription has been renewed.', 2, 14, 1),
+    ('File Uploaded', 'A new file has been uploaded to your account.', 3, 15, 1),
+    ('Meeting Invitation', 'You have been invited to a meeting.', 1, 16, 1),
+    ('New Task', 'You have a new task assigned.', 2, 17, 1),
+    ('Product Shipped', 'Your order has been shipped.', 3, 18, 1),
+    ('Appointment Confirmation', 'Your appointment has been confirmed.', 1, 19, 1),
+    ('Event Invitation', 'You have been invited to an event.', 2, 20, 1),
+    ('New Announcement', 'There is a new announcement.', 3, 21, 1),
+    ('Service Update', 'There is an update regarding your service.', 1, 22, 1),
+    ('Document Shared', 'A document has been shared with you.', 2, 23, 1),
+    ('Feedback Received', 'Your feedback has been received.', 3, 24, 1),
+    ('New Task Comment', 'There is a new comment on your task.', 1, 25, 1),
+    ('Profile Update', 'Your profile information has been updated.', 2, 26, 1),
+    ('New Event RSVP', 'You have a new RSVP for your event.', 3, 27, 1),
+    ('New Subscription', 'You have a new subscription.', 1, 28, 1),
+    ('New Request', 'You have a new request.', 2, 29, 1),
+    ('Product Discount', 'You have received a discount on a product.', 3, 30, 1),
+    ('Task Completed', 'A task assigned to you has been completed.', 1, 31, 1),
+    ('Survey Invitation', 'You have been invited to participate in a survey.', 2, 32, 1),
+    ('Document Update', 'A document you have access to has been updated.', 3, 33, 1),
+    ('New Message Received', 'You have received a new message from another user.', 1, 34, 1),
+    ('Appointment Rescheduled', 'Your appointment has been rescheduled.', 2, 35, 1),
+    ('Event Update', 'There is an update regarding the event you are attending.', 3, 36, 1),
+    ('New Notification', 'You have a new notification.', 1, 37, 1),
+    ('Task Reminder', 'Reminder: You have a task due today.', 2, 38, 1),
+    ('Product Review', 'You have received a review on your product.', 3, 39, 1),
+    ('New Message Sent', 'A new message has been sent.', 1, 40, 1),
+    ('Feedback Request', 'A request for feedback has been sent to you.', 2, 41, 1),
+    ('New Recommendation', 'You have received a new recommendation.', 3, 42, 1),
+    ('Document Reminder', 'Reminder: You have a document pending review.', 1, 43, 1),
+    ('Account Deactivated', 'Your account has been deactivated.', 2, 44, 1),
+    ('Event Cancellation', 'The event you were attending has been cancelled.', 3, 45, 1),
+    ('New Message Alert', 'You have received a new message. Check your inbox.', 1, 46, 1),
+    ('Task Overdue', 'Reminder: You have overdue tasks.', 2, 47, 1),
+    ('Product Return Request', 'A return request for your product has been received.', 3, 48, 1),
+    ('Document Expiration Notice', 'Notice: A document you have access to is expiring soon.', 1, 49, 1),
+    ('Appointment Cancelled', 'Your appointment has been cancelled.', 2, 50, 1),
+    ('Event Registration Confirmation', 'Your registration for an event has been confirmed.', 3, 1, 1);
+
+
 
 -- Skapa 50 dataposter i UserPremium tabellen
 INSERT INTO UserPremium (UserID, PremiumID, StartDate, EndDate, Active)
@@ -967,32 +966,78 @@ VALUES
     ('Premium Package 2', 'Description for Premium Package 2', 39.99, 1),
     ('Premium Package 3', 'Description for Premium Package 3', 49.99, 1),
     ('Premium Package 4', 'Description for Premium Package 4', 59.99, 1),
-    ('Premium Package 5', 'Description for Premium Package 5', 69.99, 1);
+    ('Premium Package 5', 'Description for Premium Package 5', 69.99, 1),
+	('Premium Package 6', 'Description for Premium Package 6', 79.99, 1),
+    ('Premium Package 7', 'Description for Premium Package 7', 89.99, 1),
+    ('Premium Package 8', 'Description for Premium Package 8', 99.99, 1),
+    ('Premium Package 9', 'Description for Premium Package 9', 109.99, 1),
+    ('Premium Package 10', 'Description for Premium Package 10', 119.99, 1),
+    ('Premium Package 11', 'Description for Premium Package 11', 129.99, 1),
+    ('Premium Package 12', 'Description for Premium Package 12', 139.99, 1),
+    ('Premium Package 13', 'Description for Premium Package 13', 149.99, 1),
+    ('Premium Package 14', 'Description for Premium Package 14', 159.99, 1),
+    ('Premium Package 15', 'Description for Premium Package 15', 169.99, 1),
+    ('Premium Package 16', 'Description for Premium Package 16', 179.99, 1),
+    ('Premium Package 17', 'Description for Premium Package 17', 189.99, 1),
+    ('Premium Package 18', 'Description for Premium Package 18', 199.99, 1),
+    ('Premium Package 19', 'Description for Premium Package 19', 209.99, 1),
+    ('Premium Package 20', 'Description for Premium Package 20', 219.99, 1),
+    ('Premium Package 21', 'Description for Premium Package 21', 229.99, 1),
+    ('Premium Package 22', 'Description for Premium Package 22', 239.99, 1),
+    ('Premium Package 23', 'Description for Premium Package 23', 249.99, 1),
+    ('Premium Package 24', 'Description for Premium Package 24', 259.99, 1),
+    ('Premium Package 25', 'Description for Premium Package 25', 269.99, 1),
+    ('Premium Package 26', 'Description for Premium Package 26', 279.99, 1),
+    ('Premium Package 27', 'Description for Premium Package 27', 289.99, 1),
+    ('Premium Package 28', 'Description for Premium Package 28', 299.99, 1),
+    ('Premium Package 29', 'Description for Premium Package 29', 309.99, 1),
+    ('Premium Package 30', 'Description for Premium Package 30', 319.99, 1),
+    ('Premium Package 31', 'Description for Premium Package 31', 329.99, 1),
+    ('Premium Package 32', 'Description for Premium Package 32', 339.99, 1),
+    ('Premium Package 33', 'Description for Premium Package 33', 349.99, 1),
+    ('Premium Package 34', 'Description for Premium Package 34', 359.99, 1),
+    ('Premium Package 35', 'Description for Premium Package 35', 369.99, 1),
+    ('Premium Package 36', 'Description for Premium Package 36', 379.99, 1),
+    ('Premium Package 37', 'Description for Premium Package 37', 389.99, 1),
+    ('Premium Package 38', 'Description for Premium Package 38', 399.99, 1),
+    ('Premium Package 39', 'Description for Premium Package 39', 409.99, 1),
+    ('Premium Package 40', 'Description for Premium Package 40', 419.99, 1),
+    ('Premium Package 41', 'Description for Premium Package 41', 429.99, 1),
+    ('Premium Package 42', 'Description for Premium Package 42', 439.99, 1),
+    ('Premium Package 43', 'Description for Premium Package 43', 449.99, 1),
+    ('Premium Package 44', 'Description for Premium Package 44', 459.99, 1),
+    ('Premium Package 45', 'Description for Premium Package 45', 469.99, 1),
+    ('Premium Package 46', 'Description for Premium Package 46', 479.99, 1),
+    ('Premium Package 47', 'Description for Premium Package 47', 489.99, 1),
+    ('Premium Package 48', 'Description for Premium Package 48', 499.99, 1),
+    ('Premium Package 49', 'Description for Premium Package 49', 509.99, 1),
+    ('Premium Package 50', 'Description for Premium Package 50', 519.99, 1);
 
 -- Skapa PremiumPayment tabell dataposter
-INSERT INTO PremiumPayment (PaymentDate, Amount, PaymentMethod, UserID, BookingID, Active)
+INSERT INTO PremiumPayment (PaymentDate, Amount, PaymentMethod, UserID, Active)
 SELECT 
     DATEADD(DAY, -ROW_NUMBER() OVER (ORDER BY (SELECT NULL)), GETDATE()),
     50.00,
     'Credit Card',
     u.UserID,
-    b.BookingID,
     1
 FROM 
     [User] u
-JOIN 
-    Booking b ON u.UserID = b.UserID
 WHERE 
     u.UserID <= 50;
 
--- Event tabellen
+-- Skapa 50 slumpmässiga data poster för Event tabellen som matchar användarposter
 INSERT INTO Event (Name, Description, StartDate, EndDate, Location, UserID)
-VALUES 
-    ('Halloween Night', 'An exciting Halloween event with spooky attractions', '2024-10-31 19:00', '2024-11-01 02:00', 'Haunted Mansion, 123 Haunted Street, Spooksville', 1),
-    ('Ghost Tour', 'A guided tour through haunted locations in the city', '2024-11-15 20:00', '2024-11-15 22:00', 'Meeting Point: Town Square', 2),
-    ('Horror Movie Marathon', 'A marathon of classic horror films', '2024-10-25 18:00', '2024-10-26 03:00', 'Cinema City, 456 Scary Avenue, Creepyville', 3),
-    ('Pumpkin Carving Contest', 'Bring your creativity and carve the spookiest pumpkin!', '2024-10-28 15:00', '2024-10-28 18:00', 'Community Center, 789 Fright Road, Ghost Town', 4),
-    ('Witchcraft Workshop', 'Learn the art of witchcraft from experienced practitioners', '2024-11-05 13:00', '2024-11-05 16:00', 'Witches Cove, 101 Broomstick Lane, Witchingham', 5);
+SELECT TOP 50
+    CONCAT('Event ', ROW_NUMBER() OVER (ORDER BY NEWID())),
+    'Description for Event ' + CAST(ROW_NUMBER() OVER (ORDER BY NEWID()) AS NVARCHAR(10)),
+    DATEADD(day, ABS(CHECKSUM(NEWID())) % 100, GETDATE()), -- Slumpmässig startdatum inom de senaste 100 dagarna
+    DATEADD(day, ABS(CHECKSUM(NEWID())) % 100 + 1, GETDATE()), -- Slumpmässig slutdatum inom 1-100 dagar från startdatumet
+    CONCAT('Location ', ABS(CHECKSUM(NEWID())) % 20 + 1), -- Slumpmässig plats från 1 till 20
+    UserID
+FROM [User]
+ORDER BY NEWID(); -- Slumpmässig ordning av användareposter
+
 
 -- EventLocation tabellen
 INSERT INTO EventLocation (EventID, Address, City, Region, Country, Zipcode, Latitude, Longitude, Active)
@@ -1022,7 +1067,7 @@ VALUES
 INSERT INTO Partnership (Name, Description, HauntedPlaceID, PartnershipTypeID, Active)
 VALUES
     ('Haunted House', 'Collaboration with a local haunted house attraction', 1, 1, 1),
-    ('Ghost Tour Company', 'Partnership with a company offering guided ghost tours', 2, 1, 1),
+    ('Ghost Tour Company', 'Partnership with a company offering guided ghost tours', 2, 2, 1),
     ('Horror Movie Theater', 'Joint promotion with a cinema specializing in horror films', 3, 1, 1),
     ('Community Center', 'Partnership with a community center hosting Halloween events', 4, 1, 1),
     ('Witchcraft School', 'Collaboration with a school teaching witchcraft and magic', 5, 1, 1);
@@ -1046,8 +1091,8 @@ VALUES
 INSERT INTO PartnershipAdvertisement (Title, Description, StartDate, EndDate, Price, Category, AdTypeID, PartnershipTypeID, Active)
 VALUES
     ('Haunted House Sponsorship', 'Become a sponsor and have your brand prominently featured at the haunted house', '2024-10-01', '2024-10-31', 499.99, 'Sponsorship', 1, 1, 1),
-    ('Ghost Tour Package Deal', 'Offer a special package deal for customers booking the ghost tour', '2024-11-01', '2024-11-15', 399.99, 'Package Deal', 2, 1, 1),
-    ('Horror Movie Theater Advertising', 'Advertise your product or service on the big screen before each movie screening', '2024-10-01', '2024-10-31', 299.99, 'Advertising', 1, 1, 1),
+    ('Ghost Tour Package Deal', 'Offer a special package deal for customers booking the ghost tour', '2024-11-01', '2024-11-15', 399.99, 'Package Deal', 2, 2, 1),
+    ('Horror Movie Theater Advertising', 'Advertise your product or service on the big screen before each movie screening', '2024-10-01', '2024-10-31', 299.99, 'Advertising', 1, 2, 1),
     ('Community Center Event Sponsorship', 'Support community events and gain exposure with event sponsorship', '2024-10-10', '2024-10-27', 199.99, 'Sponsorship', 2, 1, 1),
     ('Witchcraft School Workshop Partnership', 'Collaborate on workshops and classes for aspiring witches', '2024-10-15', '2024-11-05', 599.99, 'Partnership', 1, 1, 1);
 
@@ -1064,7 +1109,6 @@ ALTER TABLE Login
 ADD CONSTRAINT FK_Login_User
 FOREIGN KEY (UserID) REFERENCES [User](UserID);
 GO
-------------
 ALTER TABLE Login
 CHECK CONSTRAINT FK_Login_User;
 GO
@@ -1074,7 +1118,6 @@ ALTER TABLE Address
 ADD CONSTRAINT FK_Address_User
 FOREIGN KEY (UserID) REFERENCES [User](UserID);
 GO
-------------
 ALTER TABLE Address
 CHECK CONSTRAINT FK_Address_User;
 GO
@@ -1084,7 +1127,6 @@ ALTER TABLE UserCommunity
 ADD CONSTRAINT FK_UserCommunity_User
 FOREIGN KEY (UserID) REFERENCES [User](UserID);
 GO
-------------
 ALTER TABLE UserCommunity
 CHECK CONSTRAINT FK_UserCommunity_User;
 GO
@@ -1094,7 +1136,6 @@ ALTER TABLE UserCommunity
 ADD CONSTRAINT FK_UserCommunity_Community
 FOREIGN KEY (CommunityID) REFERENCES Community(CommunityID);
 GO
-------------
 ALTER TABLE UserCommunity
 CHECK CONSTRAINT FK_UserCommunity_Community;
 GO
@@ -1104,18 +1145,15 @@ ALTER TABLE Booking
 ADD CONSTRAINT FK_Booking_User
 FOREIGN KEY (UserID) REFERENCES [User](UserID);
 GO
-------------
 ALTER TABLE Booking
 CHECK CONSTRAINT FK_Booking_User;
 GO
-
 
 -- Skapa relation mellan Booking och HauntedPlace tabellerna
 ALTER TABLE HauntedPlace
 ADD CONSTRAINT FK_HauntedPlace_Booking
 FOREIGN KEY (BookingID) REFERENCES Booking(BookingID);
 GO
---------
 ALTER TABLE HauntedPlace
 CHECK CONSTRAINT FK_HauntedPlace_Booking;
 GO
@@ -1125,7 +1163,6 @@ ALTER TABLE Payment
 ADD CONSTRAINT FK_Payment_Booking
 FOREIGN KEY (BookingID) REFERENCES Booking(BookingID);
 GO
----------
 ALTER TABLE Payment
 CHECK CONSTRAINT FK_Payment_Booking;
 GO
@@ -1135,7 +1172,6 @@ ALTER TABLE UserAdvertisement
 ADD CONSTRAINT FK_UserAdvertisement_User
 FOREIGN KEY (UserID) REFERENCES [User](UserID);
 GO
----------
 ALTER TABLE UserAdvertisement
 CHECK CONSTRAINT FK_UserAdvertisement_User;
 GO
@@ -1145,36 +1181,24 @@ ALTER TABLE UserAdvertisement
 ADD CONSTRAINT FK_UserAdvertisement_Advertisement
 FOREIGN KEY (AdvertisementID) REFERENCES Advertisement(AdvertisementID);
 GO
----------
 ALTER TABLE UserAdvertisement
 CHECK CONSTRAINT FK_UserAdvertisement_Advertisement;
 GO
-
-
--- Lägg till CHECK CONSTRAINT för UserAdvertisement tabellen
---ALTER TABLE UserAdvertisement
---ADD CONSTRAINT CHK_UserAdvertisement_Exists
---CHECK (EXISTS (
-    --SELECT 1 FROM [User] WHERE [User].UserID = UserAdvertisement.UserID
---) AND EXISTS (
---    SELECT 1 FROM Advertisement WHERE Advertisement.AdvertisementID = UserAdvertisement.AdvertisementID
---));
 
 -- Skapa relation mellan Review och User tabellerna
 ALTER TABLE Review
 ADD CONSTRAINT FK_Review_User
 FOREIGN KEY (UserID) REFERENCES [User](UserID);
 GO
----------
 ALTER TABLE Review
 CHECK CONSTRAINT FK_Review_User;
 GO
+
 -- Skapa relation mellan Review och Event tabellerna
 ALTER TABLE Review
 ADD CONSTRAINT FK_Review_Event
 FOREIGN KEY (EventID) REFERENCES Event(EventID);
 GO
----------
 ALTER TABLE Review
 CHECK CONSTRAINT FK_Review_Event;
 GO
@@ -1184,7 +1208,6 @@ ALTER TABLE EventLocation
 ADD CONSTRAINT FK_EventLocation_Event
 FOREIGN KEY (EventID) REFERENCES Event(EventID);
 GO
----------
 ALTER TABLE EventLocation
 CHECK CONSTRAINT FK_EventLocation_Event;
 GO
@@ -1194,8 +1217,7 @@ ALTER TABLE EventAdvertisement
 ADD CONSTRAINT FK_EventAdvertisement_Event
 FOREIGN KEY (EventID) REFERENCES Event(EventID);
 GO
----------
-ALTER TABLE EventLocation
+ALTER TABLE EventAdvertisement
 CHECK CONSTRAINT FK_EventAdvertisement_Event;
 GO
 
@@ -1204,7 +1226,6 @@ ALTER TABLE Partnership
 ADD CONSTRAINT FK_Partnership_HauntedPlace
 FOREIGN KEY (HauntedPlaceID) REFERENCES HauntedPlace(HauntedPlaceID);
 GO
----------
 ALTER TABLE Partnership
 CHECK CONSTRAINT FK_Partnership_HauntedPlace;
 GO
@@ -1212,9 +1233,8 @@ GO
 -- Skapa relation mellan Partnership och PartnershipType tabellerna
 ALTER TABLE Partnership
 ADD CONSTRAINT FK_Partnership_PartnershipType
-FOREIGN KEY (PartnershipTypeID) REFERENCES PartnershipType(PartnershipTypeID);
+FOREIGN KEY (PartnershipTypeID) REFERENCES PartnershipType(PartnershipType);
 GO
----------
 ALTER TABLE Partnership
 CHECK CONSTRAINT FK_Partnership_PartnershipType;
 GO
@@ -1224,19 +1244,25 @@ ALTER TABLE PartnershipContact
 ADD CONSTRAINT FK_PartnershipContact_Partnership
 FOREIGN KEY (PartnershipID) REFERENCES Partnership(PartnershipID);
 GO
----------
-ALTER TABLE PartnerShipContact
+
+-- Kontrollera constraint
+ALTER TABLE PartnershipContact
 CHECK CONSTRAINT FK_PartnershipContact_Partnership;
 GO
 
+ALTER TABLE PartnershipAdvertisement
+DROP CONSTRAINT IF EXISTS FK_PartnershipAdvertisement_PartnershipType;
+GO
 -- Skapa relation mellan PartnershipAdvertisement och Partnership tabellerna
 ALTER TABLE PartnershipAdvertisement
-ADD CONSTRAINT FK_PartnershipAdvertisement_Partnership
-FOREIGN KEY (PartnershipID) REFERENCES Partnership(PartnershipID);
+ADD CONSTRAINT FK_PartnershipAdvertisement_PartnershipType
+FOREIGN KEY (PartnershipTypeID) REFERENCES PartnershipType(PartnershipType);
+
 GO
----------
+
+-- Kontrollera constraint
 ALTER TABLE PartnershipAdvertisement
-CHECK CONSTRAINT FK_PartnershipAdvertisement_Partnership;
+CHECK CONSTRAINT FK_PartnershipAdvertisement_PartnershipType;
 GO
 
 -- Skapa relation mellan PartnershipAdvertisement och PartnershipAdType tabellerna
@@ -1244,47 +1270,42 @@ ALTER TABLE PartnershipAdvertisement
 ADD CONSTRAINT FK_PartnershipAdvertisement_PartnershipAdType
 FOREIGN KEY (AdTypeID) REFERENCES PartnershipAdType(PartnershipAdTypeID);
 GO
----------
 ALTER TABLE PartnershipAdvertisement
-CHECK CONSTRAINT FK_PartnershipAdvertisement_PartnershipADType;
+CHECK CONSTRAINT FK_PartnershipAdvertisement_PartnershipAdType;
 GO
 
 -- Skapa relation mellan HauntedPlace och HauntedPlaceLocation tabellerna
-ALTER TABLE HauntedPlace
+ALTER TABLE HauntedPlaceLocation
 ADD CONSTRAINT FK_HauntedPlace_HauntedPlaceLocation
-FOREIGN KEY (HauntedPlaceID) REFERENCES HauntedPlaceLocation(HauntedPlaceID);
+FOREIGN KEY (HauntedPlaceID) REFERENCES HauntedPlace(HauntedPlaceID);
 GO
----------
-ALTER TABLE HauntedPlace
+ALTER TABLE HauntedPlaceLocation
 CHECK CONSTRAINT FK_HauntedPlace_HauntedPlaceLocation;
 GO
 
 -- Skapa relation mellan AdType och HauntedPlace tabellerna
 ALTER TABLE AdType
 ADD CONSTRAINT FK_AdType_HauntedPlace
-FOREIGN KEY (HauntePlaceID) REFERENCES HauntedPlace(HauntedPlaceID);
+FOREIGN KEY (HauntedPlaceID) REFERENCES HauntedPlace(HauntedPlaceID);
 GO
----------
 ALTER TABLE AdType
 CHECK CONSTRAINT FK_AdType_HauntedPlace;
 GO
 
 -- Skapa relation mellan HauntedPlaceAdvertisement och HauntedPlace tabellerna
-ALTER TABLE HauntedPlaceAdvertisement
-ADD CONSTRAINT FK_HauntedPlaceAdvertisement_HauntedPlace
-FOREIGN KEY (HauntedPlaceID) REFERENCES HauntedPlace(HauntedPlaceID);
-GO
----------
-ALTER TABLE HauntedPlaceAdvertisement
-CHECK CONSTRAINT FK_HauntedPlaceAdvertisement_HauntedPlace;
-GO
+--ALTER TABLE HauntedPlaceAdvertisement
+--ADD CONSTRAINT FK_HauntedPlaceAdvertisement_HauntedPlace
+--FOREIGN KEY (HauntedPlaceID) REFERENCES HauntedPlace(HauntedPlaceID);
+--GO
+--ALTER TABLE HauntedPlaceAdvertisement
+--CHECK CONSTRAINT FK_HauntedPlaceAdvertisement_HauntedPlace;
+--GO
 
 -- Skapa relation mellan ResourceType och Resource tabellerna
 ALTER TABLE Resource
 ADD CONSTRAINT FK_Resource_ResourceType
 FOREIGN KEY (ResourceTypeID) REFERENCES ResourceType(ResourceID);
 GO
----------
 ALTER TABLE Resource
 CHECK CONSTRAINT FK_Resource_ResourceType;
 GO
@@ -1294,7 +1315,6 @@ ALTER TABLE Resource
 ADD CONSTRAINT FK_Resource_HauntedPlace
 FOREIGN KEY (HauntedPlaceID) REFERENCES HauntedPlace(HauntedPlaceID);
 GO
----------
 ALTER TABLE Resource
 CHECK CONSTRAINT FK_Resource_HauntedPlace;
 GO
@@ -1304,7 +1324,6 @@ ALTER TABLE Notification
 ADD CONSTRAINT FK_Notification_User
 FOREIGN KEY (UserID) REFERENCES [User](UserID);
 GO
----------
 ALTER TABLE Notification
 CHECK CONSTRAINT FK_Notification_User;
 GO
@@ -1314,7 +1333,6 @@ ALTER TABLE Notification
 ADD CONSTRAINT FK_Notification_NotificationType
 FOREIGN KEY (NotificationTypeID) REFERENCES NotificationType(NotificationTypeID);
 GO
----------
 ALTER TABLE Notification
 CHECK CONSTRAINT FK_Notification_NotificationType;
 GO
@@ -1324,17 +1342,18 @@ ALTER TABLE UserPremium
 ADD CONSTRAINT FK_UserPremium_User
 FOREIGN KEY (UserID) REFERENCES [User](UserID);
 GO
----------
 ALTER TABLE UserPremium
 CHECK CONSTRAINT FK_UserPremium_User;
 GO
 
 -- Skapa relation mellan UserPremium och Premium tabellerna
 ALTER TABLE UserPremium
+DROP CONSTRAINT IF EXISTS FK_UserPremium_Premium;
+GO
+ALTER TABLE UserPremium
 ADD CONSTRAINT FK_UserPremium_Premium
 FOREIGN KEY (PremiumID) REFERENCES Premium(PremiumID);
 GO
----------
 ALTER TABLE UserPremium
 CHECK CONSTRAINT FK_UserPremium_Premium;
 GO
@@ -1344,7 +1363,6 @@ ALTER TABLE PremiumPayment
 ADD CONSTRAINT FK_PremiumPayment_User
 FOREIGN KEY (UserID) REFERENCES [User](UserID);
 GO
----------
 ALTER TABLE PremiumPayment
-CHECK CONSTRAINT FK_UserPremium_User;
+CHECK CONSTRAINT FK_PremiumPayment_User;
 GO
