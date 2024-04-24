@@ -15,6 +15,6 @@ Produktkategorier mest såld - per kategori (Bar chart)
 Andel produkter per kategorier - per kategori (Bar/Pie chart)
 Vilken produkt trendar just nu?
 Vilken produkt säljar sämst?
-Vilka produkter returneras/reklameras?
+(Vilka produkter returneras/reklameras?) jag vill ta reda på produkter med högst/lägst reviews
 En interger med en siffra som visar AKTIVA kunder?
 Produktrecensioner? Bäst

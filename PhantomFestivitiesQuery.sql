@@ -24,3 +24,7 @@ JOIN Partnership p ON hp.HauntedPlaceID = p.HauntedPlaceID;
 SELECT *
 FROM [User] u
 JOIN Address a ON u.UserID = a.UserID;
+
+SELECT *
+FROM HauntedPlace hp
+JOIN Booking b ON hp.BookingID = b.BookingID;
