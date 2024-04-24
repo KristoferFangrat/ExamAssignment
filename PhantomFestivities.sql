@@ -3,7 +3,7 @@ BEGIN
     CREATE DATABASE PhantomFestivities;
 END
 GO
-USE PhantomFestivities;
+USE PhantomFestivitiesOld;
 GO
 
 -- create tables
