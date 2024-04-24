@@ -14,3 +14,6 @@ SELECT *
 FROM Event e
 JOIN EventLocation el ON e.EventID = el.EventID
 JOIN EventAdvertisement ea on e.EventID = ea.EventID;
+
+SELECT *
+FROM HauntedPlace;

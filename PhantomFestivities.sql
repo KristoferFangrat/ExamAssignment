@@ -1244,6 +1244,14 @@ GO
 ALTER TABLE HauntedPlaceReview
 CHECK CONSTRAINT FK_HauntedReview_Review;
 GO
+-- Skapa relation mellan HauntedReview och HauntedPlace tabellerna
+ALTER TABLE HauntedPlaceReview
+ADD CONSTRAINT FK_HauntedReview_HauntedPlace
+FOREIGN KEY (HauntedPlaceID) REFERENCES HauntedPlace(HauntedPlaceID);
+GO
+ALTER TABLE HauntedPlaceReview
+CHECK CONSTRAINT FK_HauntedReview_Review;
+GO
 
 -- Skapa relation mellan Review och User tabellerna
 ALTER TABLE HauntedPlaceAdvertisement
