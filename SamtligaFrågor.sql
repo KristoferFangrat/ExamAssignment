@@ -16,16 +16,17 @@ ORDER BY FullName DESC;
 SELECT SUM(s.TotalPrice) AS TotalRevenue
 FROM Sale s
 JOIN Product p ON s.ProductID = p.ProductID;
--bäst säljande månad
+--bäst säljande månad
 SELECT SUM(o.OrderID) As BestSellingMonth, o.OrderDate, o.OrderID
 FROM [Order] o
+WHERE o.OrderDate > '2023-10-01'
 GROUP BY o.OrderID, o.OrderDate
 ORDER BY o.OrderDate;
 --produkter med högst och lägst betyg
-SELECT p.Name, CONCAT_WS(' - ', r.Rating, r.Text) AS RatingWithText
+SELECT p.Name AS ProductName, CONCAT_WS(' - ', r.Rating, r.Text) AS RatingWithText
 FROM Review r
 JOIN Product p ON r.ReviewID = p.ReviewID
-WHERE r.Rating >= 3; 
+WHERE r.Rating = 5 OR r.Rating = 1; 
 
 SELECT AVG(p.ProductID) AS AverageProductsInOrder
 FROM [Order] o
