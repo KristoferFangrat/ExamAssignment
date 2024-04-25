@@ -1,0 +1,10 @@
+Vilka kunder finns det i systemet och vilka är deras kontaktuppgifter?
+Vilka beställningar har gjorts och av vilka kunder?
+Vilka produkter har sålts och hur många?
+Vilka recensioner har lämnats och av vilka kunder?
+Vilka evenemang har planerats och var kommer de att äga rum?
+Vilka leverantörer finns tillgängliga och vilka produkter tillhandahåller de?
+Vilka är de mest populära produkterna baserat på antal sålda enheter?
+Vilka kunder har gjort flest beställningar?
+Vilka evenemang har fått de högsta betygen i recensioner?
+Vilka är de mest aktiva kunderna baserat på deras interaktion med systemet?

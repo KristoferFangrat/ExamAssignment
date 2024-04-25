@@ -128,8 +128,8 @@ CREATE TABLE EventLocation (
     Region NVARCHAR(50) NOT NULL,
     Country NVARCHAR(50) NOT NULL,
     Zipcode NVARCHAR(20) NOT NULL,
-    Latitude DECIMAL(7,5) NOT NULL,
-    Longitude DECIMAL (8,5) NOT NULL,
+    Latitude FLOAT NOT NULL,
+    Longitude FLOAT NOT NULL,
 	EventID INT NOT NULL
 );
 
