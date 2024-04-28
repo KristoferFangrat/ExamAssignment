@@ -200,6 +200,113 @@ VALUES
 (50, 'DIF Nyckelband', 'Ett nyckelband med avtagbart spänne', 49.99, 150, NULL),
 (51, 'DIF Väggklocka', 'En väggklocka med Djurgårdens IF-logo', 499.99, 20, NULL);
 
+-- Lägg till kategorier för produkter
+INSERT INTO Category (CategoryID, Name, ProductID)
+VALUES 
+-- Kläder
+(1, 'Kläder', 1), -- DIF Fotbollströja Junior
+(1, 'Kläder', 2), -- DIF Barnmössa
+(1, 'Kläder', 3), -- DIF Barn T-shirt
+(1, 'Kläder', 4), -- DIF Barn Hoodie
+(1, 'Kläder', 5), -- DIF Barn Jeans
+(1, 'Kläder', 18), -- DIF Baby Body
+(1, 'Kläder', 19), -- DIF Baby Mössa
+(1, 'Kläder', 20), -- DIF Baby Tossor
+(1, 'Kläder', 52), -- DIF Baby Overall
+(1, 'Kläder', 53), -- DIF Dam Träningstights
+(1, 'Kläder', 54), -- DIF Herr Jacka
+-- Merchandise
+(2, 'Merchandise', 6), -- DIF Nyckelring
+(2, 'Merchandise', 7), -- DIF Magnet
+(2, 'Merchandise', 8), -- DIF Flagga
+(2, 'Merchandise', 38), -- DIF Hårband
+(2, 'Merchandise', 39), -- DIF Nyckelband
+(2, 'Merchandise', 40), -- DIF Plånbok
+(2, 'Merchandise', 55), -- DIF Nyckelring
+(2, 'Merchandise', 56), -- DIF Väska
+(2, 'Merchandise', 57), -- DIF Solglasögon
+-- Utrustning
+(3, 'Utrustning', 9), -- DIF Fotboll
+(3, 'Utrustning', 10), -- DIF Fotbollsskor
+(3, 'Utrustning', 58), -- DIF Fotbollsmål
+(3, 'Utrustning', 59), -- DIF Fotbollsväska
+(3, 'Utrustning', 60), -- DIF Vattenflaska
+(3, 'Utrustning', 41), -- DIF Fotbollsskor
+(3, 'Utrustning', 42), -- DIF Fotbollsshorts
+(3, 'Utrustning', 43), -- DIF Fotbollshandskar
+-- Accessoarer
+(4, 'Accessoarer', 11), -- DIF Barn Keps
+(4, 'Accessoarer', 12), -- DIF Vattenflaska
+(4, 'Accessoarer', 61), -- DIF Sportarmband
+(4, 'Accessoarer', 62), -- DIF Paraply
+(4, 'Accessoarer', 63), -- DIF Näsduk
+(4, 'Accessoarer', 44), -- DIF Barn Keps
+(4, 'Accessoarer', 45), -- DIF Scarf
+(4, 'Accessoarer', 46), -- DIF Nyckelring
+-- Lyxiga produkter
+(5, 'Lyxiga produkter', 13), -- DIF Guldarmband
+(5, 'Lyxiga produkter', 14), -- DIF Lyxklocka
+(5, 'Lyxiga produkter', 47), -- DIF Diamantörhängen
+(5, 'Lyxiga produkter', 48), -- DIF Lyxig Fotboll
+(5, 'Lyxiga produkter', 64), -- DIF Guldarmband
+(5, 'Lyxiga produkter', 65), -- DIF Lyxig Fotbollssko
+-- Övrigt
+(6, 'Övrigt', 15), -- DIF Teddybjörn
+(6, 'Övrigt', 16), -- DIF Muggset
+(6, 'Övrigt', 17), -- DIF Väggkonst
+(6, 'Övrigt', 66), -- DIF Kudde
+(6, 'Övrigt', 67), -- DIF USB-minne
+(6, 'Övrigt', 68) -- DIF Klockradio
+-- Lägg till fler kategorier och produkter här om det behövs
+;
+
+-- Lägg till 100 slumpmässiga ordrar för åren 2022 och 2023
+DECLARE @counter INT = 1;
+
+WHILE @counter <= 100
+BEGIN
+    -- Generera slumpmässiga värden för OrderID, OrderDate, Status, ProductID och CustomerID
+    DECLARE @OrderID INT = @counter;
+    DECLARE @OrderDate DATE;
+
+    -- Slumpmässigt välj mellan 2022 och 2023
+    IF @counter % 2 = 0
+        SET @OrderDate = DATEADD(year, 1, DATEADD(day, -@counter, '2022-01-01')); -- Slumpmässigt datum inom 2022
+    ELSE
+        SET @OrderDate = DATEADD(day, -@counter, '2023-01-01'); -- Slumpmässigt datum inom 2023
+
+    DECLARE @Status NVARCHAR(50) = CASE WHEN @counter % 2 = 0 THEN 'Completed' ELSE 'In Progress' END;
+    DECLARE @ProductID INT = ABS(CHECKSUM(NEWID())) % 100 + 1; -- Slumpmässigt ProductID mellan 1 och 100
+    DECLARE @CustomerID INT = ABS(CHECKSUM(NEWID())) % 42 + 1; -- Slumpmässigt CustomerID mellan 1 och 42
+
+    -- Lägg till den slumpmässiga ordern i tabellen
+    INSERT INTO [Order] (OrderID, OrderDate, Status, ProductID, CustomerID)
+    VALUES (@OrderID, @OrderDate, @Status, @ProductID, @CustomerID);
+
+    SET @counter = @counter + 1;
+END;
+
+-- Lägg till data i tabellen ShoppingCart
+INSERT INTO ShoppingCart (ShoppingCartID, CustomerID, ProductID, Quantity) VALUES (1, 10, 50, 3);
+INSERT INTO ShoppingCart (ShoppingCartID, CustomerID, ProductID, Quantity) VALUES (2, 15, 20, 1);
+
+
+-- Lägg till data i tabellen TransactionLog
+INSERT INTO TransactionLog (LogID, Timestamp, Action, Description, OrderID) VALUES (1, '2024-04-26 15:30:00', 'Purchase', 'Successful transaction', 100);
+INSERT INTO TransactionLog (LogID, Timestamp, Action, Description, OrderID) VALUES (2, '2024-04-25 11:00:00', 'Refund', 'Refunded transaction', 50);
+
+
+-- Lägg till data i tabellen Inventory
+INSERT INTO Inventory (InventoryID, ProductID, Quantity, LastUpdated) VALUES (1, 75, 20, '2024-04-26 10:00:00');
+INSERT INTO Inventory (InventoryID, ProductID, Quantity, LastUpdated) VALUES (2, 30, 15, '2024-04-25 09:00:00');
+
+
+-- Lägg till data i tabellen Supplier
+INSERT INTO Supplier (SupplierID, Name, ContactInfo, ProductID) VALUES (1, 'Supplier A', 'contact@suppliera.com', 60);
+INSERT INTO Supplier (SupplierID, Name, ContactInfo, ProductID) VALUES (2, 'Supplier B', 'contact@supplierb.com', 40);
+
+
+
 ALTER TABLE [Order]
 ADD CONSTRAINT FK_Order_Product
 FOREIGN KEY (ProductID) REFERENCES Product(ProductID);

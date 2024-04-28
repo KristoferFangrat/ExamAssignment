@@ -10,6 +10,7 @@ CREATE TABLE Customer (
     CustomerID INT PRIMARY KEY IDENTITY(1,1),
     FirstName NVARCHAR(50) NOT NULL,
     LastName NVARCHAR(50) NOT NULL,
+	Gender NVARCHAR(10) NOT NULL,
     DateOfBirth DATE NOT NULL,
     CHECK (DateOfBirth < GETDATE()),
     Phonenumber VARCHAR(50) NOT NULL,
@@ -40,7 +41,7 @@ CREATE TABLE [Order] (
     CHECK (NumberOfTickets > 0),
     TotalPrice DECIMAL(10,2) NOT NULL,
     CHECK (TotalPrice >= 0),
-    CustomerID INT NOT NULL,
+    CustomerID INT,
     Cancelled BIT NOT NULL
     CHECK (Cancelled IN (0,1))
 );
@@ -93,8 +94,8 @@ CREATE TABLE ProductLocation (
     Region NVARCHAR(50) NOT NULL,
     Country NVARCHAR(50) NOT NULL,
     Zipcode NVARCHAR(20) NOT NULL,
-    Latitude DECIMAL(7,5) NOT NULL,
-    Longitude DECIMAL (8,5) NOT NULL,
+    Latitude FLOAT NOT NULL,
+    Longitude FLOAT NOT NULL,
 	ProductID INT NOT NULL,
     Active BIT NOT NULL
 );
@@ -114,7 +115,7 @@ CREATE TABLE Event (
     Name NVARCHAR(100) NOT NULL,
     Description NVARCHAR(500) NOT NULL,
     StartDate DATETIME NOT NULL,
-    EndDate DATETIME NOT NULL,
+    EndDate DATETIME2(0) NOT NULL,
     Location NVARCHAR(200) NOT NULL,
     OrderID INT, -- Kan vara null om det inte finns någon order
     ReviewID INT, -- Kan vara null om det inte finns en recension
@@ -149,58 +150,58 @@ CREATE TABLE SupplierType (
 );
 --insert data
 -- Kunder från Sverige
-INSERT INTO Customer (FirstName, LastName, DateOfBirth, Phonenumber, Email, Active)
+INSERT INTO Customer (FirstName, LastName, Gender, DateOfBirth, Phonenumber, Email, Active)
 VALUES 
-    ('Elsa', 'Andersson', '1990-01-01', '+46701234567', 'elsa.andersson@sverige.com', 1),
-    ('Anna', 'Larsson', '1985-03-15', '+46781234567', 'anna.larsson@sverige.com', 1),
-    ('Johan', 'Nilsson', '1980-06-20', '+4689123456', 'johan.nilsson@sverige.com', 1),
-    ('Emma', 'Eriksson', '1975-09-25', '+46701234568', 'emma.eriksson@sverige.com', 1),
-    ('Oscar', 'Karlsson', '1970-12-30', '+46781234569', 'oscar.karlsson@sverige.com', 1),
-    ('Ida', 'Svensson', '1991-02-14', '+4689123457', 'ida.svensson@sverige.com', 1),
-    ('Erik', 'Gustavsson', '1986-05-21', '+46701234570', 'erik.gustavsson@sverige.com', 1),
-    ('Maria', 'Johansson', '1993-08-17', '+4689123458', 'maria.johansson@sverige.com', 1),
-    ('Andreas', 'Persson', '1988-11-02', '+46701234571', 'andreas.persson@sverige.com', 1),
-    ('Sofia', 'Lindberg', '1983-04-05', '+46781234572', 'sofia.lindberg@sverige.com', 1),
-    ('Karl', 'Berg', '1978-07-10', '+4689123459', 'karl.berg@sverige.com', 1),
-    ('Emelie', 'Sjöberg', '1973-10-15', '+46701234573', 'emelie.sjoberg@sverige.com', 1),
-    ('Peter', 'Holm', '1994-01-20', '+46781234574', 'peter.holm@sverige.com', 1),
-    ('Hanna', 'Nordström', '1989-04-25', '+4689123460', 'hanna.nordstrom@sverige.com', 1),
-    ('Magnus', 'Ek', '1984-07-30', '+46701234575', 'magnus.ek@sverige.com', 1),
-    ('Sara', 'Sandberg', '1979-11-04', '+46781234576', 'sara.sandberg@sverige.com', 1),
-	('Peter', 'Eriksson', '1993-02-20', '0765432109', 'peter.eriksson@example.com', 1),
-    ('Sara', 'Persson', '1995-06-30', '0732109876', 'sara.persson@example.com', 1),
-    ('Daniel', 'Gustavsson', '1989-04-18', '0790123456', 'daniel.gustavsson@example.com', 1);
+    ('Elsa', 'Andersson', 'Female', '1990-01-01', '+46701234567', 'elsa.andersson@sverige.com', 1),
+    ('Anna', 'Larsson', 'Female', '1985-03-15', '+46781234567', 'anna.larsson@sverige.com', 1),
+    ('Johan', 'Nilsson', 'Male', '1980-06-20', '+4689123456', 'johan.nilsson@sverige.com', 1),
+    ('Emma', 'Eriksson', 'Female', '1975-09-25', '+46701234568', 'emma.eriksson@sverige.com', 1),
+    ('Oscar', 'Karlsson', 'Male','1970-12-30', '+46781234569', 'oscar.karlsson@sverige.com', 1),
+    ('Ida', 'Svensson', 'Female', '1991-02-14', '+4689123457', 'ida.svensson@sverige.com', 1),
+    ('Erik', 'Gustavsson', 'Male', '1986-05-21', '+46701234570', 'erik.gustavsson@sverige.com', 1),
+    ('Maria', 'Johansson', 'Female', '1993-08-17', '+4689123458', 'maria.johansson@sverige.com', 1),
+    ('Andreas', 'Persson', 'Male', '1988-11-02', '+46701234571', 'andreas.persson@sverige.com', 1),
+    ('Sofia', 'Lindberg', 'Female','1983-04-05', '+46781234572', 'sofia.lindberg@sverige.com', 1),
+    ('Karl', 'Berg', 'Male','1978-07-10', '+4689123459', 'karl.berg@sverige.com', 1),
+    ('Emelie', 'Sjöberg', 'Female','1973-10-15', '+46701234573', 'emelie.sjoberg@sverige.com', 1),
+    ('Peter', 'Holm', 'Male','1994-01-20', '+46781234574', 'peter.holm@sverige.com', 1),
+    ('Hanna', 'Nordström', 'Female','1989-04-25', '+4689123460', 'hanna.nordstrom@sverige.com', 1),
+    ('Magnus', 'Ek', 'Male','1984-07-30', '+46701234575', 'magnus.ek@sverige.com', 1),
+    ('Sara', 'Sandberg', 'Female','1979-11-04', '+46781234576', 'sara.sandberg@sverige.com', 1),
+	('Peter', 'Eriksson', 'Male','1993-02-20', '0765432109', 'peter.eriksson@example.com', 1),
+    ('Sara', 'Persson', 'Female','1995-06-30', '0732109876', 'sara.persson@example.com', 1),
+    ('Daniel', 'Gustavsson', 'Male','1989-04-18', '0790123456', 'daniel.gustavsson@example.com', 1);
 
 -- Kunder från Polen
-INSERT INTO Customer (FirstName, LastName, DateOfBirth, Phonenumber, Email, Active)
+INSERT INTO Customer (FirstName, LastName, Gender, DateOfBirth, Phonenumber, Email, Active)
 VALUES 
-    ('Kamil', 'Nowak', '1990-02-20', '+48600123456', 'kamil.nowak@polen.com', 1),
-    ('Piotr', 'Kowalski', '1985-05-25', '+48650987654', 'piotr.kowalski@polen.com', 1),
-    ('Karolina', 'Duda', '1980-08-30', '+48765432109', 'karolina.duda@polen.com', 1),
-    ('Aleksandra', 'Wójcik', '1975-11-05', '+48500987654', 'aleksandra.wojcik@polen.com', 1),
-    ('Michał', 'Kamiński', '1991-01-10', '+48600123457', 'michal.kaminski@polen.com', 1),
-    ('Monika', 'Lewandowska', '1986-04-15', '+48650987655', 'monika.lewandowska@polen.com', 1),
-    ('Tomasz', 'Zieliński', '1981-07-20', '+48765432110', 'tomasz.zielinski@polen.com', 1),
-    ('Magdalena', 'Szymańska', '1976-10-25', '+48500987655', 'magdalena.szymanska@polen.com', 1),
-    ('Jakub', 'Woźniak', '1992-03-01', '+48600123458', 'jakub.wozniak@polen.com', 1),
-    ('Agnieszka', 'Dąbrowska', '1987-06-06', '+48650987656', 'agnieszka.dabrowska@polen.com', 1),
-    ('Marcin', 'Kozłowski', '1982-09-11', '+48765432111', 'marcin.kozlowski@polen.com', 1),
-    ('Katarzyna', 'Jankowska', '1977-12-16', '+48500987656', 'katarzyna.jankowska@polen.com', 1),
-	('Magdalena', 'Zajac', '1991-09-20', '678901234', 'magdalena.zajac@example.com', 1),
-    ('Tomasz', 'Duda', '1978-12-10', '890123456', 'tomasz.duda@example.com', 1),
-    ('Barbara', 'Wrobel', '1994-07-05', '0987654321', 'barbara.wrobel@example.com', 1);
+    ('Kamil', 'Nowak', 'Male','1990-02-20', '+48600123456', 'kamil.nowak@polen.com', 1),
+    ('Piotr', 'Kowalski', 'Male','1985-05-25', '+48650987654', 'piotr.kowalski@polen.com', 1),
+    ('Karolina', 'Duda', 'Female','1980-08-30', '+48765432109', 'karolina.duda@polen.com', 1),
+    ('Aleksandra', 'Wójcik', 'Female','1975-11-05', '+48500987654', 'aleksandra.wojcik@polen.com', 1),
+    ('Michał', 'Kamiński', 'Male','1991-01-10', '+48600123457', 'michal.kaminski@polen.com', 1),
+    ('Monika', 'Lewandowska', 'Female','1986-04-15', '+48650987655', 'monika.lewandowska@polen.com', 1),
+    ('Tomasz', 'Zieliński', 'Male','1981-07-20', '+48765432110', 'tomasz.zielinski@polen.com', 1),
+    ('Magdalena', 'Szymańska', 'Female','1976-10-25', '+48500987655', 'magdalena.szymanska@polen.com', 1),
+    ('Jakub', 'Woźniak', 'Male','1992-03-01', '+48600123458', 'jakub.wozniak@polen.com', 1),
+    ('Agnieszka', 'Dąbrowska', 'Female','1987-06-06', '+48650987656', 'agnieszka.dabrowska@polen.com', 1),
+    ('Marcin', 'Kozłowski', 'Male','1982-09-11', '+48765432111', 'marcin.kozlowski@polen.com', 1),
+    ('Katarzyna', 'Jankowska', 'Female','1977-12-16', '+48500987656', 'katarzyna.jankowska@polen.com', 1),
+	('Magdalena', 'Zajac', 'Female','1991-09-20', '678901234', 'magdalena.zajac@example.com', 1),
+    ('Tomasz', 'Duda', 'Male','1978-12-10', '890123456', 'tomasz.duda@example.com', 1),
+    ('Barbara', 'Wrobel', 'Female','1994-07-05', '0987654321', 'barbara.wrobel@example.com', 1);
 
 -- Kunder från Storbritannien
-INSERT INTO Customer (FirstName, LastName, DateOfBirth, Phonenumber, Email, Active)
+INSERT INTO Customer (FirstName, LastName, Gender, DateOfBirth, Phonenumber, Email, Active)
 VALUES 
-    ('Emily', 'Smith', '1993-03-25', '+447712345678', 'emily.smith@uk.com', 1),
-    ('Jack', 'Johnson', '1988-06-30', '+447823456789', 'jack.johnson@uk.com', 1),
-    ('Sophie', 'Williams', '1983-10-05', '+447612345678', 'sophie.williams@uk.com', 1),
-    ('Oliver', 'Brown', '1978-01-10', '+447712345679', 'oliver.brown@uk.com', 1),
-    ('Harry', 'Jones', '1994-04-15', '+447823456790', 'harry.jones@uk.com', 1),
-    ('Amelia', 'Taylor', '1989-07-20', '+447612345679', 'amelia.taylor@uk.com', 1),
-	('Daniel', 'Thomas', '1988-11-25', '0712345678', 'daniel.thomas@example.com', 1),
-    ('Jessica', 'Roberts', '1992-09-15', '0745678901', 'jessica.roberts@example.com', 1);
+    ('Emily', 'Smith', 'Female','1993-03-25', '+447712345678', 'emily.smith@uk.com', 1),
+    ('Jack', 'Johnson', 'Male','1988-06-30', '+447823456789', 'jack.johnson@uk.com', 1),
+    ('Sophie', 'Williams', 'Female','1983-10-05', '+447612345678', 'sophie.williams@uk.com', 1),
+    ('Oliver', 'Brown', 'Male','1978-01-10', '+447712345679', 'oliver.brown@uk.com', 1),
+    ('Harry', 'Jones', 'Male','1994-04-15', '+447823456790', 'harry.jones@uk.com', 1),
+    ('Amelia', 'Taylor', 'Female','1989-07-20', '+447612345679', 'amelia.taylor@uk.com', 1),
+	('Daniel', 'Thomas', 'Male','1988-11-25', '0712345678', 'daniel.thomas@example.com', 1),
+    ('Jessica', 'Roberts', 'Female','1992-09-15', '0745678901', 'jessica.roberts@example.com', 1);
 
 -- Adresser för kunder från Sverige
 INSERT INTO Address (Street, City, Region, Country, Zipcode, CustomerID)
@@ -241,7 +242,9 @@ VALUES
     ('Adama Mickiewicza 30', 'Częstochowa', 'Silesian Voivodeship', 'Poland', '42-001', 30),
 	('ul. Kilińskiego 1', 'Lublin', 'Lublin Voivodeship', 'Poland', '20-001', 31),
     ('ul. Piłsudskiego 20', 'Rzeszów', 'Subcarpathian Voivodeship', 'Poland', '35-001', 32),
-    ('Plac Teatralny 5', 'Toruń', 'Kuyavian-Pomeranian Voivodeship', 'Poland', '87-100', 33);
+    ('Plac Teatralny 5', 'Toruń', 'Kuyavian-Pomeranian Voivodeship', 'Poland', '87-100', 33),
+	('ul. Piękna 10', 'Warsaw', 'Masovian Voivodeship', 'Poland', '00-001', 34);
+
 
 
 -- Adresser för kunder från Storbritannien
@@ -256,313 +259,94 @@ VALUES
     ('Millennium Stadium', 'Cardiff', 'Wales', 'United Kingdom', 'CF10 1NS', 40),
     ('Stormont Estate', 'Belfast', 'Northern Ireland', 'United Kingdom', 'BT4 3SH', 41);
 
--- Skapa data poster för en kund som har gjort 9 ordrar
+-- Add orders for the year 2022
 INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
 VALUES 
-    ('2023-10-31', 2, 100.00, 1, 0),
-    ('2023-10-31', 3, 150.00, 1, 0),
-    ('2023-11-01', 1, 50.00, 1, 0),
-    ('2023-11-01', 4, 200.00, 1, 0),
-    ('2023-11-02', 2, 100.00, 1, 0),
-    ('2023-11-02', 2, 100.00, 1, 0),
-    ('2023-11-03', 3, 150.00, 1, 0),
-    ('2023-11-03', 1, 50.00, 1, 0),
-    ('2023-11-03', 2, 100.00, 1, 0);
+    ('2022-01-01', 2, 19999.00, 1, 0),
+    ('2022-02-15', 3, 1599.00, 1, 0),
+    ('2022-03-10', 1, 599.00, 1, 0),
+    ('2022-04-22', 4, 2999.00, 2, 0),
+    ('2022-05-05', 2, 1989.00, 2, 0),
+    ('2022-06-30', 2, 1789.00, 3, 0),
+    ('2022-07-14', 3, 1499.00, 4, 0),
+    ('2022-08-20', 1, 5205.00, 5, 0),
+    ('2022-09-03', 2, 1999.00, 6, 0),
+    ('2022-10-18', 2, 10099.00, 7, 0),
+    ('2022-11-25', 3, 15999.00, 8, 0),
+    ('2022-12-05', 1, 4999.00, 9, 0),
+	('2022-01-15', 2, 1199.00, 10, 0),
+    ('2022-02-28', 3, 15499.00, 11, 0),
+    ('2022-03-20', 1, 499.00, 12, 0),
+    ('2022-04-12', 4, 2199.00, 13, 0),
+    ('2022-05-30', 2, 1199.00, 14, 0),
+    ('2022-06-25', 2, 1999.00, 15, 0),
+    ('2022-07-10', 3, 1599.00, 16, 0),
+    ('2022-08-17', 1, 599.00, 17, 0),
+    ('2022-09-08', 2, 1999.00, 18, 0),
+    ('2022-10-29', 2, 1999.00, 19, 0),
+    ('2022-11-28', 3, 159.00, 20, 0),
+    ('2022-12-30', 1, 699.00, 21, 0);
 
--- Skapa data poster för kunder som har gjort mellan 4 till 5 ordrar
--- Kund 2
+-- Add orders for the year 2023
 INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
 VALUES 
-    ('2023-10-31', 2, 100.00, 2, 0),
-    ('2023-10-31', 3, 150.00, 2, 0),
-    ('2023-11-01', 1, 50.00, 2, 0),
-    ('2023-11-01', 4, 200.00, 2, 0),
-    ('2023-11-02', 2, 100.00, 2, 0);
+    ('2023-01-02', 2, 1000.00, 1, 0),
+    ('2023-02-18', 3, 1599.00, 1, 0),
+    ('2023-03-11', 1, 599.00, 1, 0),
+    ('2023-04-25', 4, 2099.00, 1, 0),
+    ('2023-05-06', 2, 1099.00, 22, 0),
+    ('2023-06-30', 2, 1099.00, 23, 0),
+    ('2023-07-15', 3, 1499.00, 24, 0),
+    ('2023-08-21', 1, 499.00, 24, 0),
+    ('2023-09-04', 2, 999.00, 25, 0),
+    ('2023-10-20', 2, 1099.00, 26, 0),
+    ('2023-11-26', 3, 1590.00, 27, 0),
+    ('2023-12-07', 1, 599.00, 28, 0),
+	('2023-01-10', 2, 1999.00, 29, 0),
+    ('2023-02-20', 3, 1500.00, 30, 0),
+    ('2023-03-25', 1, 500.00, 31, 0),
+    ('2023-04-14', 4, 2199.00, 32, 0),
+    ('2023-05-27', 2, 1999.00, 33, 0),
+    ('2023-06-22', 2, 1099.00, 34, 0),
+    ('2023-07-07', 3, 1599.00, 35, 0),
+    ('2023-08-12', 1, 500.00, 36, 0),
+    ('2023-09-09', 2, 1199.00, 37, 0),
+    ('2023-10-21', 2, 1000.00, 38, 0),
+    ('2023-11-29', 3, 1499.00, 39, 0),
+    ('2023-12-31', 1, 499.00, 40, 0),
+	('2023-01-03', 2, 1000.00, 41, 0),
+    ('2023-02-20', 3, 15000.00, 42, 0),
+    ('2023-03-12', 1, 500.00, 1, 0),
+    ('2023-04-25', 4, 2000.00, 1, 0),
+    ('2023-05-07', 2, 1000.00, 1, 0),
+    ('2023-06-30', 2, 1000.00, 1, 0),
+    ('2023-07-16', 3, 1500.00, 1, 0),
+    ('2023-08-22', 1, 500.00, 1, 0),
+    ('2023-09-05', 2, 1000.00, 1, 0),
+    ('2023-10-22', 2, 1000.00, 1, 0),
+    ('2023-11-27', 3, 1500.00, 1, 0),
+    ('2023-12-08', 1, 500.00, 1, 0),
+	('2023-01-09', 2, 1000.00, 19, 0),
+    ('2023-02-19', 3, 1500.00, 20, 0),
+    ('2023-03-28', 1, 500.00, 21, 0),
+    ('2023-04-18', 4, 2000.00, 21, 0),
+    ('2023-05-26', 2, 1000.00, 22, 0),
+    ('2023-06-20', 2, 1000.00, 22, 0),
+    ('2023-07-06', 3, 1500.00, 23, 0),
+    ('2023-08-11', 1, 500.00, 24, 0),
+    ('2023-09-07', 2, 1000.00, 25, 0),
+    ('2023-10-23', 2, 1000.00, 26, 0),
+    ('2023-11-30', 3, 1500.00, 27, 0),
+    ('2023-12-25', 1, 5000.00, 28, 0);
 
--- Kund 3
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 3, 0),
-    ('2023-10-31', 3, 150.00, 3, 0),
-    ('2023-11-01', 1, 50.00, 3, 0),
-    ('2023-11-01', 4, 200.00, 3, 0),
-    ('2023-11-02', 2, 100.00, 3, 0);
-
--- Kund 4
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 4, 0),
-    ('2023-10-31', 3, 150.00, 4, 0),
-    ('2023-11-01', 1, 50.00, 4, 0),
-    ('2023-11-01', 4, 200.00, 4, 0),
-    ('2023-11-02', 2, 100.00, 4, 0);
-
-	-- Kund 5
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 5, 0),
-    ('2023-10-31', 3, 150.00, 5, 1),
-    ('2023-11-01', 1, 50.00, 5, 0),
-    ('2023-11-01', 4, 200.00, 5, 0),
-    ('2023-11-02', 2, 100.00, 5, 0),
-    ('2023-11-02', 2, 100.00, 5, 0),
-    ('2023-11-03', 3, 150.00, 5, 0);
-
--- Kund 6
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 6, 0),
-    ('2023-10-31', 3, 150.00, 6, 0),
-    ('2023-11-01', 1, 50.00, 6, 0),
-    ('2023-11-01', 4, 200.00, 6, 0),
-    ('2023-11-02', 2, 100.00, 6, 0),
-    ('2023-11-02', 2, 100.00, 6, 0),
-    ('2023-11-03', 3, 150.00, 6, 0);
-
--- Kund 7
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 7, 0),
-    ('2023-10-31', 3, 150.00, 7, 0),
-    ('2023-11-01', 1, 50.00, 7, 0),
-    ('2023-11-01', 4, 200.00, 7, 1),
-    ('2023-11-02', 2, 100.00, 7, 0),
-    ('2023-11-02', 2, 100.00, 7, 0),
-    ('2023-11-03', 3, 150.00, 7, 0);
-
--- Kund 8
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 8, 1);
-
--- Kund 9
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 9, 0),
-    ('2023-11-01', 3, 150.00, 9, 0);
-
--- Kund 10
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 10, 0),
-    ('2023-11-01', 3, 150.00, 10, 1);
-
--- Kund 11
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 11, 0);
-
--- Kund 12
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 12, 0),
-    ('2023-11-01', 3, 150.00, 12, 0),
-    ('2023-11-02', 1, 50.00, 12, 0),
-    ('2023-11-03', 4, 200.00, 12, 1);
-
--- Kund 13
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 13, 0),
-    ('2023-11-01', 3, 150.00, 13, 0),
-    ('2023-11-02', 1, 50.00, 13, 0);
-
--- Kund 14
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 14, 1),
-    ('2023-11-01', 3, 150.00, 14, 0),
-    ('2023-11-02', 1, 50.00, 14, 0);
-
--- Kund 15
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 15, 0),
-    ('2023-11-01', 3, 150.00, 15, 0),
-    ('2023-11-02', 1, 50.00, 15, 0),
-    ('2023-11-03', 4, 200.00, 15, 0);
-
--- Kund 16
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 16, 0);
-
--- Kund 17
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 17, 1),
-    ('2023-11-01', 3, 150.00, 17, 0);
-
--- Kund 18
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 18, 0),
-    ('2023-11-01', 3, 150.00, 18, 1);
-
--- Kund 19
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 19, 0);
-
--- Kund 20
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 20, 0),
-    ('2023-11-01', 3, 150.00, 20, 0),
-    ('2023-11-02', 1, 50.00, 20, 1);
-
--- Kund 21
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 21, 0),
-    ('2023-11-01', 3, 150.00, 21, 0),
-    ('2023-11-02', 1, 50.00, 21, 0);
-
--- Kund 22
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 22, 0),
-    ('2023-11-01', 3, 150.00, 22, 0),
-    ('2023-11-02', 1, 50.00, 22, 0);
-
--- Kund 23
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 23, 0),
-    ('2023-11-01', 3, 150.00, 23, 0),
-    ('2023-11-02', 1, 50.00, 23, 0),
-    ('2023-11-03', 4, 200.00, 23, 1);
-
--- Kund 24
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 24, 0),
-    ('2023-11-01', 3, 150.00, 24, 0);
-
--- Kund 25
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 25, 0),
-    ('2023-11-01', 3, 150.00, 25, 0),
-    ('2023-11-02', 1, 50.00, 25, 0);
-
--- Kund 26
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 26, 0),
-    ('2023-11-01', 3, 150.00, 26, 0),
-    ('2023-11-02', 1, 50.00, 26, 0),
-    ('2023-11-03', 4, 200.00, 26, 1);
-
--- Kund 27
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 27, 0),
-    ('2023-11-01', 3, 150.00, 27, 0),
-    ('2023-11-02', 1, 50.00, 27, 1);
-
--- Kund 28
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 28, 0),
-    ('2023-11-01', 3, 150.00, 28, 0),
-    ('2023-11-02', 1, 50.00, 28, 0);
-
--- Kund 29
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 29, 0),
-    ('2023-11-01', 3, 150.00, 29, 0),
-    ('2023-11-02', 1, 50.00, 29, 0);
-
--- Kund 30
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 30, 1),
-    ('2023-11-01', 3, 150.00, 30, 0);
-
--- Kund 31
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 31, 0),
-    ('2023-11-01', 3, 150.00, 31, 1);
-
--- Kund 32
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 32, 0),
-    ('2023-11-01', 3, 150.00, 32, 0),
-    ('2023-11-02', 1, 50.00, 32, 0);
-
--- Kund 33
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 33, 0),
-    ('2023-11-01', 3, 150.00, 33, 0),
-    ('2023-11-02', 1, 50.00, 33, 0);
-
--- Kund 34
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 34, 0),
-    ('2023-11-01', 3, 150.00, 34, 0);
-
--- Kund 35
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 35, 0),
-    ('2023-11-01', 3, 150.00, 35, 1);
-
--- Kund 36
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 36, 0),
-    ('2023-11-01', 3, 150.00, 36, 0);
-
--- Kund 37
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 37, 0),
-    ('2023-11-01', 3, 150.00, 37, 0);
-
--- Kund 38
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 38, 1),
-    ('2023-11-01', 3, 150.00, 38, 0);
-
--- Kund 39
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 39, 0),
-    ('2023-11-01', 3, 150.00, 39, 0),
-    ('2023-11-02', 1, 50.00, 39, 0);
-
--- Kund 40
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 40, 0);
-
--- Kund 41
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 41, 0),
-    ('2023-11-01', 3, 150.00, 41, 0),
-    ('2023-11-02', 1, 50.00, 41, 1);
-
--- Kund 42
-INSERT INTO [Order] (OrderDate, NumberOfTickets, TotalPrice, CustomerID, Cancelled)
-VALUES 
-    ('2023-10-31', 2, 100.00, 42, 0),
-    ('2023-11-01', 3, 150.00, 42, 0);
 
 -- Skapa 5 data poster med olika recensioner
 INSERT INTO Review (Rating, Text, ReviewDate, CustomerID, EventID, ProductID)
-VALUES (1, 'The worst product I have ever bought.', '2024-04-24', 1, NULL, NULL),
-       (2, 'Alright, but I expected more.', '2024-04-23', NULL, 1, NULL),
-       (3, 'Good product, but the price is too high for what you get.', '2024-04-22', 2, NULL, NULL),
-       (4, 'Fantastic! I love this event.', '2024-04-21', NULL, 2, NULL),
-       (5, 'Best purchase ever! The product exceeded my expectations.', '2024-04-20', 3, NULL, NULL);
+VALUES (1, 'The worst product I have ever bought.', '2024-04-24', 1, 1, 7),
+       (2, 'Alright, but I expected more.', '2024-04-23', 2, 1, 1),
+       (3, 'Good product, but the price is too high for what you get.', '2024-04-22', 2, 3, 2),
+       (4, 'Fantastic! I love this event.', '2024-04-21', 4, 2, 5),
+       (5, 'Best purchase ever! The product exceeded my expectations.', '2024-04-20', 3, 5, 4);
 
 
 -- Infoga data för hemsökta platser och hemsökta slott med övernattning
@@ -573,32 +357,32 @@ VALUES
     ('Chillingham Castle', 'A haunted castle in northern England, known for its ghost stories and ghost hunts.', 1, 2, 4, 2, 1),
     ('Książ Castle', 'A haunted castle in Poland, said to be inhabited by several ghosts, including a cursed princess.', 1, 3, 3, 3, 1),
     ('Skogskyrkogården', 'A haunted cemetery in Stockholm, Sweden, known for its paranormal activities and ghost stories.', 68, 1, 5, 1, 1),
-    ('Borley Rectory', 'An infamous haunted house in Essex, England, said to be the site of countless paranormal events.', 101, 2, 5, 3, 1),
+    ('Borley Rectory', 'An infamous haunted house in Essex, England, said to be the site of countless paranormal events.', 1, 2, 5, 3, 1),
     ('Czocha Castle', 'A castle in Poland said to be inhabited by several ghosts, including a tragic princess and a ghost soldier.', 55, 3, 2, 2, 1),
     ('Mårbacka Manor', 'A mansion in Värmland, Sweden, rumored to be haunted by the author Selma Lagerlöf.', 25, 1, 3, 1, 1),
     ('Tower of London', 'A historic castle in London, UK, known for its many ghosts, including Anne Boleyn and other executed prisoners.', 27, 2, 4, 2, 1),
     ('Niedzica Castle', 'A castle in Poland, also known as "Devil''s Castle," said to be inhabited by several ghosts and haunted by a cursed count.', 7, 3, 4, 3, 1),
     ('Bran Castle', 'A famous castle in Romania, sometimes called Dracula''s Castle, said to be haunted by vampires and other supernatural creatures.', 13, 4, 5, 3, 1),
-    ('Eastern State Penitentiary', 'An infamous prison in Philadelphia, USA, known for its ghost stories and ghost hunts.', 5, 5, 3, 4, 1),
-    ('Ballygally Castle', 'A haunted castle in Northern Ireland, said to be haunted by Lady Isobel Shaw and other ghosts.', 69, 6, 2, 2, 1),
-    ('Akershus Fortress', 'A medieval castle in Oslo, Norway, known for its ghost stories and paranormal activities.', 22, 7, 1, 5, 1)
+    ('Eastern State Penitentiary', 'An infamous prison in Philadelphia, USA, known for its ghost stories and ghost hunts.', 5, 1, 3, 4, 1),
+    ('Ballygally Castle', 'A haunted castle in Northern Ireland, said to be haunted by Lady Isobel Shaw and other ghosts.', 68, 2, 2, 2, 1),
+    ('Akershus Fortress', 'A medieval castle in Oslo, Norway, known for its ghost stories and paranormal activities.', 22, 1, 1, 5, 1)
 ;
 
 -- Inserting data for product categories
 INSERT INTO ProductCategory (CategoryName, Description, LocationType, ScareLevel, PriceRange)
 VALUES 
-    ('Haunted places', 'Places rumored to be haunted by ghosts and paranormal phenomena.', 'Area', 'Medium', 'Varied'),
-    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'Varied'),
-    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'Varied'),
-    ('Haunted places', 'Places rumored to be haunted by ghosts and paranormal phenomena.', 'Area', 'Medium', 'Varied'),
-    ('Haunted places', 'Places rumored to be haunted by ghosts and paranormal phenomena.', 'Area', 'Medium', 'Varied'),
-    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'Varied'),
-    ('Haunted places', 'Places rumored to be haunted by ghosts and paranormal phenomena.', 'Area', 'Medium', 'Varied'),
-    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'Varied'),
-    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'Varied'),
-    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'Varied'),
-    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'Varied'),
-    ('Haunted places', 'Places rumored to be haunted by ghosts and paranormal phenomena.', 'Area', 'Medium', 'Varied')
+    ('Haunted places', 'Places rumored to be haunted by ghosts and paranormal phenomena.', 'Area', 'Medium', 'Expensive'),
+    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'Cheap'),
+    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'Medium'),
+    ('Haunted places', 'Places rumored to be haunted by ghosts and paranormal phenomena.', 'Area', 'Medium', 'Cheap'),
+    ('Haunted places', 'Places rumored to be haunted by ghosts and paranormal phenomena.', 'Area', 'Medium', 'Expensive'),
+    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'Expensive'),
+    ('Haunted places', 'Places rumored to be haunted by ghosts and paranormal phenomena.', 'Area', 'Medium', 'Medium'),
+    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'Expensive'),
+    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'Cheap'),
+    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'Medium'),
+    ('Haunted castles', 'Castles and manors rumored to be inhabited by ghosts and spirits.', 'Building', 'High', 'CHeap'),
+    ('Haunted places', 'Places rumored to be haunted by ghosts and paranormal phenomena.', 'Area', 'Medium', 'Expensive')
 ;
 
 
@@ -641,12 +425,12 @@ VALUES
 -- Skapa data för Event-tabellen
 INSERT INTO Event (Name, Description, StartDate, EndDate, Location, OrderID, ReviewID, Active)
 VALUES 
-    ('Spökvandring på Skogskyrkogården', 'En skrämmande vandring genom Skogskyrkogården med spökguidning.', '2024-10-31 19:00:00', '2024-10-31 21:00:00', 'Skogskyrkogården, Stockholm', NULL, NULL, 1),
-    ('Halloween-fest på Chillingham Castle', 'En oförglömlig Halloween-fest på det hemsökta slottet Chillingham Castle.', '2024-10-31 20:00:00', '2024-11-01 02:00:00', 'Chillingham Castle, Northumberland', NULL, NULL, 1),
-    ('Guidad tur på Bran Castle', 'En spännande guidetur genom Draculas slott, Bran Castle.', '2024-10-31 15:00:00', '2024-10-31 17:00:00', 'Bran Castle, Bran', NULL, NULL, 1),
-	('Nattvandring på Tower of London', 'Utforska Tower of London på natten med en spännande guidad tur.', '2024-11-05 21:00:00', '2024-11-05 23:00:00', 'Tower of London, London', NULL, NULL, 1),
-    ('Spökjakt på Edinburgh Castle', 'Delta i en spökjakt vid det historiska Edinburgh Castle.', '2024-11-10 22:00:00', '2024-11-11 00:00:00', 'Edinburgh Castle, Edinburgh', NULL, NULL, 1),
-    ('Mörkertur på Winchester Mystery House', 'En mörkertur på det legendariska Winchester Mystery House.', '2024-11-15 20:00:00', '2024-11-15 22:00:00', 'Winchester Mystery House, San Jose', NULL, NULL, 1);
+    ('Spökvandring på Skogskyrkogården', 'En skrämmande vandring genom Skogskyrkogården med spökguidning.', '2024-10-31 19:00:00', '2024-10-31 21:00:00', 'Skogskyrkogården, Stockholm', 1, 1, 1),
+    ('Halloween-fest på Chillingham Castle', 'En oförglömlig Halloween-fest på det hemsökta slottet Chillingham Castle.', '2024-10-31 20:00:00', '2024-11-01 02:00:00', 'Chillingham Castle, Northumberland', 2, 3, 1),
+    ('Guidad tur på Bran Castle', 'En spännande guidetur genom Draculas slott, Bran Castle.', '2024-10-31 15:00:00', '2024-10-31 17:00:00', 'Bran Castle, Bran', 3, 4, 1),
+	('Nattvandring på Tower of London', 'Utforska Tower of London på natten med en spännande guidad tur.', '2024-11-05 21:00:00', '2024-11-05 23:00:00', 'Tower of London, London', 5, 5, 1),
+    ('Spökjakt på Edinburgh Castle', 'Delta i en spökjakt vid det historiska Edinburgh Castle.', '2024-11-10 22:00:00', '2024-11-11 00:00:00', 'Edinburgh Castle, Edinburgh', 4, 5, 1),
+    ('Mörkertur på Winchester Mystery House', 'En mörkertur på det legendariska Winchester Mystery House.', '2024-11-15 20:00:00', '2024-11-15 22:00:00', 'Winchester Mystery House, San Jose', 1, 5, 1);
 
 -- Skapa data för EventLocation-tabellen
 INSERT INTO EventLocation (Address, City, Region, Country, Zipcode, Latitude, Longitude, EventID)
