@@ -14,7 +14,7 @@ CREATE TABLE Supplier (
 -- Skapa CustomerSegment Table
 CREATE TABLE CustomerSegment (
     CustomerSegmentID INT PRIMARY KEY,
-    SegmentName VARCHAR(100)
+    SegmentName VARCHAR(100)	
 );
 
 
@@ -44,7 +44,7 @@ CREATE TABLE Customer (
     Gender VARCHAR(10),
     Address VARCHAR(255),
     Birthday DATE,
-    PersonalNumber VARCHAR(20),
+    SSN VARCHAR(20),
     ContactInfo VARCHAR(100),
     FOREIGN KEY (CustomerSegmentID) REFERENCES CustomerSegment(CustomerSegmentID)
 );
@@ -87,9 +87,9 @@ CREATE TABLE Region (
 -- Skapa Sales Table
 CREATE TABLE Sale (
     SaleID INT PRIMARY KEY,
-    ProductID INT,
     SaleDate DATE,
     SaleAmount DECIMAL(10, 2),
+	ProductID INT,
     CustomerID INT,
     SaleChannelID INT,
     SalePersonID INT,
@@ -130,7 +130,7 @@ VALUES
 (3, 3, 'Home Appliances');
 
 -- Lägg till kunder
-INSERT INTO Customer (CustomerID, CustomerSegmentID, CountryID, CustomerName, Gender, Address, Birthday, PersonalNumber, ContactInfo)
+INSERT INTO Customer (CustomerID, CustomerSegmentID, CountryID, CustomerName, Gender, Address, Birthday, SSN, ContactInfo)
 VALUES 
 (1, 1, 1, 'Anna Andersson', 'Female', 'Storgatan 1', '1980-05-10', '800510-1234', 'anna@example.com'),
 (2, 1, 1, 'Eva Svensson', 'Female', 'Götgatan 10', '1985-08-20', '850820-4567', 'eva@example.com'),
@@ -220,5 +220,3 @@ VALUES
 (4, 1, '2023-04-20', 6000, 2, 2, 2, 1),
 (5, 2, '2023-05-25', 8000, 3, 1, 1, 1),
 (6, 3, '2024-06-30', 9000, 3, 1, 1, 1);
-
-
