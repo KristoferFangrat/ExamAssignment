@@ -195,9 +195,6 @@ LEFT JOIN
 WHERE
     o.CustomerID IS NULL; -- Endast kunder utan beställningar
 
-
-
-
 -- Lägg till försäljningskanaler
 INSERT INTO SaleChannel (SaleChannelID, ChannelName)
 VALUES 
