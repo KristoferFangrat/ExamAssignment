@@ -1,7 +1,7 @@
-CREATE DATABASE SalesDB;
+CREATE DATABASE EcommerceDB;
 GO
 
-USE SalesDB;
+USE EcommerceDB;
 GO
 
 CREATE TABLE Supplier (
