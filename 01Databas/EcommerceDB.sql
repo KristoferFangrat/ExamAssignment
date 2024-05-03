@@ -42,9 +42,7 @@ CREATE TABLE Customer (
 
 CREATE TABLE Country (
     CountryID INT PRIMARY KEY,
-	CustomerID INT,
-    CountryName VARCHAR(100),
-	FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+    CountryName VARCHAR(100)
 );
 
 
@@ -115,7 +113,7 @@ CREATE TABLE CustomerCountry (
 );
 
 -- Skapa kopplingstabell för försäljningskanal och säljare
-CREATE TABLE ChannelSalesPerson (
+CREATE TABLE ChannelSalePerson (
     SaleChannelID INT,
     SalePersonID INT,
     PRIMARY KEY (SaleChannelID, SalePersonID),
@@ -210,6 +208,14 @@ VALUES
 (41, 2, 'Ole Kristoffersen', 'Male', 'Dronningens gate 18', '1979-04-28', '790428-5678', 'ole@example.com'),
 (42, 2, 'Sofie Larsen', 'Female', 'Kongens gate 15', '1992-10-05', '921005-9012', 'sofie@example.com');
 
+-- Lägg till data i Country-tabellen
+INSERT INTO Country (CountryID, CountryName)
+VALUES 
+    (1, 'Sweden'),
+    (2, 'Norway'),
+    (3, 'Finland');
+
+
 -- Skapa data för Order-tabellen som matchar befintliga kunder
 INSERT INTO [Order] (OrderID, CustomerID, ProductID, OrderDate, TotalAmount)
 SELECT TOP 42
@@ -220,6 +226,34 @@ SELECT TOP 42
     ABS(CHECKSUM(NEWID())) % 1500 + 500 AS TotalAmount -- Slumpmässigt välj ett belopp mellan 500 och 2000
 FROM
     Customer;
+
+-- Lägg till data i SaleChannel-tabellen
+INSERT INTO SaleChannel (SaleChannelID, ChannelName)
+VALUES 
+    (1, 'Online'),
+    (2, 'Physical Store'),
+    (3, 'Telesales'),
+    (4, 'Wholesale'),
+    (5, 'E-commerce'),
+    (6, 'Catalog'),
+    (7, 'Trade Show');
+
+-- Lägg till data i SalePerson-tabellen
+INSERT INTO SalePerson (SalePersonID, SalePersonName)
+VALUES 
+    (1, 'Emma Smith'),
+    (2, 'John Johnson'),
+    (3, 'Maria Garcia'),
+    (4, 'Michael Brown'),
+    (5, 'Jennifer Miller');
+
+-- Lägg till data i Region-tabellen som matchar länderna
+INSERT INTO Region (RegionID, RegionName)
+VALUES 
+    (1, 'Sweden'),
+    (2, 'Norway'),
+    (3, 'Finland');
+
 
 -- Skapa data för Sale-tabellen med 200 olika försäljningar blandat mellan kunderna
 INSERT INTO Sale (SaleID, SaleDate, SaleAmount, ProductID, CustomerID, SaleChannelID, SalePersonID, RegionID)
@@ -234,4 +268,47 @@ SELECT TOP 200
     ABS(CHECKSUM(NEWID())) % 3 + 1 AS RegionID -- Slumpmässigt välj en region
 FROM
     Customer;
+
+-- Skapa data för OrderDetail-tabellen som matchar befintliga ordrar och produkter
+INSERT INTO OrderDetail (OrderDetailID, OrderID, ProductID, Quantity, Price)
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY NEWID()) AS OrderDetailID,
+    [Order].OrderID,
+    [Order].ProductID,
+    ABS(CHECKSUM(NEWID())) % 5 + 1 AS Quantity, -- Slumpmässigt antal produkter mellan 1 och 5
+    Product.ProductPrice AS Price -- Använd produktens pris
+FROM 
+    [Order]
+INNER JOIN 
+    Product ON [Order].ProductID = Product.ProductID;
+
+-- Skapa data för CustomerCountry-tabellen som matchar befintliga kunder och länder
+INSERT INTO CustomerCountry (CustomerID, CountryID)
+SELECT 
+    Customer.CustomerID,
+    Customer.CountryID
+FROM 
+    Customer;
+
+
+
+-- Skapa data för ChannelSalesPerson-tabellen med unika kombinationer av försäljningskanaler och säljare
+INSERT INTO ChannelSalesPerson (SaleChannelID, SalePersonID)
+SELECT DISTINCT
+    ABS(CHECKSUM(NEWID())) % 7 + 1 AS SaleChannelID,
+    ABS(CHECKSUM(NEWID())) % 5 + 1 AS SalePersonID
+FROM 
+    sys.objects
+WHERE 
+    NOT EXISTS (
+        SELECT 1
+        FROM ChannelSalesPerson
+        WHERE ChannelSalesPerson.SaleChannelID = ABS(CHECKSUM(NEWID())) % 7 + 1
+        AND ChannelSalesPerson.SalePersonID = ABS(CHECKSUM(NEWID())) % 5 + 1
+    );
+
+-- Lägg till data i SaleRegion-tabellen med slumpmässiga regioner
+INSERT INTO SaleRegion (SaleID, RegionID)
+SELECT s.SaleID, ABS(CHECKSUM(NEWID())) % 3 + 1 AS RegionID
+FROM Sale s;
 
