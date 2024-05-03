@@ -95,6 +95,45 @@ CREATE TABLE Sale (
     FOREIGN KEY (RegionID) REFERENCES Region(RegionID)
 );
 
+-- Skapa tabell för orderdetaljer
+CREATE TABLE OrderDetail (
+    OrderDetailID INT PRIMARY KEY,
+    OrderID INT,
+    ProductID INT,
+    Quantity INT,
+    Price DECIMAL(10, 2),
+    FOREIGN KEY (OrderID) REFERENCES [Order](OrderID),
+    FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
+);
+
+-- Skapa kopplingstabell för kundland
+CREATE TABLE CustomerCountry (
+    CustomerID INT,
+    CountryID INT,
+    PRIMARY KEY (CustomerID, CountryID),
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (CountryID) REFERENCES Country(CountryID)
+);
+
+-- Skapa kopplingstabell för försäljningskanal och säljare
+CREATE TABLE ChannelSalesPerson (
+    SaleChannelID INT,
+    SalePersonID INT,
+    PRIMARY KEY (SaleChannelID, SalePersonID),
+    FOREIGN KEY (SaleChannelID) REFERENCES SaleChannel(SaleChannelID),
+    FOREIGN KEY (SalePersonID) REFERENCES SalePerson(SalePersonID)
+);
+
+-- Skapa kopplingstabell för försäljning och region
+CREATE TABLE SaleRegion (
+    SaleID INT,
+    RegionID INT,
+    PRIMARY KEY (SaleID, RegionID),
+    FOREIGN KEY (SaleID) REFERENCES Sale(SaleID),
+    FOREIGN KEY (RegionID) REFERENCES Region(RegionID)
+);
+
+
 -- Lägg till leverantörer
 INSERT INTO Supplier (SupplierID, SupplierName, SupplierAddress, SupplierContactInfo)
 VALUES 

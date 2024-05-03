@@ -1,6 +1,5 @@
 CREATE DATABASE EcommerceDB;
 GO
-
 USE EcommerceDB;
 GO
 
@@ -95,35 +94,75 @@ CREATE TABLE Sale (
     FOREIGN KEY (RegionID) REFERENCES Region(RegionID)
 );
 
--- Lägg till leverantörer
+-- Skapa tabell för orderdetaljer
+CREATE TABLE OrderDetail (
+    OrderDetailID INT PRIMARY KEY,
+    OrderID INT,
+    ProductID INT,
+    Quantity INT,
+    Price DECIMAL(10, 2),
+    FOREIGN KEY (OrderID) REFERENCES [Order](OrderID),
+    FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
+);
+
+-- Skapa kopplingstabell för kundland
+CREATE TABLE CustomerCountry (
+    CustomerID INT,
+    CountryID INT,
+    PRIMARY KEY (CustomerID, CountryID),
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
+    FOREIGN KEY (CountryID) REFERENCES Country(CountryID)
+);
+
+-- Skapa kopplingstabell för försäljningskanal och säljare
+CREATE TABLE ChannelSalesPerson (
+    SaleChannelID INT,
+    SalePersonID INT,
+    PRIMARY KEY (SaleChannelID, SalePersonID),
+    FOREIGN KEY (SaleChannelID) REFERENCES SaleChannel(SaleChannelID),
+    FOREIGN KEY (SalePersonID) REFERENCES SalePerson(SalePersonID)
+);
+
+-- Skapa kopplingstabell för försäljning och region
+CREATE TABLE SaleRegion (
+    SaleID INT,
+    RegionID INT,
+    PRIMARY KEY (SaleID, RegionID),
+    FOREIGN KEY (SaleID) REFERENCES Sale(SaleID),
+    FOREIGN KEY (RegionID) REFERENCES Region(RegionID)
+);
+-- Lägg till data i Supplier-tabellen för Sverige
 INSERT INTO Supplier (SupplierID, SupplierName, SupplierAddress, SupplierContactInfo)
 VALUES 
-(1, 'Suomalainen Tekniikka Oy', 'Esimerkkikatu 10', 'info@suomalainentekniikka.fi'),
-(2, 'ModeSverige AB', 'Götgatan 25', 'info@modesverige.se'),
-(3, 'Norsk IT AS', 'Karl Johans gate 12', 'info@norskit.no');
+    (1, 'Swedish Tech AB', 'Storgatan 1, Stockholm, Sweden', 'info@swedishtech.com');
+
+-- Lägg till data i Supplier-tabellen för Norge
+INSERT INTO Supplier (SupplierID, SupplierName, SupplierAddress, SupplierContactInfo)
+VALUES 
+    (2, 'Norwegian Gadgets AS', 'Karl Johans gate 2, Oslo, Norway', 'contact@norwegiangadgets.no');
+
+-- Lägg till data i Supplier-tabellen för Finland
+INSERT INTO Supplier (SupplierID, SupplierName, SupplierAddress, SupplierContactInfo)
+VALUES 
+    (3, 'Finnish Electronics Oy', 'Aleksanterinkatu 3, Helsinki, Finland', 'sales@finnishelectronics.fi');
+
 
 -- Lägg till data i Category-tabellen
 INSERT INTO Category (CategoryID, CategoryName)
 VALUES 
-(1, 'Electronics'),
-(2, 'Fashion'),
-(3, 'Home Appliances'),
-(4, 'Fitness');
+    (1, 'Electronics'),
+    (2, 'Appliances'),
+    (3, 'Home & Garden');
 
 -- Lägg till data i Product-tabellen
 INSERT INTO Product (ProductID, ProductName, ProductPrice, SupplierID, CategoryID)
 VALUES 
-(1, 'Smartphone', 12000.00, 1, 1),
-(2, 'Designer Dress', 8000.00, 2, 2),
-(3, 'Smart Home Kit', 15000.00, 3, 3),
-(4, 'Laptop', 18000.00, 1, 1),
-(5, 'Gaming Console', 10000.00, 1, 1),
-(6, 'Digital Camera', 7000.00, 1, 1),
-(7, 'Fitness Tracker', 5000.00, 1, 4),
-(8, 'Tablet', 9000.00, 1, 1),
-(9, 'Headphones', 3000.00, 1, 1),
-(10, 'Smart Watch', 6000.00, 1, 1);
-
+    (1, 'Smartphone X', 799.99, 1, 1),
+    (2, 'Laptop Pro', 1299.99, 1, 1),
+    (3, 'Smart TV 55"', 999.99, 2, 1),
+    (4, 'Blender Deluxe', 49.99, 2, 2),
+    (5, 'Coffee Maker', 79.99, 3, 2),
+    (6, 'LED Light Bulbs (4-pack)', 19.99, 3, 3);
 
 -- Lägg till kunder
 INSERT INTO Customer (CustomerID, CountryID, CustomerName, Gender, Address, Birthday, SSN, ContactInfo)
@@ -171,62 +210,28 @@ VALUES
 (41, 2, 'Ole Kristoffersen', 'Male', 'Dronningens gate 18', '1979-04-28', '790428-5678', 'ole@example.com'),
 (42, 2, 'Sofie Larsen', 'Female', 'Kongens gate 15', '1992-10-05', '921005-9012', 'sofie@example.com');
 
--- Lägg till länder
-INSERT INTO Country (CountryID, CountryName)
-VALUES 
-(1, 'Sverige'),
-(2, 'Norge'),
-(3, 'Finland');
-
--- Lägg till beställningar så att varje kund har minst en order
+-- Skapa data för Order-tabellen som matchar befintliga kunder
 INSERT INTO [Order] (OrderID, CustomerID, ProductID, OrderDate, TotalAmount)
-SELECT 
-    ROW_NUMBER() OVER (ORDER BY c.CustomerID) AS OrderID,
-    c.CustomerID,
-    p.ProductID,
-    DATEADD(day, -(ABS(CHECKSUM(NEWID())) % 365), GETDATE()) AS OrderDate,
-    ROUND(p.ProductPrice * (RAND() * 0.5 + 0.5), 2) AS TotalAmount -- Slumpmässig summa baserat på produkternas pris
-FROM 
-    Customer c
-CROSS JOIN
-    Product p
-LEFT JOIN
-    [Order] o ON c.CustomerID = o.CustomerID
-WHERE
-    o.CustomerID IS NULL; -- Endast kunder utan beställningar
+SELECT TOP 42
+    ROW_NUMBER() OVER (ORDER BY NEWID()) AS OrderID,
+    CustomerID,
+    ABS(CHECKSUM(NEWID())) % 6 + 1 AS ProductID, -- Slumpmässigt välj en produkt
+    DATEADD(day, -ABS(CHECKSUM(NEWID())) % 365, GETDATE()) AS OrderDate, -- Slumpmässigt välj ett datum inom det senaste året
+    ABS(CHECKSUM(NEWID())) % 1500 + 500 AS TotalAmount -- Slumpmässigt välj ett belopp mellan 500 och 2000
+FROM
+    Customer;
 
--- Lägg till försäljningskanaler
-INSERT INTO SaleChannel (SaleChannelID, ChannelName)
-VALUES 
-(1, 'Online'),
-(2, 'In-Store'),
-(3, 'Distributors');
-
--- Lägg till säljare
-INSERT INTO SalePerson (SalePersonID, SalePersonName)
-VALUES 
-(1, 'Erik Svensson'),
-(2, 'Maria Olsen'),
-(3, 'Jukka Virtanen');
-
--- Lägg till regioner
-INSERT INTO Region (RegionID, RegionName)
-VALUES 
-(1, 'Nordic');
-
-INSERT INTO Sale (SaleID, ProductID, SaleDate, SaleAmount, CustomerID, SaleChannelID, SalePersonID, RegionID)
-SELECT 
+-- Skapa data för Sale-tabellen med 200 olika försäljningar blandat mellan kunderna
+INSERT INTO Sale (SaleID, SaleDate, SaleAmount, ProductID, CustomerID, SaleChannelID, SalePersonID, RegionID)
+SELECT TOP 200
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS SaleID,
-    p.ProductID,
-    DATEADD(year, -1 * (ABS(CHECKSUM(NEWID())) % 5), GETDATE()) AS SaleDate, -- slumpmässigt datum upp till 5 år tillbaka
-    ROUND((RAND() * 10000) + (ABS(CHECKSUM(NEWID())) % 5000), 2) AS SaleAmount, -- slumpmässigt belopp upp till 10000 plus ett slumpmässigt tillägg upp till 5000
-    c.CustomerID,
-    FLOOR(RAND() * (SELECT MAX(SaleChannelID) FROM SaleChannel)) + 1 AS SaleChannelID,
-    sp.SalePersonID,
-    FLOOR(RAND() * (SELECT MAX(RegionID) FROM Region)) + 1 AS RegionID
-FROM 
-    Product p
-    CROSS JOIN Customer c
-    CROSS JOIN SalePerson sp
-    CROSS JOIN sys.all_objects -- en tabell med många rader för att generera tillräckligt med slumpmässiga försäljningar
-ORDER BY NEWID(); -- Blanda ordningen på produkterna
+    DATEADD(day, -ABS(CHECKSUM(NEWID())) % 365, GETDATE()) AS SaleDate, -- Slumpmässigt välj ett datum inom det senaste året
+    ABS(CHECKSUM(NEWID())) % 1500 + 500 AS SaleAmount, -- Slumpmässigt välj ett belopp mellan 500 och 2000
+    ABS(CHECKSUM(NEWID())) % 6 + 1 AS ProductID, -- Slumpmässigt välj en produkt
+    CustomerID,
+    ABS(CHECKSUM(NEWID())) % 3 + 1 AS SaleChannelID, -- Slumpmässigt välj en försäljningskanal
+    ABS(CHECKSUM(NEWID())) % 3 + 1 AS SalePersonID, -- Slumpmässigt välj en säljare
+    ABS(CHECKSUM(NEWID())) % 3 + 1 AS RegionID -- Slumpmässigt välj en region
+FROM
+    Customer;
+
