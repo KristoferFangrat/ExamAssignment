@@ -84,12 +84,10 @@ CREATE TABLE Sale (
     CustomerID INT,
     SaleChannelID INT,
     SalePersonID INT,
-    RegionID INT,
     FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
     FOREIGN KEY (SaleChannelID) REFERENCES SaleChannel(SaleChannelID),
-    FOREIGN KEY (SalePersonID) REFERENCES SalePerson(SalePersonID),
-    FOREIGN KEY (RegionID) REFERENCES Region(RegionID)
+    FOREIGN KEY (SalePersonID) REFERENCES SalePerson(SalePersonID)
 );
 
 -- Skapa tabell för orderdetaljer
@@ -255,19 +253,30 @@ VALUES
     (3, 'Finland');
 
 
--- Skapa data för Sale-tabellen med 200 olika försäljningar blandat mellan kunderna
-INSERT INTO Sale (SaleID, SaleDate, SaleAmount, ProductID, CustomerID, SaleChannelID, SalePersonID, RegionID)
-SELECT TOP 200
+-- Skapa en temporär tabell med datum för varje månad från januari 2023 till december 2024
+WITH Months AS (
+    SELECT DATEFROMPARTS(2023, 1, 1) AS SaleDate
+    UNION ALL
+    SELECT DATEADD(MONTH, 1, SaleDate)
+    FROM Months
+    WHERE SaleDate < '2024-12-01'
+)
+
+-- Skapa data för Sale-tabellen med försäljningar för varje månad och kund
+INSERT INTO Sale (SaleID, SaleDate, SaleAmount, ProductID, CustomerID, SaleChannelID, SalePersonID)
+SELECT 
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS SaleID,
-    DATEADD(day, -ABS(CHECKSUM(NEWID())) % 365, GETDATE()) AS SaleDate, -- Slumpmässigt välj ett datum inom det senaste året
+    m.SaleDate,
     ABS(CHECKSUM(NEWID())) % 1500 + 500 AS SaleAmount, -- Slumpmässigt välj ett belopp mellan 500 och 2000
     ABS(CHECKSUM(NEWID())) % 6 + 1 AS ProductID, -- Slumpmässigt välj en produkt
-    CustomerID,
-    ABS(CHECKSUM(NEWID())) % 3 + 1 AS SaleChannelID, -- Slumpmässigt välj en försäljningskanal
-    ABS(CHECKSUM(NEWID())) % 3 + 1 AS SalePersonID, -- Slumpmässigt välj en säljare
-    ABS(CHECKSUM(NEWID())) % 3 + 1 AS RegionID -- Slumpmässigt välj en region
+    c.CustomerID,
+    ABS(CHECKSUM(NEWID())) % 7 + 1 AS SaleChannelID, -- Slumpmässigt välj en försäljningskanal
+    ABS(CHECKSUM(NEWID())) % 5 + 1 AS SalePersonID -- Slumpmässigt välj en säljare
 FROM
-    Customer;
+    Customer c
+CROSS JOIN
+    Months m;
+
 
 -- Skapa data för OrderDetail-tabellen som matchar befintliga ordrar och produkter
 INSERT INTO OrderDetail (OrderDetailID, OrderID, ProductID, Quantity, Price)
@@ -293,19 +302,27 @@ FROM
 
 
 -- Skapa data för ChannelSalesPerson-tabellen med unika kombinationer av försäljningskanaler och säljare
-INSERT INTO ChannelSalesPerson (SaleChannelID, SalePersonID)
+-- Skapa data för ChannelSalesPerson-tabellen med unika kombinationer av försäljningskanaler och säljare
+INSERT INTO ChannelSalePerson (SaleChannelID, SalePersonID)
 SELECT DISTINCT
-    ABS(CHECKSUM(NEWID())) % 7 + 1 AS SaleChannelID,
-    ABS(CHECKSUM(NEWID())) % 5 + 1 AS SalePersonID
+    s.SaleChannelID,
+    s.SalePersonID
 FROM 
-    sys.objects
+    (
+        SELECT DISTINCT
+            ABS(CHECKSUM(NEWID())) % 7 + 1 AS SaleChannelID,
+            ABS(CHECKSUM(NEWID())) % 5 + 1 AS SalePersonID
+        FROM 
+            Sale
+    ) AS s
 WHERE 
     NOT EXISTS (
         SELECT 1
-        FROM ChannelSalesPerson
-        WHERE ChannelSalesPerson.SaleChannelID = ABS(CHECKSUM(NEWID())) % 7 + 1
-        AND ChannelSalesPerson.SalePersonID = ABS(CHECKSUM(NEWID())) % 5 + 1
+        FROM ChannelSalePerson csp
+        WHERE csp.SaleChannelID = s.SaleChannelID
+        AND csp.SalePersonID = s.SalePersonID
     );
+
 
 -- Lägg till data i SaleRegion-tabellen med slumpmässiga regioner
 INSERT INTO SaleRegion (SaleID, RegionID)
