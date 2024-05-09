@@ -5,9 +5,15 @@ GO
 
 CREATE TABLE Supplier (
     SupplierID INT PRIMARY KEY,
-    SupplierName VARCHAR(100),
-    SupplierAddress VARCHAR(255),
-    SupplierContactInfo VARCHAR(100)
+    Name VARCHAR(100),
+    Contact VARCHAR(100),
+    Adress VARCHAR(255),
+    Region VARCHAR(50),
+    LastOrderDate DATE,
+    TotalOrders INT,
+    TotalAmount DECIMAL(10,2),
+    Rating INT,
+	Active BIT
 );
 
 -- Skapa Category Table
@@ -16,17 +22,25 @@ CREATE TABLE Category (
     CategoryName VARCHAR(100)
 );
 
--- Skapa Product Table
+-- Skapa Product-tabellen med kostnadskolumnen
 CREATE TABLE Product (
     ProductID INT PRIMARY KEY,
     ProductName VARCHAR(100),
-	ProductPrice DECIMAL(10,2),
+    ProductPrice DECIMAL(10,2),
     SupplierID INT,
-	CategoryID INT,
+    CategoryID INT,
+    Cost DECIMAL(10,2), -- Lägg till kostnadskolumnen
     FOREIGN KEY (SupplierID) REFERENCES Supplier(SupplierID),
-	FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
+    FOREIGN KEY (CategoryID) REFERENCES Category(CategoryID)
 );
 
+-- Skapa ProductInventory-tabellen
+CREATE TABLE ProductInventory (
+    InventoryID INT PRIMARY KEY IDENTITY,
+    ProductID INT,
+    Quantity INT,
+    CONSTRAINT FK_ProductInventory_Product FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
+);
 
 -- Skapa Customer Table
 CREATE TABLE Customer (
@@ -51,10 +65,12 @@ CREATE TABLE [Order] (
     OrderID INT PRIMARY KEY,
     CustomerID INT,
 	ProductID INT,
+	SupplierID INT,
     OrderDate DATE,
     TotalAmount DECIMAL(10, 2),
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
-	FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
+	FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
+	FOREIGN KEY (SupplierID) REFERENCES Supplier(SupplierID)
 );
 
 -- Skapa SalesChannel Table
@@ -127,20 +143,14 @@ CREATE TABLE SaleRegion (
     FOREIGN KEY (SaleID) REFERENCES Sale(SaleID),
     FOREIGN KEY (RegionID) REFERENCES Region(RegionID)
 );
--- Lägg till data i Supplier-tabellen för Sverige
-INSERT INTO Supplier (SupplierID, SupplierName, SupplierAddress, SupplierContactInfo)
-VALUES 
-    (1, 'Swedish Tech AB', 'Storgatan 1, Stockholm, Sweden', 'info@swedishtech.com');
 
--- Lägg till data i Supplier-tabellen för Norge
-INSERT INTO Supplier (SupplierID, SupplierName, SupplierAddress, SupplierContactInfo)
+-- Skapa data för Supplier-tabellen
+INSERT INTO Supplier (SupplierID, Name, Contact, Adress, Region, LastOrderDate, TotalOrders, TotalAmount, Rating, Active)
 VALUES 
-    (2, 'Norwegian Gadgets AS', 'Karl Johans gate 2, Oslo, Norway', 'contact@norwegiangadgets.no');
-
--- Lägg till data i Supplier-tabellen för Finland
-INSERT INTO Supplier (SupplierID, SupplierName, SupplierAddress, SupplierContactInfo)
-VALUES 
-    (3, 'Finnish Electronics Oy', 'Aleksanterinkatu 3, Helsinki, Finland', 'sales@finnishelectronics.fi');
+    (1, 'Swedish Tech AB', 'info@swedishtech.com', 'Storgatan 1, Stockholm', 'Sweden', NULL, 0, 0.00, 0, 1),
+    (2, 'Norwegian Gadgets AS', 'contact@norwegiangadgets.no', 'Karl Johans gate 2, Oslo', 'Norway', NULL, 0, 0.00, 0, 1),
+    (3, 'Finnish Electronics Oy', 'sales@finnishelectronics.fi', 'Aleksanterinkatu 3, Helsinki', 'Finland', NULL, 0, 0.00, 0, 1),
+	(4, 'Danish Electronics A/S', 'peter.jensen@danishelectronics.dk', 'Vesterbrogade 2, Copenhagen', 'Denmark', NULL, 0, 0.00, 0, 0);
 
 
 -- Lägg till data i Category-tabellen
@@ -148,17 +158,39 @@ INSERT INTO Category (CategoryID, CategoryName)
 VALUES 
     (1, 'Electronics'),
     (2, 'Appliances'),
-    (3, 'Home & Garden');
+    (3, 'Home & Garden'),
+	(4, 'Mobile Devices'),
+    (5, 'Kitchen Appliances');
 
--- Lägg till data i Product-tabellen
-INSERT INTO Product (ProductID, ProductName, ProductPrice, SupplierID, CategoryID)
+-- Lägg till befintliga produkter i amerikanska dollar och matcha med kategorier
+DECLARE @exchangeRate DECIMAL(10,2) = 9.0; -- Växelkursen mellan SEK och USD
+
+-- Fyll Cost-kolumnen med slumpmässig kostnadsinformation
+INSERT INTO Product (ProductID, ProductName, ProductPrice, SupplierID, CategoryID, Cost)
 VALUES 
-    (1, 'Smartphone X', 799.99, 1, 1),
-    (2, 'Laptop Pro', 1299.99, 1, 1),
-    (3, 'Smart TV 55"', 999.99, 2, 1),
-    (4, 'Blender Deluxe', 49.99, 2, 2),
-    (5, 'Coffee Maker', 79.99, 3, 2),
-    (6, 'LED Light Bulbs (4-pack)', 19.99, 3, 3);
+    (1, 'Smartphone X', ROUND(RAND()*(1000-500)+500, 2), 1, 1, ROUND(RAND()*(500-100)+100, 2)),
+    (2, 'Laptop Pro', ROUND(RAND()*(2000-1000)+1000, 2), 1, 1, ROUND(RAND()*(500-100)+100, 2)),
+    (3, 'Smart TV 55"', ROUND(RAND()*(1500-800)+800, 2), 2, 1, ROUND(RAND()*(500-100)+100, 2)),
+    (4, 'Blender Deluxe', ROUND(RAND()*(100-50)+50, 2), 2, 2, ROUND(RAND()*(500-100)+100, 2)),
+    (5, 'Coffee Maker', ROUND(RAND()*(150-80)+80, 2), 3, 2, ROUND(RAND()*(500-100)+100, 2)),
+    (6, 'LED Light Bulbs (4-pack)', ROUND(RAND()*(30-10)+10, 2), 3, 3, ROUND(RAND()*(500-100)+100, 2)),
+    (7, 'Tablet Lite', ROUND(RAND()*(800-400)+400, 2), 1, 4, ROUND(RAND()*(500-100)+100, 2)),
+    (8, 'Desktop Computer', ROUND(RAND()*(2500-1500)+1500, 2), 1, 4, ROUND(RAND()*(500-100)+100, 2)),
+    (9, 'Wireless Headphones', ROUND(RAND()*(200-100)+100, 2), 2, 4, ROUND(RAND()*(500-100)+100, 2)),
+    (10, 'Toaster', ROUND(RAND()*(60-30)+30, 2), 2, 5, ROUND(RAND()*(500-100)+100, 2)),
+    (11, 'Electric Kettle', ROUND(RAND()*(70-40)+40, 2), 3, 5, ROUND(RAND()*(500-100)+100, 2)),
+    (12, 'Desk Lamp', ROUND(RAND()*(40-20)+20, 2), 3, 5, ROUND(RAND()*(500-100)+100, 2));
+
+-- Skapa data för ProductInventory-tabellen baserat på Product-tabellen
+INSERT INTO ProductInventory (ProductID, Quantity)
+SELECT p.ProductID,
+       q.RandomQuantity -- Slumpmässigt valda kvantiteter
+FROM Product p
+CROSS APPLY (VALUES 
+    (FLOOR(RAND()*(100-10)+10)),
+    (FLOOR(RAND()*(100-10)+10)),
+    (FLOOR(RAND()*(100-10)+10))
+) AS q(RandomQuantity);
 
 -- Lägg till kunder
 INSERT INTO Customer (CustomerID, CountryID, CustomerName, Gender, Address, Birthday, SSN, ContactInfo)
@@ -211,19 +243,33 @@ INSERT INTO Country (CountryID, CountryName)
 VALUES 
     (1, 'Sweden'),
     (2, 'Norway'),
-    (3, 'Finland');
+    (3, 'Finland'),
+	(4, 'Denmark');
 
+-- Skapa en gemensam CTE för att generera alla månader för åren 2021, 2022 och 2023
+WITH Months AS (
+    SELECT DATEFROMPARTS(2021, 1, 1) AS OrderDate
+    UNION ALL
+    SELECT DATEADD(MONTH, 1, OrderDate)
+    FROM Months
+    WHERE OrderDate < '2024-03-31'
+)
 
--- Skapa data för Order-tabellen som matchar befintliga kunder
-INSERT INTO [Order] (OrderID, CustomerID, ProductID, OrderDate, TotalAmount)
-SELECT TOP 42
+-- Skapa data för Order-tabellen med alla månader för åren 2021, 2022 och 2023
+INSERT INTO [Order] (OrderID, CustomerID, ProductID, SupplierID, OrderDate, TotalAmount)
+SELECT 
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS OrderID,
     CustomerID,
-    ABS(CHECKSUM(NEWID())) % 6 + 1 AS ProductID, -- Slumpmässigt välj en produkt
-    DATEADD(day, -ABS(CHECKSUM(NEWID())) % 365, GETDATE()) AS OrderDate, -- Slumpmässigt välj ett datum inom det senaste året
+    ABS(CHECKSUM(NEWID())) % 12 + 1 AS ProductID, -- Slumpmässigt välj en produkt
+    ABS(CHECKSUM(NEWID())) % 3 + 1 AS SupplierID, -- Slumpmässigt välj en leverantör
+    m.OrderDate, -- Datum för varje månad
     ABS(CHECKSUM(NEWID())) % 1500 + 500 AS TotalAmount -- Slumpmässigt välj ett belopp mellan 500 och 2000
 FROM
-    Customer;
+    Customer
+CROSS JOIN
+    Months m;
+
+
 
 -- Lägg till data i SaleChannel-tabellen
 INSERT INTO SaleChannel (SaleChannelID, ChannelName)
@@ -250,16 +296,17 @@ INSERT INTO Region (RegionID, RegionName)
 VALUES 
     (1, 'Sweden'),
     (2, 'Norway'),
-    (3, 'Finland');
+    (3, 'Finland'),
+	(4, 'Denmark');
 
 
 -- Skapa en temporär tabell med datum för varje månad från januari 2023 till december 2024
 WITH Months AS (
-    SELECT DATEFROMPARTS(2023, 1, 1) AS SaleDate
+    SELECT DATEFROMPARTS(2021, 1, 1) AS SaleDate
     UNION ALL
     SELECT DATEADD(MONTH, 1, SaleDate)
     FROM Months
-    WHERE SaleDate < '2024-12-01'
+    WHERE SaleDate < '2024-03-31'
 )
 
 -- Skapa data för Sale-tabellen med försäljningar för varje månad och kund
@@ -267,8 +314,8 @@ INSERT INTO Sale (SaleID, SaleDate, SaleAmount, ProductID, CustomerID, SaleChann
 SELECT 
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS SaleID,
     m.SaleDate,
-    ABS(CHECKSUM(NEWID())) % 1500 + 500 AS SaleAmount, -- Slumpmässigt välj ett belopp mellan 500 och 2000
-    ABS(CHECKSUM(NEWID())) % 6 + 1 AS ProductID, -- Slumpmässigt välj en produkt
+    ABS(CHECKSUM(NEWID())) % 4790 + 500 AS SaleAmount, -- Slumpmässigt välj ett belopp mellan 500 och 2000
+    ABS(CHECKSUM(NEWID())) % 12 + 1 AS ProductID, -- Slumpmässigt välj en produkt
     c.CustomerID,
     ABS(CHECKSUM(NEWID())) % 7 + 1 AS SaleChannelID, -- Slumpmässigt välj en försäljningskanal
     ABS(CHECKSUM(NEWID())) % 5 + 1 AS SalePersonID -- Slumpmässigt välj en säljare
@@ -284,7 +331,7 @@ SELECT
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS OrderDetailID,
     [Order].OrderID,
     [Order].ProductID,
-    ABS(CHECKSUM(NEWID())) % 5 + 1 AS Quantity, -- Slumpmässigt antal produkter mellan 1 och 5
+    ABS(CHECKSUM(NEWID())) % 12 + 1 AS Quantity, -- Slumpmässigt antal produkter mellan 1 och 12
     Product.ProductPrice AS Price -- Använd produktens pris
 FROM 
     [Order]
@@ -299,9 +346,6 @@ SELECT
 FROM 
     Customer;
 
-
-
--- Skapa data för ChannelSalesPerson-tabellen med unika kombinationer av försäljningskanaler och säljare
 -- Skapa data för ChannelSalesPerson-tabellen med unika kombinationer av försäljningskanaler och säljare
 INSERT INTO ChannelSalePerson (SaleChannelID, SalePersonID)
 SELECT DISTINCT
@@ -329,3 +373,53 @@ INSERT INTO SaleRegion (SaleID, RegionID)
 SELECT s.SaleID, ABS(CHECKSUM(NEWID())) % 3 + 1 AS RegionID
 FROM Sale s;
 
+UPDATE Supplier
+SET LastOrderDate = (
+    SELECT MAX(OrderDate)
+    FROM [Order]
+    WHERE [Order].SupplierID = Supplier.SupplierID
+);
+
+UPDATE Supplier
+SET TotalOrders = (
+    SELECT COUNT(*)
+    FROM [Order]
+    WHERE [Order].SupplierID = Supplier.SupplierID
+);
+
+
+UPDATE Supplier
+SET TotalAmount = (
+    SELECT SUM(TotalAmount)
+    FROM [Order]
+    WHERE [Order].SupplierID = Supplier.SupplierID
+);
+
+UPDATE Supplier
+SET Rating = (
+    SELECT CASE 
+               WHEN TotalOrders >= 100 THEN 5
+               WHEN TotalOrders >= 50 THEN 4
+               WHEN TotalOrders >= 20 THEN 3
+               WHEN TotalOrders >= 10 THEN 2
+               ELSE 1
+           END
+    FROM (
+        SELECT COUNT(*) AS TotalOrders
+        FROM [Order]
+        WHERE [Order].SupplierID = Supplier.SupplierID
+    ) AS SupplierOrders
+);
+
+UPDATE Supplier
+SET LastOrderDate = '2022-05-10',
+    TotalOrders = 3,
+    TotalAmount = 5200.00,
+    Rating = CASE 
+                 WHEN TotalOrders >= 100 THEN 5
+                 WHEN TotalOrders >= 50 THEN 4
+                 WHEN TotalOrders >= 20 THEN 3
+                 WHEN TotalOrders >= 10 THEN 2
+                 ELSE 1
+             END
+WHERE SupplierID = 4;

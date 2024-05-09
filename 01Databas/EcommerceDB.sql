@@ -1,6 +1,6 @@
-CREATE DATABASE EcommerceDB;
+CREATE DATABASE SaleDB;
 GO
-USE EcommerceDB;
+USE SaleDB;
 GO
 
 CREATE TABLE Supplier (
@@ -148,17 +148,27 @@ INSERT INTO Category (CategoryID, CategoryName)
 VALUES 
     (1, 'Electronics'),
     (2, 'Appliances'),
-    (3, 'Home & Garden');
+    (3, 'Home & Garden'),
+	(4, 'Mobile Devices'),
+    (5, 'Kitchen Appliances');
 
--- Lägg till data i Product-tabellen
+-- Lägg till befintliga produkter i amerikanska dollar och matcha med kategorier
+DECLARE @exchangeRate DECIMAL(10,2) = 9.0; -- Växelkursen mellan SEK och USD
+
 INSERT INTO Product (ProductID, ProductName, ProductPrice, SupplierID, CategoryID)
 VALUES 
-    (1, 'Smartphone X', 799.99, 1, 1),
-    (2, 'Laptop Pro', 1299.99, 1, 1),
-    (3, 'Smart TV 55"', 999.99, 2, 1),
-    (4, 'Blender Deluxe', 49.99, 2, 2),
-    (5, 'Coffee Maker', 79.99, 3, 2),
-    (6, 'LED Light Bulbs (4-pack)', 19.99, 3, 3);
+    (1, 'Smartphone X', ROUND(RAND()*(1000-500)+500 / @exchangeRate, 2), 1, 1),
+    (2, 'Laptop Pro', ROUND(RAND()*(2000-1000)+1000 / @exchangeRate, 2), 1, 1),
+    (3, 'Smart TV 55"', ROUND(RAND()*(1500-800)+800 / @exchangeRate, 2), 2, 1),
+    (4, 'Blender Deluxe', ROUND(RAND()*(100-50)+50 / @exchangeRate, 2), 2, 2),
+    (5, 'Coffee Maker', ROUND(RAND()*(150-80)+80 / @exchangeRate, 2), 3, 2),
+    (6, 'LED Light Bulbs (4-pack)', ROUND(RAND()*(30-10)+10 / @exchangeRate, 2), 3, 3),
+	(7, 'Tablet Lite', ROUND(RAND()*(800-400)+400 / @exchangeRate, 2), 1, 4),
+    (8, 'Desktop Computer', ROUND(RAND()*(2500-1500)+1500 / @exchangeRate, 2), 1, 4),
+    (9, 'Wireless Headphones', ROUND(RAND()*(200-100)+100 / @exchangeRate, 2), 2, 4),
+    (10, 'Toaster', ROUND(RAND()*(60-30)+30 / @exchangeRate, 2), 2, 5),
+    (11, 'Electric Kettle', ROUND(RAND()*(70-40)+40 / @exchangeRate, 2), 3, 5),
+    (12, 'Desk Lamp', ROUND(RAND()*(40-20)+20 / @exchangeRate, 2), 3, 5);
 
 -- Lägg till kunder
 INSERT INTO Customer (CustomerID, CountryID, CustomerName, Gender, Address, Birthday, SSN, ContactInfo)
@@ -213,17 +223,34 @@ VALUES
     (2, 'Norway'),
     (3, 'Finland');
 
+-- Skapa en gemensam CTE för att generera åren 2021, 2022 och 2023
+WITH Years AS (
+    SELECT 2021 AS Year
+    UNION ALL
+    SELECT 2022 AS Year
+    UNION ALL
+    SELECT 2023 AS Year
+)
 
--- Skapa data för Order-tabellen som matchar befintliga kunder
+-- Skapa data för Order-tabellen med alla månader för åren 2021, 2022 och 2023
 INSERT INTO [Order] (OrderID, CustomerID, ProductID, OrderDate, TotalAmount)
-SELECT TOP 42
+SELECT 
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS OrderID,
     CustomerID,
-    ABS(CHECKSUM(NEWID())) % 6 + 1 AS ProductID, -- Slumpmässigt välj en produkt
-    DATEADD(day, -ABS(CHECKSUM(NEWID())) % 365, GETDATE()) AS OrderDate, -- Slumpmässigt välj ett datum inom det senaste året
+    ABS(CHECKSUM(NEWID())) % 12 + 1 AS ProductID, -- Slumpmässigt välj en produkt
+    DATEFROMPARTS(Year, MonthNumber, 1) AS OrderDate, -- Datum för varje månad
     ABS(CHECKSUM(NEWID())) % 1500 + 500 AS TotalAmount -- Slumpmässigt välj ett belopp mellan 500 och 2000
 FROM
-    Customer;
+    Customer
+CROSS JOIN
+    Years
+CROSS JOIN
+    (
+        SELECT TOP 12 ROW_NUMBER() OVER (ORDER BY (SELECT NULL)) AS MonthNumber -- 12 månader
+        FROM sys.objects
+    ) AS Months;
+
+
 
 -- Lägg till data i SaleChannel-tabellen
 INSERT INTO SaleChannel (SaleChannelID, ChannelName)
@@ -255,11 +282,11 @@ VALUES
 
 -- Skapa en temporär tabell med datum för varje månad från januari 2023 till december 2024
 WITH Months AS (
-    SELECT DATEFROMPARTS(2023, 1, 1) AS SaleDate
+    SELECT DATEFROMPARTS(2021, 1, 1) AS SaleDate
     UNION ALL
     SELECT DATEADD(MONTH, 1, SaleDate)
     FROM Months
-    WHERE SaleDate < '2024-12-01'
+    WHERE SaleDate < '2024-03-31'
 )
 
 -- Skapa data för Sale-tabellen med försäljningar för varje månad och kund
@@ -268,7 +295,7 @@ SELECT
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS SaleID,
     m.SaleDate,
     ABS(CHECKSUM(NEWID())) % 1500 + 500 AS SaleAmount, -- Slumpmässigt välj ett belopp mellan 500 och 2000
-    ABS(CHECKSUM(NEWID())) % 6 + 1 AS ProductID, -- Slumpmässigt välj en produkt
+    ABS(CHECKSUM(NEWID())) % 12 + 1 AS ProductID, -- Slumpmässigt välj en produkt
     c.CustomerID,
     ABS(CHECKSUM(NEWID())) % 7 + 1 AS SaleChannelID, -- Slumpmässigt välj en försäljningskanal
     ABS(CHECKSUM(NEWID())) % 5 + 1 AS SalePersonID -- Slumpmässigt välj en säljare
@@ -284,7 +311,7 @@ SELECT
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS OrderDetailID,
     [Order].OrderID,
     [Order].ProductID,
-    ABS(CHECKSUM(NEWID())) % 5 + 1 AS Quantity, -- Slumpmässigt antal produkter mellan 1 och 5
+    ABS(CHECKSUM(NEWID())) % 12 + 1 AS Quantity, -- Slumpmässigt antal produkter mellan 1 och 12
     Product.ProductPrice AS Price -- Använd produktens pris
 FROM 
     [Order]
@@ -299,9 +326,6 @@ SELECT
 FROM 
     Customer;
 
-
-
--- Skapa data för ChannelSalesPerson-tabellen med unika kombinationer av försäljningskanaler och säljare
 -- Skapa data för ChannelSalesPerson-tabellen med unika kombinationer av försäljningskanaler och säljare
 INSERT INTO ChannelSalePerson (SaleChannelID, SalePersonID)
 SELECT DISTINCT
@@ -328,4 +352,3 @@ WHERE
 INSERT INTO SaleRegion (SaleID, RegionID)
 SELECT s.SaleID, ABS(CHECKSUM(NEWID())) % 3 + 1 AS RegionID
 FROM Sale s;
-
