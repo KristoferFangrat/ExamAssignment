@@ -39,7 +39,7 @@ CREATE TABLE ProductInventory (
     InventoryID INT PRIMARY KEY IDENTITY,
     ProductID INT,
     Quantity INT,
-    CONSTRAINT FK_ProductInventory_Product FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
+    FOREIGN KEY (ProductID) REFERENCES Product(ProductID)
 );
 
 -- Skapa Customer Table
