@@ -150,7 +150,10 @@ VALUES
     (1, 'Swedish Tech AB', 'info@swedishtech.com', 'Storgatan 1, Stockholm', 'Sweden', NULL, 0, 0.00, 0, 1),
     (2, 'Norwegian Gadgets AS', 'contact@norwegiangadgets.no', 'Karl Johans gate 2, Oslo', 'Norway', NULL, 0, 0.00, 0, 1),
     (3, 'Finnish Electronics Oy', 'sales@finnishelectronics.fi', 'Aleksanterinkatu 3, Helsinki', 'Finland', NULL, 0, 0.00, 0, 1),
-	(4, 'Danish Electronics A/S', 'peter.jensen@danishelectronics.dk', 'Vesterbrogade 2, Copenhagen', 'Denmark', NULL, 0, 0.00, 0, 0);
+	(4, 'Danish Electronics A/S', 'peter.jensen@danishelectronics.dk', 'Vesterbrogade 2, Copenhagen', 'Denmark', NULL, 0, 0.00, 0, 0),
+	(5, 'Icelandic Electronics ehf', 'sales@icelandicelectronics.is', 'Laugavegur 1, Reykjavik', 'Iceland', NULL, 0, 0.00, 0, 1),
+    (6, 'Greenland Tech Solutions', 'info@greenlandtech.gl', 'Nuuk Center 2, Nuuk', 'Greenland', NULL, 0, 0.00, 0, 1),
+    (7, 'Faroe Islands Gadgets', 'contact@faroeislandsgadgets.fo', 'Havnargøta 3, Tórshavn', 'Faroe Islands', NULL, 0, 0.00, 0, 1);
 
 
 -- Lägg till data i Category-tabellen
@@ -160,26 +163,40 @@ VALUES
     (2, 'Appliances'),
     (3, 'Home & Garden'),
 	(4, 'Mobile Devices'),
-    (5, 'Kitchen Appliances');
+    (5, 'Kitchen Appliances'),
+	(6, 'Gaming');
 
--- Lägg till befintliga produkter i amerikanska dollar och matcha med kategorier
 DECLARE @exchangeRate DECIMAL(10,2) = 9.0; -- Växelkursen mellan SEK och USD
 
--- Fyll Cost-kolumnen med slumpmässig kostnadsinformation
+-- Fyll Cost-kolumnen med slumpmässig kostnadsinformation och välj slumpmässig leverantör från de befintliga leverantörerna
 INSERT INTO Product (ProductID, ProductName, ProductPrice, SupplierID, CategoryID, Cost)
 VALUES 
-    (1, 'Smartphone X', ROUND(RAND()*(1000-500)+500, 2), 1, 1, ROUND(RAND()*(500-100)+100, 2)),
-    (2, 'Laptop Pro', ROUND(RAND()*(2000-1000)+1000, 2), 1, 1, ROUND(RAND()*(500-100)+100, 2)),
-    (3, 'Smart TV 55"', ROUND(RAND()*(1500-800)+800, 2), 2, 1, ROUND(RAND()*(500-100)+100, 2)),
-    (4, 'Blender Deluxe', ROUND(RAND()*(100-50)+50, 2), 2, 2, ROUND(RAND()*(500-100)+100, 2)),
-    (5, 'Coffee Maker', ROUND(RAND()*(150-80)+80, 2), 3, 2, ROUND(RAND()*(500-100)+100, 2)),
-    (6, 'LED Light Bulbs (4-pack)', ROUND(RAND()*(30-10)+10, 2), 3, 3, ROUND(RAND()*(500-100)+100, 2)),
-    (7, 'Tablet Lite', ROUND(RAND()*(800-400)+400, 2), 1, 4, ROUND(RAND()*(500-100)+100, 2)),
-    (8, 'Desktop Computer', ROUND(RAND()*(2500-1500)+1500, 2), 1, 4, ROUND(RAND()*(500-100)+100, 2)),
-    (9, 'Wireless Headphones', ROUND(RAND()*(200-100)+100, 2), 2, 4, ROUND(RAND()*(500-100)+100, 2)),
-    (10, 'Toaster', ROUND(RAND()*(60-30)+30, 2), 2, 5, ROUND(RAND()*(500-100)+100, 2)),
-    (11, 'Electric Kettle', ROUND(RAND()*(70-40)+40, 2), 3, 5, ROUND(RAND()*(500-100)+100, 2)),
-    (12, 'Desk Lamp', ROUND(RAND()*(40-20)+20, 2), 3, 5, ROUND(RAND()*(500-100)+100, 2));
+    (1, 'Smartphone X', ROUND(RAND()*(1000-500)+500, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(500-100)+100, 2)),
+    (2, 'Laptop Pro', ROUND(RAND()*(2000-1000)+1000, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(500-100)+100, 2)),
+    (3, 'Smart TV 55"', ROUND(RAND()*(1500-800)+800, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(500-100)+100, 2)),
+    (4, 'Blender Deluxe', ROUND(RAND()*(100-50)+50, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(500-100)+100, 2)),
+    (5, 'Coffee Maker', ROUND(RAND()*(150-80)+80, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(500-100)+100, 2)),
+    (6, 'LED Light Bulbs (4-pack)', ROUND(RAND()*(30-10)+10, 2), FLOOR(RAND()*7)+1, 3, ROUND(RAND()*(500-100)+100, 2)),
+    (7, 'Tablet Lite', ROUND(RAND()*(800-400)+400, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(500-100)+100, 2)),
+    (8, 'Desktop Computer', ROUND(RAND()*(2500-1500)+1500, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(500-100)+100, 2)),
+    (9, 'Wireless Headphones', ROUND(RAND()*(200-100)+100, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(500-100)+100, 2)),
+    (10, 'Toaster', ROUND(RAND()*(60-30)+30, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(500-100)+100, 2)),
+    (11, 'Electric Kettle', ROUND(RAND()*(70-40)+40, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(500-100)+100, 2)),
+    (12, 'Desk Lamp', ROUND(RAND()*(40-20)+20, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(500-100)+100, 2)),
+    (13, 'Gaming Console X', ROUND(RAND()*(600-400)+400, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(300-100)+100, 2)),
+    (14, 'Gaming Headset', ROUND(RAND()*(150-80)+80, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(50-20)+20, 2)),
+    (15, 'Gaming Mouse', ROUND(RAND()*(100-50)+50, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(30-10)+10, 2)),
+    (16, 'Gaming Keyboard', ROUND(RAND()*(120-80)+80, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(40-20)+20, 2)),
+    (17, 'Gaming Chair', ROUND(RAND()*(300-200)+200, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(100-50)+50, 2)),
+    (18, 'Gaming Monitor', ROUND(RAND()*(800-400)+400, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(350-150)+150, 2)),
+    (19, 'Gaming Chair Pro', ROUND(RAND()*(600-200)+200, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(200-100)+100, 2));
+
+-- Convert product prices to USD
+UPDATE Product
+SET ProductPrice = ROUND(ProductPrice / @exchangeRate, 2),
+    Cost = ROUND(Cost / @exchangeRate, 2);
+
+
 
 -- Skapa data för ProductInventory-tabellen baserat på Product-tabellen
 INSERT INTO ProductInventory (ProductID, Quantity)
@@ -187,9 +204,9 @@ SELECT p.ProductID,
        q.RandomQuantity -- Slumpmässigt valda kvantiteter
 FROM Product p
 CROSS APPLY (VALUES 
-    (FLOOR(RAND()*(100-10)+10)),
-    (FLOOR(RAND()*(100-10)+10)),
-    (FLOOR(RAND()*(100-10)+10))
+    (FLOOR(RAND()*(100-19)+10)),
+    (FLOOR(RAND()*(500-39)+10)),
+    (FLOOR(RAND()*(1000-49)+10))
 ) AS q(RandomQuantity);
 
 -- Lägg till kunder
@@ -236,7 +253,16 @@ VALUES
 (39, 1, 'Sofia Johansson', 'Female', 'Storgatan 18', '1990-12-10', '901210-9012', 'sofia@example.com'),
 (40, 2, 'Elin Olsen', 'Female', 'Karl Johans gate 25', '1985-07-15', '850715-1234', 'elin@example.com'),
 (41, 2, 'Ole Kristoffersen', 'Male', 'Dronningens gate 18', '1979-04-28', '790428-5678', 'ole@example.com'),
-(42, 2, 'Sofie Larsen', 'Female', 'Kongens gate 15', '1992-10-05', '921005-9012', 'sofie@example.com');
+(42, 2, 'Sofie Larsen', 'Female', 'Kongens gate 15', '1992-10-05', '921005-9012', 'sofie@example.com'),
+(43, 5, 'Sigridur Sigurdardottir', 'Female', 'Laugavegur 10', '1982-06-15', '820615-1234', 'sigridur@example.com'),
+(44, 5, 'Jon Jonsson', 'Male', 'Bankastræti 5', '1976-09-20', '760920-5678', 'jon@example.com'),
+(45, 5, 'Gudrun Gudmundsdottir', 'Female', 'Skólavörðustígur 15', '1980-04-28', '800428-9012', 'gudrun@example.com'),
+(46, 6, 'Anders Andersen', 'Male', 'Nuuk Center 8', '1985-11-10', '851110-1234', 'anders@example.com'),
+(47, 6, 'Sofia Pedersen', 'Female', 'Sisimiut 12', '1987-07-15', '870715-5678', 'sofia@example.com'),
+(48, 6, 'Erik Eriksen', 'Male', 'Ilulissat 5', '1990-03-25', '900325-9012', 'erik@example.com'),
+(49, 7, 'Johannes Johannesen', 'Male', 'Tórshavn 10', '1979-06-18', '790618-1234', 'johannes@example.com'),
+(50, 7, 'Anna Poulsen', 'Female', 'Klaksvík 15', '1982-03-05', '820305-5678', 'anna@example.com'),
+(51, 7, 'Andrea Hansen', 'Female', 'Tvøroyri 3', '1995-11-30', '951130-9012', 'andrea@example.com');
 
 -- Lägg till data i Country-tabellen
 INSERT INTO Country (CountryID, CountryName)
@@ -244,7 +270,10 @@ VALUES
     (1, 'Sweden'),
     (2, 'Norway'),
     (3, 'Finland'),
-	(4, 'Denmark');
+	(4, 'Denmark'),
+	(5, 'Iceland'),
+    (6, 'Greenland'),
+    (7, 'Faroe Islands');
 
 -- Skapa en gemensam CTE för att generera alla månader för åren 2021, 2022 och 2023
 WITH Months AS (
@@ -260,10 +289,10 @@ INSERT INTO [Order] (OrderID, CustomerID, ProductID, SupplierID, OrderDate, Tota
 SELECT 
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS OrderID,
     CustomerID,
-    ABS(CHECKSUM(NEWID())) % 12 + 1 AS ProductID, -- Slumpmässigt välj en produkt
-    ABS(CHECKSUM(NEWID())) % 3 + 1 AS SupplierID, -- Slumpmässigt välj en leverantör
+    ABS(CHECKSUM(NEWID())) % 19 + 1 AS ProductID, -- Slumpmässigt välj en produkt
+    ABS(CHECKSUM(NEWID())) % 7 + 1 AS SupplierID, -- Slumpmässigt välj en leverantör
     m.OrderDate, -- Datum för varje månad
-    ABS(CHECKSUM(NEWID())) % 1500 + 500 AS TotalAmount -- Slumpmässigt välj ett belopp mellan 500 och 2000
+    ABS(CHECKSUM(NEWID())) % 7500 + 500 AS TotalAmount -- Slumpmässigt välj ett belopp mellan 500 och 8000
 FROM
     Customer
 CROSS JOIN
@@ -297,7 +326,10 @@ VALUES
     (1, 'Sweden'),
     (2, 'Norway'),
     (3, 'Finland'),
-	(4, 'Denmark');
+	(4, 'Denmark'),
+	(5, 'Iceland'),
+    (6, 'Greenland'),
+    (7, 'Faroe Islands');
 
 
 -- Skapa en temporär tabell med datum för varje månad från januari 2023 till december 2024
@@ -314,8 +346,8 @@ INSERT INTO Sale (SaleID, SaleDate, SaleAmount, ProductID, CustomerID, SaleChann
 SELECT 
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS SaleID,
     m.SaleDate,
-    ABS(CHECKSUM(NEWID())) % 4790 + 500 AS SaleAmount, -- Slumpmässigt välj ett belopp mellan 500 och 2000
-    ABS(CHECKSUM(NEWID())) % 12 + 1 AS ProductID, -- Slumpmässigt välj en produkt
+    ABS(CHECKSUM(NEWID())) % 4790 + 500 AS SaleAmount, -- Slumpmässigt välj ett belopp mellan 500 och 5290
+    ABS(CHECKSUM(NEWID())) % 19 + 1 AS ProductID, -- Slumpmässigt välj en produkt
     c.CustomerID,
     ABS(CHECKSUM(NEWID())) % 7 + 1 AS SaleChannelID, -- Slumpmässigt välj en försäljningskanal
     ABS(CHECKSUM(NEWID())) % 5 + 1 AS SalePersonID -- Slumpmässigt välj en säljare
@@ -331,7 +363,7 @@ SELECT
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS OrderDetailID,
     [Order].OrderID,
     [Order].ProductID,
-    ABS(CHECKSUM(NEWID())) % 12 + 1 AS Quantity, -- Slumpmässigt antal produkter mellan 1 och 12
+    ABS(CHECKSUM(NEWID())) % 19 + 1 AS Quantity, -- Slumpmässigt antal produkter mellan 1 och 17
     Product.ProductPrice AS Price -- Använd produktens pris
 FROM 
     [Order]
@@ -370,7 +402,7 @@ WHERE
 
 -- Lägg till data i SaleRegion-tabellen med slumpmässiga regioner
 INSERT INTO SaleRegion (SaleID, RegionID)
-SELECT s.SaleID, ABS(CHECKSUM(NEWID())) % 3 + 1 AS RegionID
+SELECT s.SaleID, ABS(CHECKSUM(NEWID())) % 7 + 1 AS RegionID
 FROM Sale s;
 
 UPDATE Supplier
@@ -395,31 +427,18 @@ SET TotalAmount = (
     WHERE [Order].SupplierID = Supplier.SupplierID
 );
 
+-- Update Supplier table with sample ratings
 UPDATE Supplier
-SET Rating = (
-    SELECT CASE 
-               WHEN TotalOrders >= 100 THEN 5
-               WHEN TotalOrders >= 50 THEN 4
-               WHEN TotalOrders >= 20 THEN 3
-               WHEN TotalOrders >= 10 THEN 2
-               ELSE 1
-           END
-    FROM (
-        SELECT COUNT(*) AS TotalOrders
-        FROM [Order]
-        WHERE [Order].SupplierID = Supplier.SupplierID
-    ) AS SupplierOrders
-);
+SET Rating = 
+    CASE 
+        WHEN SupplierID = 1 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 1
+        WHEN SupplierID = 2 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 2
+        WHEN SupplierID = 3 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 3
+		WHEN SupplierID = 4 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 4
+		WHEN SupplierID = 5 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 5
+        WHEN SupplierID = 6 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 6
+		WHEN SupplierID = 7 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 7
 
-UPDATE Supplier
-SET LastOrderDate = '2022-05-10',
-    TotalOrders = 3,
-    TotalAmount = 5200.00,
-    Rating = CASE 
-                 WHEN TotalOrders >= 100 THEN 5
-                 WHEN TotalOrders >= 50 THEN 4
-                 WHEN TotalOrders >= 20 THEN 3
-                 WHEN TotalOrders >= 10 THEN 2
-                 ELSE 1
-             END
-WHERE SupplierID = 4;
+        -- Add more cases for other SupplierIDs as needed
+        ELSE 0 -- Default rating if no specific condition is met
+    END;
