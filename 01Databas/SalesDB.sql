@@ -262,7 +262,15 @@ VALUES
 (48, 6, 'Erik Eriksen', 'Male', 'Ilulissat 5', '1990-03-25', '900325-9012', 'erik@example.com'),
 (49, 7, 'Johannes Johannesen', 'Male', 'Tórshavn 10', '1979-06-18', '790618-1234', 'johannes@example.com'),
 (50, 7, 'Anna Poulsen', 'Female', 'Klaksvík 15', '1982-03-05', '820305-5678', 'anna@example.com'),
-(51, 7, 'Andrea Hansen', 'Female', 'Tvøroyri 3', '1995-11-30', '951130-9012', 'andrea@example.com');
+(51, 7, 'Andrea Hansen', 'Female', 'Tvøroyri 3', '1995-11-30', '951130-9012', 'andrea@example.com'),
+(52, 4, 'Niels Nielsen', 'Male', 'Strøget 1', '1983-05-15', '830515-1234', 'niels@example.com'),
+(53, 4, 'Mette Madsen', 'Female', 'Kongens Nytorv 5', '1990-08-20', '900820-5678', 'mette@example.com'),
+(54, 4, 'Lars Larsen', 'Male', 'Vesterbrogade 10', '1976-11-25', '761125-9012', 'lars@example.com'),
+(55, 4, 'Anders Andersen', 'Male', 'Nyhavn 15', '1988-03-10', '880310-1234', 'anders@example.com'),
+(56, 4, 'Karen Kristensen', 'Female', 'Strandvejen 20', '1995-07-18', '950718-5678', 'karen@example.com'),
+(57, 4, 'Peter Petersen', 'Male', 'Vesterbro 5', '1979-09-20', '790920-9012', 'peter@example.com'),
+(58, 4, 'Camilla Christensen', 'Female', 'Østerbrogade 8', '1982-11-15', '821115-2345', 'camilla@example.com'),
+(59, 4, 'Jens Jensen', 'Male', 'Frederiksberg Allé 12', '1986-05-28', '860528-5678', 'jens@example.com');
 
 -- Lägg till data i Country-tabellen
 INSERT INTO Country (CountryID, CountryName)
