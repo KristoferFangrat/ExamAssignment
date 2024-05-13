@@ -54,6 +54,15 @@ CREATE TABLE Customer (
     ContactInfo VARCHAR(100)
 );
 
+CREATE TABLE CustomerSatisfaction (
+    SatisfactionID INT PRIMARY KEY,
+    CustomerID INT,
+    SatisfactionScore INT,
+    Feedback TEXT,
+    FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+);
+
+
 CREATE TABLE Country (
     CountryID INT PRIMARY KEY,
     CountryName VARCHAR(100)
@@ -183,12 +192,12 @@ VALUES
     (10, 'Toaster', ROUND(RAND()*(60-30)+30, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(500-100)+100, 2)),
     (11, 'Electric Kettle', ROUND(RAND()*(70-40)+40, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(500-100)+100, 2)),
     (12, 'Desk Lamp', ROUND(RAND()*(40-20)+20, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(500-100)+100, 2)),
-    (13, 'Gaming Console X', ROUND(RAND()*(600-400)+400, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(300-100)+100, 2)),
+    (13, 'Gaming Console ', ROUND(RAND()*(1000-400)+400, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(300-100)+100, 2)),
     (14, 'Gaming Headset', ROUND(RAND()*(150-80)+80, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(50-20)+20, 2)),
     (15, 'Gaming Mouse', ROUND(RAND()*(100-50)+50, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(30-10)+10, 2)),
-    (16, 'Gaming Keyboard', ROUND(RAND()*(120-80)+80, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(40-20)+20, 2)),
-    (17, 'Gaming Chair', ROUND(RAND()*(300-200)+200, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(100-50)+50, 2)),
-    (18, 'Gaming Monitor', ROUND(RAND()*(800-400)+400, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(350-150)+150, 2)),
+    (16, 'Gaming Keyboard', ROUND(RAND()*(240-80)+80, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(40-20)+20, 2)),
+    (17, 'Gaming Chair', ROUND(RAND()*(900-200)+200, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(100-50)+50, 2)),
+    (18, 'Gaming Monitor', ROUND(RAND()*(2000-400)+600, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(350-150)+150, 2)),
     (19, 'Gaming Chair Pro', ROUND(RAND()*(600-200)+200, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(200-100)+100, 2));
 
 -- Convert product prices to USD
@@ -271,6 +280,33 @@ VALUES
 (57, 4, 'Peter Petersen', 'Male', 'Vesterbro 5', '1979-09-20', '790920-9012', 'peter@example.com'),
 (58, 4, 'Camilla Christensen', 'Female', 'Østerbrogade 8', '1982-11-15', '821115-2345', 'camilla@example.com'),
 (59, 4, 'Jens Jensen', 'Male', 'Frederiksberg Allé 12', '1986-05-28', '860528-5678', 'jens@example.com');
+
+-- Lägg till data i CustomerSatisfaction-tabellen med korrekt feedbacktext och slumpmässiga kunder
+INSERT INTO CustomerSatisfaction (SatisfactionID, CustomerID, SatisfactionScore, Feedback)
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY NEWID()) AS SatisfactionID,
+    CustomerID,
+    SatisfactionScore,
+    CASE 
+        WHEN SatisfactionScore = 1 THEN 'Poor service, very dissatisfied.'
+        WHEN SatisfactionScore = 2 THEN 'Average service, could be better.'
+        WHEN SatisfactionScore = 3 THEN 'Good service, satisfied.'
+        WHEN SatisfactionScore = 4 THEN 'Very good service, highly satisfied.'
+        WHEN SatisfactionScore = 5 THEN 'Excellent service, extremely satisfied.'
+    END AS Feedback
+FROM (
+    SELECT 
+        CustomerID,
+        ABS(CHECKSUM(NEWID()) % 5) + 1 AS SatisfactionScore -- Slumpmässig nöjdhetsskala mellan 1 och 5
+    FROM 
+        Customer
+    WHERE 
+        CustomerID IS NOT NULL -- Filtrera bort eventuella tomma kund-ID
+) AS RandomScores;
+
+
+
+
 
 -- Lägg till data i Country-tabellen
 INSERT INTO Country (CountryID, CountryName)
