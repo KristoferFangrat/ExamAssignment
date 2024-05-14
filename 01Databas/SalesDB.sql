@@ -54,6 +54,20 @@ CREATE TABLE Customer (
     ContactInfo VARCHAR(100)
 );
 
+CREATE TABLE CustomerSegment (
+    CustomerSegmentID INT PRIMARY KEY,
+	CustomerID INT,
+    Age INT,
+    Gender VARCHAR(10),
+    PurchaseFrequency VARCHAR(20),
+    PurchaseValue DECIMAL(10, 2),
+    PreferredCategory VARCHAR(100),
+    Location VARCHAR(100),
+    Segment VARCHAR(50),
+	FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID)
+);
+
+
 CREATE TABLE CustomerSatisfaction (
     SatisfactionID INT PRIMARY KEY,
     CustomerID INT,
@@ -218,6 +232,7 @@ CROSS APPLY (VALUES
     (FLOOR(RAND()*(1000-49)+10))
 ) AS q(RandomQuantity);
 
+
 -- Lägg till kunder
 INSERT INTO Customer (CustomerID, CountryID, CustomerName, Gender, Address, Birthday, SSN, ContactInfo)
 VALUES 
@@ -281,32 +296,6 @@ VALUES
 (58, 4, 'Camilla Christensen', 'Female', 'Østerbrogade 8', '1982-11-15', '821115-2345', 'camilla@example.com'),
 (59, 4, 'Jens Jensen', 'Male', 'Frederiksberg Allé 12', '1986-05-28', '860528-5678', 'jens@example.com');
 
--- Lägg till data i CustomerSatisfaction-tabellen med korrekt feedbacktext och slumpmässiga kunder
-INSERT INTO CustomerSatisfaction (SatisfactionID, CustomerID, SatisfactionScore, Feedback)
-SELECT 
-    ROW_NUMBER() OVER (ORDER BY NEWID()) AS SatisfactionID,
-    CustomerID,
-    SatisfactionScore,
-    CASE 
-        WHEN SatisfactionScore = 1 THEN 'Poor service, very dissatisfied.'
-        WHEN SatisfactionScore = 2 THEN 'Average service, could be better.'
-        WHEN SatisfactionScore = 3 THEN 'Good service, satisfied.'
-        WHEN SatisfactionScore = 4 THEN 'Very good service, highly satisfied.'
-        WHEN SatisfactionScore = 5 THEN 'Excellent service, extremely satisfied.'
-    END AS Feedback
-FROM (
-    SELECT 
-        CustomerID,
-        ABS(CHECKSUM(NEWID()) % 5) + 1 AS SatisfactionScore -- Slumpmässig nöjdhetsskala mellan 1 och 5
-    FROM 
-        Customer
-    WHERE 
-        CustomerID IS NOT NULL -- Filtrera bort eventuella tomma kund-ID
-) AS RandomScores;
-
-
-
-
 
 -- Lägg till data i Country-tabellen
 INSERT INTO Country (CountryID, CountryName)
@@ -341,6 +330,53 @@ FROM
     Customer
 CROSS JOIN
     Months m;
+
+-- Add data to the CustomerSegment table based on random information from existing customers
+INSERT INTO CustomerSegment (CustomerSegmentID, CustomerID, Age, Gender, PurchaseFrequency, PurchaseValue, PreferredCategory, Location, Segment)
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY NEWID()) AS CustomerSegmentID,
+    c.CustomerID,
+    DATEDIFF(YEAR, c.Birthday, GETDATE()) AS Age,
+    c.Gender,
+    CASE
+        WHEN o.TotalOrders >= 300 THEN 'Frequent'
+        WHEN o.TotalOrders >= 100 THEN 'Regular'
+        ELSE 'Occasional'
+    END AS PurchaseFrequency,
+    o.TotalAmount AS PurchaseValue,
+    (
+        SELECT TOP 1 CategoryName 
+        FROM Category 
+        WHERE CategoryID NOT IN (
+            SELECT PreferredCategory
+            FROM CustomerSegment
+            WHERE CustomerID = c.CustomerID
+        )
+        ORDER BY NEWID()
+    ) AS PreferredCategory,
+    co.CountryName AS Location,
+    CASE
+        WHEN DATEDIFF(YEAR, c.Birthday, GETDATE()) < 30 THEN 'Young'
+        WHEN DATEDIFF(YEAR, c.Birthday, GETDATE()) < 50 THEN 'Middle-aged'
+        ELSE 'Senior'
+    END AS Segment
+FROM
+    Customer c
+JOIN (
+    SELECT
+        CustomerID,
+        COUNT(*) AS TotalOrders,
+        SUM(TotalAmount) AS TotalAmount
+    FROM
+        [Order]
+    GROUP BY
+        CustomerID
+) o ON c.CustomerID = o.CustomerID
+JOIN
+    Country AS co ON c.CountryID = co.CountryID;
+
+
+
 
 
 
