@@ -84,17 +84,14 @@ CREATE TABLE Country (
 );
 
 
--- Skapa Order Table
 CREATE TABLE [Order] (
     OrderID INT PRIMARY KEY,
     CustomerID INT,
-	ProductID INT,
-	SupplierID INT,
+    SupplierID INT,
     OrderDate DATE,
     TotalAmount DECIMAL(10, 2),
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
-	FOREIGN KEY (ProductID) REFERENCES Product(ProductID),
-	FOREIGN KEY (SupplierID) REFERENCES Supplier(SupplierID)
+    FOREIGN KEY (SupplierID) REFERENCES Supplier(SupplierID)
 );
 
 -- Skapa SalesChannel Table
@@ -130,7 +127,6 @@ CREATE TABLE Sale (
     FOREIGN KEY (SalePersonID) REFERENCES SalePerson(SalePersonID)
 );
 
--- Skapa tabell för orderdetaljer
 CREATE TABLE OrderDetail (
     OrderDetailID INT PRIMARY KEY,
     OrderID INT,
@@ -171,14 +167,14 @@ CREATE TABLE SaleRegion (
 -- Skapa data för Supplier-tabellen
 INSERT INTO Supplier (SupplierID, Name, Contact, Adress, Region, LastOrderDate, TotalOrders, TotalAmount, Rating, Active)
 VALUES 
-	(1, 'Swedish Cakes AB', 'info@swedishcakes.com', 'Storgatan 1, Stockholm', 'Sweden', NULL, 0, 0.00, 0, 1),
-    (2, 'Norwegian Cookies AS', 'contact@norwegiancookies.no', 'Karl Johans gate 2, Oslo', 'Norway', NULL, 0, 0.00, 0, 1),
-    (3, 'Finnish Sweets Oy', 'sales@finnishsweets.fi', 'Aleksanterinkatu 3, Helsinki', 'Finland', NULL, 0, 0.00, 0, 1),
-    (4, 'Danish Pastries A/S', 'peter.jensen@danishpastries.dk', 'Vesterbrogade 2, Copenhagen', 'Denmark', NULL, 0, 0.00, 0, 0),
-    (5, 'Icelandic Delights ehf', 'sales@icelandicdelights.is', 'Laugavegur 1, Reykjavik', 'Iceland', NULL, 0, 0.00, 0, 1),
-	(6, 'Dutch Bakes BV', 'info@dutchbakes.nl', 'Damrak 7, Amsterdam', 'Netherlands', NULL, 0, 0.00, 0, 1),
-    (7, 'Austrian Pastries GmbH', 'contact@austrianpastries.at', 'Mariahilfer Straße 4, Vienna', 'Austria', NULL, 0, 0.00, 0, 1),
-    (8, 'Swiss Cakes AG', 'sales@swisscakes.ch', 'Bahnhofstrasse 9, Zurich', 'Switzerland', NULL, 0, 0.00, 0, 1);
+	(1, 'Swedish Cakes AB', 'info@swedishcakes.com', 'Storgatan 1, Stockholm', 'North', NULL, 0, 0.00, 0, 1),
+    (2, 'Norwegian Cookies AS', 'contact@norwegiancookies.no', 'Karl Johans gate 2, Oslo', 'South', NULL, 0, 0.00, 0, 1),
+    (3, 'Finnish Sweets Oy', 'sales@finnishsweets.fi', 'Aleksanterinkatu 3, Helsinki', 'West', NULL, 0, 0.00, 0, 1),
+    (4, 'Danish Pastries A/S', 'peter.jensen@danishpastries.dk', 'Vesterbrogade 2, Copenhagen', 'East', NULL, 0, 0.00, 0, 0),
+    (5, 'Icelandic Delights ehf', 'sales@icelandicdelights.is', 'Laugavegur 1, Reykjavik', 'South', NULL, 0, 0.00, 0, 1),
+	(6, 'Dutch Bakes BV', 'info@dutchbakes.nl', 'Damrak 7, Amsterdam', 'North', NULL, 0, 0.00, 0, 1),
+    (7, 'Austrian Pastries GmbH', 'contact@austrianpastries.at', 'Mariahilfer Straße 4, Vienna', 'East', NULL, 0, 0.00, 0, 1),
+    (8, 'Swiss Cakes AG', 'sales@swisscakes.ch', 'Bahnhofstrasse 9, Zurich', 'North', NULL, 0, 0.00, 0, 1);
 
 
 -- Lägg till data i Category-tabellen
@@ -311,11 +307,10 @@ WITH Months AS (
 )
 
 -- Skapa data för Order-tabellen med alla månader för åren 2021, 2022 och 2023
-INSERT INTO [Order] (OrderID, CustomerID, ProductID, SupplierID, OrderDate, TotalAmount)
+INSERT INTO [Order] (OrderID, CustomerID, SupplierID, OrderDate, TotalAmount)
 SELECT 
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS OrderID,
     CustomerID,
-    ABS(CHECKSUM(NEWID())) % 21 + 1 AS ProductID, -- Slumpmässigt välj en produkt
     ABS(CHECKSUM(NEWID())) % 8 + 1 AS SupplierID, -- Slumpmässigt välj en leverantör
     m.OrderDate, -- Datum för varje månad
     ABS(CHECKSUM(NEWID())) % 500 + 50 AS TotalAmount -- Slumpmässigt välj ett belopp mellan 500 och 50
@@ -332,11 +327,11 @@ SELECT
     DATEDIFF(YEAR, c.Birthday, GETDATE()) AS Age,
     c.Gender,
     CASE
-        WHEN o.TotalOrders >= 500 THEN 'Frequent'
-        WHEN o.TotalOrders >= 200 THEN 'Regular'
-        ELSE 'Occasional'
+        WHEN o.TotalAmount < 50 THEN 'Occasional'
+        WHEN o.TotalAmount <= 50 AND o.TotalAmount >= 200 THEN 'Regular'
+        ELSE 'Frequent'
     END AS PurchaseFrequency,
-    o.TotalAmount AS PurchaseValue,
+    ABS(CHECKSUM(NEWID())) % 500 + 75 AS PurchaseValue, -- Slumpmässigt belopp mellan 75 och 575
     (
         SELECT TOP 1 CategoryName 
         FROM Category 
@@ -368,6 +363,8 @@ JOIN (
 JOIN
     Country AS co ON c.CountryID = co.CountryID;
 
+
+
 -- Lägg till data i CustomerSatisfaction-tabellen med korrekt feedbacktext och slumpmässiga kunder
 INSERT INTO CustomerSatisfaction (SatisfactionID, CustomerID, SatisfactionScore, Feedback)
 SELECT 
@@ -394,11 +391,13 @@ FROM (
 -- Lägg till data i SaleChannel-tabellen
 INSERT INTO SaleChannel (SaleChannelID, ChannelName)
 VALUES 
-    (1, 'E-commerce platform'),
+    (1, 'Online'),
     (2, 'Physical Store'),
-    (3, 'Local markets and events'),
-    (4, 'Business partnerships'),
-    (5, 'Direct sales');
+    (3, 'Telesales'),
+    (4, 'Wholesale'),
+    (5, 'E-commerce'),
+    (6, 'Catalog'),
+    (7, 'Trade Show');
 
 -- Lägg till data i SalePerson-tabellen
 INSERT INTO SalePerson (SalePersonID, SalePersonName)
@@ -412,13 +411,10 @@ VALUES
 -- Lägg till data i Region-tabellen som matchar länderna
 INSERT INTO Region (RegionID, RegionName)
 VALUES 
-    (1, 'Sweden'),
-    (2, 'Norway'),
-    (3, 'Finland'),
-	(4, 'Denmark'),
-	(5, 'Iceland'),
-    (6, 'Greenland'),
-    (7, 'Faroe Islands');
+    (1, 'North'),
+    (2, 'South'),
+    (3, 'East'),
+	(4, 'West');
 
 
 -- Skapa en temporär tabell med datum för varje månad från januari 2023 till december 2024
@@ -435,10 +431,10 @@ INSERT INTO Sale (SaleID, SaleDate, SaleAmount, ProductID, CustomerID, SaleChann
 SELECT 
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS SaleID,
     m.SaleDate,
-    ROUND(RAND(CHECKSUM(NEWID())) * 400 + 500, 2) AS SaleAmount,
+    ABS(CHECKSUM(NEWID())) % 400 + 500 AS SaleAmount, 
     ABS(CHECKSUM(NEWID())) % 21 + 1 AS ProductID, -- Slumpmässigt välj en produkt
     c.CustomerID,
-    ABS(CHECKSUM(NEWID())) % 5 + 1 AS SaleChannelID, -- Slumpmässigt välj en försäljningskanal
+    ABS(CHECKSUM(NEWID())) % 7 + 1 AS SaleChannelID, -- Slumpmässigt välj en försäljningskanal
     ABS(CHECKSUM(NEWID())) % 5 + 1 AS SalePersonID -- Slumpmässigt välj en säljare
 FROM
     Customer c
@@ -446,18 +442,32 @@ CROSS JOIN
     Months m;
 
 
--- Skapa data för OrderDetail-tabellen som matchar befintliga ordrar och produkter
+WITH RandomProductCount AS (
+    SELECT 
+        o.OrderID,
+        ABS(CHECKSUM(NEWID())) % 5 + 1 AS ProductCount -- Slumpmässigt antal produkter per order, mellan 1 och 5
+    FROM 
+        [Order] o
+)
 INSERT INTO OrderDetail (OrderDetailID, OrderID, ProductID, Quantity, Price)
 SELECT 
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS OrderDetailID,
-    [Order].OrderID,
-    [Order].ProductID,
+    rpc.OrderID,
+    p.ProductID,
     ABS(CHECKSUM(NEWID())) % 21 + 1 AS Quantity, -- Slumpmässigt antal produkter mellan 1 och 21
-    Product.ProductPrice AS Price -- Använd produktens pris
+    p.ProductPrice AS Price -- Använd produktens pris från Product-tabellen
 FROM 
-    [Order]
-INNER JOIN 
-    Product ON [Order].ProductID = Product.ProductID;
+    RandomProductCount rpc
+CROSS JOIN 
+    Product p
+WHERE 
+    p.ProductID IN (
+        SELECT TOP (rpc.ProductCount) ProductID 
+        FROM Product 
+        ORDER BY NEWID()
+    );
+
+
 
 -- Skapa data för CustomerCountry-tabellen som matchar befintliga kunder och länder
 INSERT INTO CustomerCountry (CustomerID, CountryID)
@@ -475,7 +485,7 @@ SELECT DISTINCT
 FROM 
     (
         SELECT DISTINCT
-            ABS(CHECKSUM(NEWID())) % 5 + 1 AS SaleChannelID,
+            ABS(CHECKSUM(NEWID())) % 7 + 1 AS SaleChannelID,
             ABS(CHECKSUM(NEWID())) % 5 + 1 AS SalePersonID
         FROM 
             Sale
@@ -491,12 +501,21 @@ WHERE
 
 -- Lägg till data i SaleRegion-tabellen med slumpmässiga regioner
 INSERT INTO SaleRegion (SaleID, RegionID)
-SELECT s.SaleID, ABS(CHECKSUM(NEWID())) % 7 + 1 AS RegionID
+SELECT s.SaleID, ABS(CHECKSUM(NEWID())) % 4 + 1 AS RegionID
 FROM Sale s;
 
--- Uppdatera Supplier-tabellen med slumpmässigt valda LastOrderDate för varje leverantör mellan åren 2023 och 2024
 UPDATE Supplier
-SET LastOrderDate = DATEADD(day, FLOOR(RAND(CHECKSUM(NEWID())) * 730), '2023-01-01');
+SET LastOrderDate = (
+    SELECT TOP 1 DATEADD(
+        DAY,
+        ABS(CHECKSUM(NEWID()) % 730), -- 730 dagar mellan 2022-01-01 och 2023-12-31
+        '2022-01-01'
+    )
+    FROM [Order]
+    WHERE [Order].SupplierID = Supplier.SupplierID
+    ORDER BY NEWID()
+);
+
 
 UPDATE Supplier
 SET TotalOrders = (

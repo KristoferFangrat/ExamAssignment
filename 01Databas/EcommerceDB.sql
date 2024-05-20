@@ -84,15 +84,14 @@ CREATE TABLE Country (
 );
 
 
--- Skapa Order Table
 CREATE TABLE [Order] (
     OrderID INT PRIMARY KEY,
     CustomerID INT,
-	SupplierID INT,
+    SupplierID INT,
     OrderDate DATE,
     TotalAmount DECIMAL(10, 2),
     FOREIGN KEY (CustomerID) REFERENCES Customer(CustomerID),
-	FOREIGN KEY (SupplierID) REFERENCES Supplier(SupplierID)
+    FOREIGN KEY (SupplierID) REFERENCES Supplier(SupplierID)
 );
 
 -- Skapa SalesChannel Table
@@ -128,7 +127,6 @@ CREATE TABLE Sale (
     FOREIGN KEY (SalePersonID) REFERENCES SalePerson(SalePersonID)
 );
 
--- Skapa tabell för orderdetaljer
 CREATE TABLE OrderDetail (
     OrderDetailID INT PRIMARY KEY,
     OrderID INT,
@@ -445,19 +443,32 @@ CROSS JOIN
     Months m;
 
 
--- Skapa data för OrderDetail-tabellen som matchar befintliga ordrar och produkter
+WITH RandomProductCount AS (
+    SELECT 
+        o.OrderID,
+        ABS(CHECKSUM(NEWID())) % 5 + 1 AS ProductCount -- Slumpmässigt antal produkter per order, mellan 1 och 5
+    FROM 
+        [Order] o
+)
 INSERT INTO OrderDetail (OrderDetailID, OrderID, ProductID, Quantity, Price)
 SELECT 
     ROW_NUMBER() OVER (ORDER BY NEWID()) AS OrderDetailID,
-    [Order].OrderID,
-    [Order].ProductID,
-	ABS(CHECKSUM(NEWID())) % 21 + 1 AS ProductID, -- Slumpmässigt välj en produkt
+    rpc.OrderID,
+    p.ProductID,
     ABS(CHECKSUM(NEWID())) % 21 + 1 AS Quantity, -- Slumpmässigt antal produkter mellan 1 och 21
-    Product.ProductPrice AS Price -- Använd produktens pris
+    p.ProductPrice AS Price -- Använd produktens pris från Product-tabellen
 FROM 
-    [Order]
-INNER JOIN 
-    Product ON [Order].ProductID = Product.ProductID;
+    RandomProductCount rpc
+CROSS JOIN 
+    Product p
+WHERE 
+    p.ProductID IN (
+        SELECT TOP (rpc.ProductCount) ProductID 
+        FROM Product 
+        ORDER BY NEWID()
+    );
+
+
 
 -- Skapa data för CustomerCountry-tabellen som matchar befintliga kunder och länder
 INSERT INTO CustomerCountry (CustomerID, CountryID)
@@ -527,6 +538,7 @@ SET Rating =
 		WHEN SupplierID = 5 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 5
         WHEN SupplierID = 6 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 6
 		WHEN SupplierID = 7 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 7
+		
 
         -- Add more cases for other SupplierIDs as needed
         ELSE 0 -- Default rating if no specific condition is met
