@@ -197,15 +197,15 @@ VALUES
     (1, 'Smartphone X', ROUND(RAND()*(1000-500)+500, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(500-100)+100, 2)),
     (2, 'Laptop Pro', ROUND(RAND()*(2000-1000)+1000, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(500-100)+100, 2)),
     (3, 'Smart TV 55"', ROUND(RAND()*(1500-800)+800, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(500-100)+100, 2)),
-    (4, 'Blender Deluxe', ROUND(RAND()*(100-50)+50, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(500-100)+100, 2)),
-    (5, 'Coffee Maker', ROUND(RAND()*(150-80)+80, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(500-100)+100, 2)),
-    (6, 'LED Light Bulbs (4-pack)', ROUND(RAND()*(30-10)+10, 2), FLOOR(RAND()*7)+1, 3, ROUND(RAND()*(500-100)+100, 2)),
+    (4, 'Blender Deluxe', ROUND(RAND()*(1000-200)+50, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(500-300)+100, 2)),
+    (5, 'Coffee Maker', ROUND(RAND()*(1500-300)+100, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(50-10)+100, 2)),
+    (6, 'LED Light Bulbs (4-pack)', ROUND(RAND()*(300-100)+100, 2), FLOOR(RAND()*7)+1, 3, ROUND(RAND()*(50-10)+10, 2)),
     (7, 'Tablet Lite', ROUND(RAND()*(800-400)+400, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(500-100)+100, 2)),
     (8, 'Desktop Computer', ROUND(RAND()*(2500-1500)+1500, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(500-100)+100, 2)),
-    (9, 'Wireless Headphones', ROUND(RAND()*(200-100)+100, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(500-100)+100, 2)),
-    (10, 'Toaster', ROUND(RAND()*(60-30)+30, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(500-100)+100, 2)),
-    (11, 'Electric Kettle', ROUND(RAND()*(70-40)+40, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(500-100)+100, 2)),
-    (12, 'Desk Lamp', ROUND(RAND()*(40-20)+20, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(500-100)+100, 2)),
+    (9, 'Wireless Headphones', ROUND(RAND()*(2000-100)+100, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(500-100)+100, 2)),
+    (10, 'Toaster', ROUND(RAND()*(600-300)+30, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(200-100)+100, 2)),
+    (11, 'Electric Kettle', ROUND(RAND()*(700-100)+200, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(300-100)+100, 2)),
+    (12, 'Desk Lamp', ROUND(RAND()*(400-200)+20, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(200-100)+100, 2)),
     (13, 'Gaming Console ', ROUND(RAND()*(1000-400)+400, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(300-100)+100, 2)),
     (14, 'Gaming Headset', ROUND(RAND()*(150-80)+80, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(50-20)+20, 2)),
     (15, 'Gaming Mouse', ROUND(RAND()*(100-50)+50, 2), FLOOR(RAND()*7)+1, 6, ROUND(RAND()*(30-10)+10, 2)),
@@ -219,18 +219,11 @@ UPDATE Product
 SET ProductPrice = ROUND(ProductPrice / @exchangeRate, 2),
     Cost = ROUND(Cost / @exchangeRate, 2);
 
-
-
 -- Skapa data för ProductInventory-tabellen baserat på Product-tabellen
 INSERT INTO ProductInventory (ProductID, Quantity)
-SELECT p.ProductID,
-       q.RandomQuantity -- Slumpmässigt valda kvantiteter
-FROM Product p
-CROSS APPLY (VALUES 
-    (FLOOR(RAND()*(100-19)+10)),
-    (FLOOR(RAND()*(500-39)+10)),
-    (FLOOR(RAND()*(1000-49)+10))
-) AS q(RandomQuantity);
+SELECT ProductID,
+       FLOOR(RAND(CHECKSUM(NEWID()))*(100-10)+10) AS RandomQuantity -- Slumpmässigt vald kvantitet för varje produkt
+FROM Product;
 
 
 -- Lägg till kunder
@@ -339,8 +332,8 @@ SELECT
     DATEDIFF(YEAR, c.Birthday, GETDATE()) AS Age,
     c.Gender,
     CASE
-        WHEN o.TotalOrders >= 300 THEN 'Frequent'
-        WHEN o.TotalOrders >= 100 THEN 'Regular'
+        WHEN o.TotalOrders >= 500 THEN 'Frequent'
+        WHEN o.TotalOrders >= 200 THEN 'Regular'
         ELSE 'Occasional'
     END AS PurchaseFrequency,
     o.TotalAmount AS PurchaseValue,
@@ -375,10 +368,28 @@ JOIN (
 JOIN
     Country AS co ON c.CountryID = co.CountryID;
 
-
-
-
-
+-- Lägg till data i CustomerSatisfaction-tabellen med korrekt feedbacktext och slumpmässiga kunder
+INSERT INTO CustomerSatisfaction (SatisfactionID, CustomerID, SatisfactionScore, Feedback)
+SELECT 
+    ROW_NUMBER() OVER (ORDER BY NEWID()) AS SatisfactionID,
+    CustomerID,
+    SatisfactionScore,
+    CASE 
+        WHEN SatisfactionScore = 1 THEN 'Poor service, very dissatisfied.'
+        WHEN SatisfactionScore = 2 THEN 'Average service, could be better.'
+        WHEN SatisfactionScore = 3 THEN 'Good service, satisfied.'
+        WHEN SatisfactionScore = 4 THEN 'Very good service, highly satisfied.'
+        WHEN SatisfactionScore = 5 THEN 'Excellent service, extremely satisfied.'
+    END AS Feedback
+FROM (
+    SELECT 
+        CustomerID,
+        ABS(CHECKSUM(NEWID()) % 5) + 1 AS SatisfactionScore -- Slumpmässig nöjdhetsskala mellan 1 och 5
+    FROM 
+        Customer
+    WHERE 
+        CustomerID IS NOT NULL -- Filtrera bort eventuella tomma kund-ID
+) AS RandomScores;
 
 -- Lägg till data i SaleChannel-tabellen
 INSERT INTO SaleChannel (SaleChannelID, ChannelName)
