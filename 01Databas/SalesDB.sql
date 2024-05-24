@@ -477,7 +477,7 @@ SELECT DISTINCT
 FROM 
     (
         SELECT DISTINCT
-            ABS(CHECKSUM(NEWID())) % 7 + 1 AS SaleChannelID,
+            ABS(CHECKSUM(NEWID())) % 5 + 1 AS SaleChannelID,
             ABS(CHECKSUM(NEWID())) % 5 + 1 AS SalePersonID
         FROM 
             Sale
@@ -493,7 +493,7 @@ WHERE
 
 -- Lägg till data i SaleRegion-tabellen med slumpmässiga regioner
 INSERT INTO SaleRegion (SaleID, RegionID)
-SELECT s.SaleID, ABS(CHECKSUM(NEWID())) % 7 + 1 AS RegionID
+SELECT s.SaleID, ABS(CHECKSUM(NEWID())) % 4 + 1 AS RegionID
 FROM Sale s;
 
 UPDATE Supplier

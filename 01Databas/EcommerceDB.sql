@@ -389,13 +389,11 @@ FROM (
 -- Lägg till data i SaleChannel-tabellen
 INSERT INTO SaleChannel (SaleChannelID, ChannelName)
 VALUES 
-    (1, 'Online'),
+    (1, 'E-commerce platform'),
     (2, 'Physical Store'),
-    (3, 'Telesales'),
-    (4, 'Wholesale'),
-    (5, 'E-commerce'),
-    (6, 'Catalog'),
-    (7, 'Trade Show');
+    (3, 'Local markets and events'),
+    (4, 'Business partnerships'),
+    (5, 'Direct sales');
 
 -- Lägg till data i SalePerson-tabellen
 INSERT INTO SalePerson (SalePersonID, SalePersonName)
@@ -435,7 +433,7 @@ SELECT
     ABS(CHECKSUM(NEWID())) % 400 + 500 AS SaleAmount, 
     ABS(CHECKSUM(NEWID())) % 21 + 1 AS ProductID, -- Slumpmässigt välj en produkt
     c.CustomerID,
-    ABS(CHECKSUM(NEWID())) % 7 + 1 AS SaleChannelID, -- Slumpmässigt välj en försäljningskanal
+    ABS(CHECKSUM(NEWID())) % 5 + 1 AS SaleChannelID, -- Slumpmässigt välj en försäljningskanal
     ABS(CHECKSUM(NEWID())) % 5 + 1 AS SalePersonID -- Slumpmässigt välj en säljare
 FROM
     Customer c

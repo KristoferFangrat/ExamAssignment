@@ -9,7 +9,7 @@ CREATE TABLE Supplier (
     Name VARCHAR(100),
     Contact VARCHAR(100),
     Adress VARCHAR(255),
-    Region VARCHAR(50),
+    Country VARCHAR(50),
     LastOrderDate DATE,
     TotalOrders INT,
     TotalAmount DECIMAL(10,2),
@@ -110,6 +110,14 @@ CREATE TABLE SalePerson (
 CREATE TABLE Region (
     RegionID INT PRIMARY KEY,
     RegionName VARCHAR(100)
+	);
+
+CREATE TABLE CountryRegion (
+    CountryID INT,
+    RegionID INT,
+    PRIMARY KEY (CountryID, RegionID),
+    FOREIGN KEY (CountryID) REFERENCES Country(CountryID),
+    FOREIGN KEY (RegionID) REFERENCES Region(RegionID)
 );
 
 -- Skapa Sales Table
@@ -165,16 +173,16 @@ CREATE TABLE SaleRegion (
 );
 
 -- Skapa data för Supplier-tabellen
-INSERT INTO Supplier (SupplierID, Name, Contact, Adress, Region, LastOrderDate, TotalOrders, TotalAmount, Rating, Active)
+INSERT INTO Supplier (SupplierID, Name, Contact, Adress, Country, LastOrderDate, TotalOrders, TotalAmount, Rating, Active)
 VALUES 
-	(1, 'Swedish Cakes AB', 'info@swedishcakes.com', 'Storgatan 1, Stockholm', 'North', NULL, 0, 0.00, 0, 1),
-    (2, 'Norwegian Cookies AS', 'contact@norwegiancookies.no', 'Karl Johans gate 2, Oslo', 'South', NULL, 0, 0.00, 0, 1),
-    (3, 'Finnish Sweets Oy', 'sales@finnishsweets.fi', 'Aleksanterinkatu 3, Helsinki', 'West', NULL, 0, 0.00, 0, 1),
-    (4, 'Danish Pastries A/S', 'peter.jensen@danishpastries.dk', 'Vesterbrogade 2, Copenhagen', 'East', NULL, 0, 0.00, 0, 0),
-    (5, 'Icelandic Delights ehf', 'sales@icelandicdelights.is', 'Laugavegur 1, Reykjavik', 'South', NULL, 0, 0.00, 0, 1),
-	(6, 'Dutch Bakes BV', 'info@dutchbakes.nl', 'Damrak 7, Amsterdam', 'North', NULL, 0, 0.00, 0, 1),
-    (7, 'Austrian Pastries GmbH', 'contact@austrianpastries.at', 'Mariahilfer Straße 4, Vienna', 'East', NULL, 0, 0.00, 0, 1),
-    (8, 'Swiss Cakes AG', 'sales@swisscakes.ch', 'Bahnhofstrasse 9, Zurich', 'North', NULL, 0, 0.00, 0, 1);
+	(1, 'Swedish Cakes AB', 'info@swedishcakes.com', 'Storgatan 1, Stockholm', 'Sweden', NULL, 0, 0.00, 0, 1),
+    (2, 'Norwegian Cookies AS', 'contact@norwegiancookies.no', 'Karl Johans gate 2, Oslo', 'Norway', NULL, 0, 0.00, 0, 1),
+    (3, 'Finnish Sweets Oy', 'sales@finnishsweets.fi', 'Aleksanterinkatu 3, Helsinki', 'Finland', NULL, 0, 0.00, 0, 1),
+    (4, 'Danish Pastries A/S', 'peter.jensen@danishpastries.dk', 'Vesterbrogade 2, Copenhagen', 'Denmark', NULL, 0, 0.00, 0, 0),
+    (5, 'Icelandic Delights ehf', 'sales@icelandicdelights.is', 'Laugavegur 1, Reykjavik', 'Iceland', NULL, 0, 0.00, 0, 1),
+	(6, 'Dutch Bakes BV', 'info@dutchbakes.nl', 'Damrak 7, Amsterdam', 'Holland', NULL, 0, 0.00, 0, 1),
+    (7, 'Austrian Pastries GmbH', 'contact@austrianpastries.at', 'Mariahilfer Straße 4, Vienna', 'Austria', NULL, 0, 0.00, 0, 1),
+    (8, 'Swiss Cakes AG', 'sales@swisscakes.ch', 'Bahnhofstrasse 9, Zurich', 'Switzerland', NULL, 0, 0.00, 0, 1);
 
 
 -- Lägg till data i Category-tabellen
@@ -188,6 +196,7 @@ VALUES
 
 DECLARE @exchangeRate DECIMAL(10,2) = 9.0; -- Växelkursen mellan SEK och USD
 
+
 -- Fyll Cost-kolumnen med slumpmässig kostnadsinformation och välj slumpmässig leverantör från de befintliga leverantörerna
 INSERT INTO Product (ProductID, ProductName, ProductPrice, SupplierID, CategoryID, Cost)
 VALUES 
@@ -196,14 +205,14 @@ VALUES
     (3, 'Strawberry Cake', ROUND(RAND()*(50-10)+10, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(15-10)+10, 2)),
     (4, 'Red Velvet Cake', ROUND(RAND()*(50-10)+10, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(15-10)+10, 2)),
     (5, 'Blueberry Muffin', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 3, ROUND(RAND()*(10-2)+2, 2)),
-    (6, 'Chocolate Chip Cookie', ROUND(RAND()*(15-5)+5, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(8-2)+2, 2)),
-    (7, 'Oatmeal Raisin Cookie', ROUND(RAND()*(15-5)+5, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(8-2)+2, 2)),
+    (6, 'Chocolate Chip Cookie', ROUND(RAND()*(15-5)+5, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(12-2)+2, 2)),
+    (7, 'Oatmeal Raisin Cookie', ROUND(RAND()*(15-5)+5, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(12-2)+2, 2)),
     (8, 'Macaron', ROUND(RAND()*(25-10)+10, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(15-5)+5, 2)),
-    (9, 'Croissant', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(12-3)+3, 2)),
+    (9, 'Croissant', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(23-3)+3, 2)),
     (10, 'Danish Pastry', ROUND(RAND()*(25-10)+10, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(15-5)+5, 2)),
     (11, 'Lemon Tart', ROUND(RAND()*(30-10)+10, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(12-5)+5, 2)),
     (12, 'Cheesecake', ROUND(RAND()*(40-15)+15, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(12-10)+10, 2)),
-    (13, 'Brownie', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(12-3)+3, 2)),
+    (13, 'Brownie', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(23-3)+3, 2)),
     (14, 'Eclair', ROUND(RAND()*(25-10)+10, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(15-5)+5, 2)),
     (15, 'Cupcake', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(12-3)+3, 2)),
     (16, 'Puff Pastry', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(12-3)+3, 2)),
@@ -211,7 +220,11 @@ VALUES
     (18, 'Pumpkin Pie', ROUND(RAND()*(30-10)+10, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(12-5)+5, 2)),
     (19, 'Pecan Pie', ROUND(RAND()*(30-10)+10, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(10-5)+5, 2)),
     (20, 'Banana Bread', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 3, ROUND(RAND()*(7-3)+3, 2)),
-    (21, 'Cinnamon Roll', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(4-3)+3, 2));
+    (21, 'Cinnamon Roll', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(10-3)+3, 2));
+
+UPDATE Product
+SET ProductPrice = ROUND(ProductPrice / @exchangeRate, 2),
+    Cost = ROUND(Cost / @exchangeRate, 2);
 
 
 -- Skapa data för ProductInventory-tabellen baserat på Product-tabellen
@@ -391,13 +404,11 @@ FROM (
 -- Lägg till data i SaleChannel-tabellen
 INSERT INTO SaleChannel (SaleChannelID, ChannelName)
 VALUES 
-    (1, 'Online'),
+    (1, 'E-commerce platform'),
     (2, 'Physical Store'),
-    (3, 'Telesales'),
-    (4, 'Wholesale'),
-    (5, 'E-commerce'),
-    (6, 'Catalog'),
-    (7, 'Trade Show');
+    (3, 'Local markets and events'),
+    (4, 'Business partnerships'),
+    (5, 'Direct sales');
 
 -- Lägg till data i SalePerson-tabellen
 INSERT INTO SalePerson (SalePersonID, SalePersonName)
@@ -416,6 +427,10 @@ VALUES
     (3, 'East'),
 	(4, 'West');
 
+-- Insert data into CountryRegion table
+INSERT INTO CountryRegion (CountryID, RegionID)
+SELECT c.CountryID, r.RegionID
+FROM Country c, Region r;
 
 -- Skapa en temporär tabell med datum för varje månad från januari 2023 till december 2024
 WITH Months AS (
@@ -434,7 +449,7 @@ SELECT
     ABS(CHECKSUM(NEWID())) % 400 + 500 AS SaleAmount, 
     ABS(CHECKSUM(NEWID())) % 21 + 1 AS ProductID, -- Slumpmässigt välj en produkt
     c.CustomerID,
-    ABS(CHECKSUM(NEWID())) % 7 + 1 AS SaleChannelID, -- Slumpmässigt välj en försäljningskanal
+    ABS(CHECKSUM(NEWID())) % 5 + 1 AS SaleChannelID, -- Slumpmässigt välj en försäljningskanal
     ABS(CHECKSUM(NEWID())) % 5 + 1 AS SalePersonID -- Slumpmässigt välj en säljare
 FROM
     Customer c
@@ -467,8 +482,6 @@ WHERE
         ORDER BY NEWID()
     );
 
-
-
 -- Skapa data för CustomerCountry-tabellen som matchar befintliga kunder och länder
 INSERT INTO CustomerCountry (CustomerID, CountryID)
 SELECT 
@@ -485,7 +498,7 @@ SELECT DISTINCT
 FROM 
     (
         SELECT DISTINCT
-            ABS(CHECKSUM(NEWID())) % 7 + 1 AS SaleChannelID,
+            ABS(CHECKSUM(NEWID())) % 5 + 1 AS SaleChannelID,
             ABS(CHECKSUM(NEWID())) % 5 + 1 AS SalePersonID
         FROM 
             Sale
@@ -548,3 +561,16 @@ SET Rating =
         -- Add more cases for other SupplierIDs as needed
         ELSE 0 -- Default rating if no specific condition is met
     END;
+
+-- Lägg till RegionID till Customer-tabellen
+ALTER TABLE Customer
+ADD RegionID INT;
+
+-- Slumpmässigt tilldela en region till varje kund baserat på deras land
+UPDATE Customer
+SET RegionID = (
+    SELECT TOP 1 RegionID
+    FROM CountryRegion
+    WHERE CountryID = Customer.CountryID
+    ORDER BY NEWID()
+);
