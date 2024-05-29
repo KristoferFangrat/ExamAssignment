@@ -200,31 +200,27 @@ DECLARE @exchangeRate DECIMAL(10,2) = 9.0; -- Växelkursen mellan SEK och USD
 -- Fyll Cost-kolumnen med slumpmässig kostnadsinformation och välj slumpmässig leverantör från de befintliga leverantörerna
 INSERT INTO Product (ProductID, ProductName, ProductPrice, SupplierID, CategoryID, Cost)
 VALUES 
-    (1, 'Chocolate Cake', ROUND(RAND()*(50-10)+10, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(15-10)+10, 2)),
-    (2, 'Vanilla Cake', ROUND(RAND()*(50-10)+10, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(15-10)+10, 2)),
-    (3, 'Strawberry Cake', ROUND(RAND()*(50-10)+10, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(15-10)+10, 2)),
-    (4, 'Red Velvet Cake', ROUND(RAND()*(50-10)+10, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(15-10)+10, 2)),
-    (5, 'Blueberry Muffin', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 3, ROUND(RAND()*(10-2)+2, 2)),
-    (6, 'Chocolate Chip Cookie', ROUND(RAND()*(15-5)+5, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(12-2)+2, 2)),
-    (7, 'Oatmeal Raisin Cookie', ROUND(RAND()*(15-5)+5, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(12-2)+2, 2)),
-    (8, 'Macaron', ROUND(RAND()*(25-10)+10, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(15-5)+5, 2)),
-    (9, 'Croissant', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(23-3)+3, 2)),
-    (10, 'Danish Pastry', ROUND(RAND()*(25-10)+10, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(15-5)+5, 2)),
-    (11, 'Lemon Tart', ROUND(RAND()*(30-10)+10, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(12-5)+5, 2)),
-    (12, 'Cheesecake', ROUND(RAND()*(40-15)+15, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(12-10)+10, 2)),
-    (13, 'Brownie', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(23-3)+3, 2)),
-    (14, 'Eclair', ROUND(RAND()*(25-10)+10, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(15-5)+5, 2)),
-    (15, 'Cupcake', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(12-3)+3, 2)),
-    (16, 'Puff Pastry', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(12-3)+3, 2)),
-    (17, 'Apple Pie', ROUND(RAND()*(30-10)+10, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(15-6)+5, 2)),
-    (18, 'Pumpkin Pie', ROUND(RAND()*(30-10)+10, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(12-5)+5, 2)),
-    (19, 'Pecan Pie', ROUND(RAND()*(30-10)+10, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(10-5)+5, 2)),
-    (20, 'Banana Bread', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 3, ROUND(RAND()*(7-3)+3, 2)),
-    (21, 'Cinnamon Roll', ROUND(RAND()*(20-5)+5, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(10-3)+3, 2));
-
-UPDATE Product
-SET ProductPrice = ROUND(ProductPrice / @exchangeRate, 2),
-    Cost = ROUND(Cost / @exchangeRate, 2);
+    (1, 'Chocolate Cake', ROUND(RAND()*(100-10)+30, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(15-10)+50, 2)),
+    (2, 'Vanilla Cake', ROUND(RAND()*(100-10)+30, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(15-10)+50, 2)),
+    (3, 'Strawberry Cake', ROUND(RAND()*(100-10)+30, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(15-10)+50, 2)),
+    (4, 'Red Velvet Cake', ROUND(RAND()*(150-10)+40, 2), FLOOR(RAND()*7)+1, 1, ROUND(RAND()*(15-10)+50, 2)),
+    (5, 'Blueberry Muffin', ROUND(RAND()*(80-5)+9, 2), FLOOR(RAND()*7)+1, 3, ROUND(RAND()*(10-2)+6, 2)),
+    (6, 'Chocolate Chip Cookie', ROUND(RAND()*(45-5)+7, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(12-2)+4,2)),
+    (7, 'Oatmeal Raisin Cookie', ROUND(RAND()*(45-5)+7, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(12-2)+4, 2)),
+    (8, 'Macaron', ROUND(RAND()*(95-10)+10, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(15-5)+8, 2)),
+    (9, 'Croissant', ROUND(RAND()*(100-5)+9, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(13-3)+6, 2)),
+    (10, 'Danish Pastry', ROUND(RAND()*(65-10)+20, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(15-5)+9, 2)),
+    (11, 'Lemon Tart', ROUND(RAND()*(70-10)+20, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(12-5)+5, 2)),
+    (12, 'Cheesecake', ROUND(RAND()*(100-15)+35, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(12-10)+50, 2)),
+    (13, 'Brownie', ROUND(RAND()*(70-5)+15, 2), FLOOR(RAND()*7)+1, 2, ROUND(RAND()*(23-3)+7, 2)),
+    (14, 'Eclair', ROUND(RAND()*(55-10)+33, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(15-5)+5, 2)),
+    (15, 'Cupcake', ROUND(RAND()*(80-5)+27, 2), FLOOR(RAND()*7)+1, 3, ROUND(RAND()*(12-3)+3, 2)),
+    (16, 'Puff Pastry', ROUND(RAND()*(80-5)+13, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(12-3)+3, 2)),
+    (17, 'Apple Pie', ROUND(RAND()*(80-10)+23, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(15-6)+12, 2)),
+    (18, 'Pumpkin Pie', ROUND(RAND()*(80-10)+37, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(12-5)+12, 2)),
+    (19, 'Pecan Pie', ROUND(RAND()*(260-20)+38, 2), FLOOR(RAND()*7)+1, 4, ROUND(RAND()*(10-5)+12, 2)),
+    (20, 'Banana Bread', ROUND(RAND()*(200-5)+18, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(7-3)+14, 2)),
+    (21, 'Cinnamon Roll', ROUND(RAND()*(90-5)+19, 2), FLOOR(RAND()*7)+1, 5, ROUND(RAND()*(10-3)+7, 2));
 
 
 -- Skapa data för ProductInventory-tabellen baserat på Product-tabellen
