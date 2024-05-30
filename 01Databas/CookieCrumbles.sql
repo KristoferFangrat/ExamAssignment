@@ -552,7 +552,7 @@ SET Rating =
 		WHEN SupplierID = 5 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 5
         WHEN SupplierID = 6 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 6
 		WHEN SupplierID = 7 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 7
-		WHEN SupplierID = 8 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 7
+		WHEN SupplierID = 8 THEN ABS(CHECKSUM(NEWID())) % 5 + 1 -- Random rating between 1 and 5 for SupplierID 8
 
         -- Add more cases for other SupplierIDs as needed
         ELSE 0 -- Default rating if no specific condition is met
@@ -566,7 +566,7 @@ ADD RegionID INT;
 UPDATE Customer
 SET RegionID = (
     SELECT TOP 1 RegionID
-    FROM CountryRegion
-    WHERE CountryID = Customer.CountryID
+    FROM CountryRegion 
+    WHERE CountryID = Customer.CountryID 
     ORDER BY NEWID()
 );
