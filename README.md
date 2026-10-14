@@ -9,14 +9,11 @@ Exam project in Data Visualization, Data Engineer programme at Stockholms Teknis
 ### Summary
 Total revenue against goal, profit, sales by category and country, the Business Partnerships sales channel, and revenue trends by year, quarter and month.
 
-
 ### Product & supplier
 Top and worst selling products, product price versus cost, supplier order amounts, average supplier rating, orders per year and suppliers by country.
 
-
 ### Customer
 Total customers, revenue per customer, top customers, gender and age groups, preferred categories by customer segment, and customers by country.
-
 
 ## What I built
 
@@ -51,7 +48,7 @@ The final report is `CookieCrumbles.pbix` in the root folder. Open it with [Powe
 
 ## Tools
 
-SQL Server · T-SQL · Power BI Desktop · DAX · Power Query · draw.io
+SQL Server · T-SQL · Power BI Desktop · DAX · draw.io
 
 ## Contact
 
