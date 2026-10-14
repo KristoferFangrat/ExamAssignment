@@ -9,11 +9,22 @@ Exam project in Data Visualization, Data Engineer programme at Stockholms Teknis
 ### Summary
 Total revenue against goal, profit, sales by category and country, the Business Partnerships sales channel, and revenue trends by year, quarter and month.
 
+![Summary page](screenshots/summary.png)
+
 ### Product & supplier
 Top and worst selling products, product price versus cost, supplier order amounts, average supplier rating, orders per year and suppliers by country.
 
+![Product and supplier page](screenshots/product-supplier.png)
+
 ### Customer
 Total customers, revenue per customer, top customers, gender and age groups, preferred categories by customer segment, and customers by country.
+
+![Customer page](screenshots/customer.png)
+
+### Light and dark theme
+A toggle in the top right corner switches every page between a light and a dark theme. Colours are driven by DAX measures, so all visuals follow the selected theme.
+
+![Summary page in dark theme](screenshots/summary-dark.png)
 
 ## What I built
 
